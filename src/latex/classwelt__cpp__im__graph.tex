@@ -1,0 +1,49 @@
+\hypertarget{classwelt__cpp__im__graph}{}\doxysection{welt\+\_\+cpp\+\_\+im\+\_\+graph Class Reference}
+\label{classwelt__cpp__im__graph}\index{welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}}
+Inheritance diagram for welt\+\_\+cpp\+\_\+im\+\_\+graph\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwelt__cpp__im__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwelt__cpp__im__graph_a82e2a0dee8725d7330f08651779ad85f}{welt\+\_\+cpp\+\_\+im\+\_\+graph}} (int argc, char $\ast$$\ast$argv)
+\item 
+void \mbox{\hyperlink{classwelt__cpp__im__graph_af9c4de95bded48940a3454da7002cfd5}{scheduler}} () override
+\item 
+\mbox{\Hypertarget{classwelt__cpp__im__graph_a9a94a3797c4d871b8908568c768d3ef1}\label{classwelt__cpp__im__graph_a9a94a3797c4d871b8908568c768d3ef1}} 
+bool {\bfseries mul\+\_\+threads} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwelt__cpp__im__graph_a82e2a0dee8725d7330f08651779ad85f}\label{classwelt__cpp__im__graph_a82e2a0dee8725d7330f08651779ad85f}} 
+\index{welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}!welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}}
+\index{welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}!welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}}
+\doxysubsubsection{\texorpdfstring{welt\_cpp\_im\_graph()}{welt\_cpp\_im\_graph()}}
+{\footnotesize\ttfamily welt\+\_\+cpp\+\_\+im\+\_\+graph\+::welt\+\_\+cpp\+\_\+im\+\_\+graph (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Constructor of the graph\+: Actor and fifos are initialized shown below.  
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwelt__cpp__im__graph_af9c4de95bded48940a3454da7002cfd5}\label{classwelt__cpp__im__graph_af9c4de95bded48940a3454da7002cfd5}} 
+\index{welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}!scheduler@{scheduler}}
+\index{scheduler@{scheduler}!welt\_cpp\_im\_graph@{welt\_cpp\_im\_graph}}
+\doxysubsubsection{\texorpdfstring{scheduler()}{scheduler()}}
+{\footnotesize\ttfamily void welt\+\_\+cpp\+\_\+im\+\_\+graph\+::scheduler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+The scheduler is written as follows\+:  Yolo actor do object detection and give results to the frame simulator. Now the Yolo part is pending so that frame simulator read bounding boxes info fram external files. The scheduler fire the frame simulator first and then iteratively check the availability of the following actors. Then the matching compute actors are fired concurrently and then get back to the frame simulator . The simulator then read the results and make the tracking id of bounding boxes. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+welt\+\_\+cpp\+\_\+im\+\_\+graph.\+h\item 
+welt\+\_\+cpp\+\_\+im\+\_\+graph.\+cpp\end{DoxyCompactItemize}

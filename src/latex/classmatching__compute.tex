@@ -1,0 +1,47 @@
+\hypertarget{classmatching__compute}{}\doxysection{matching\+\_\+compute Class Reference}
+\label{classmatching__compute}\index{matching\_compute@{matching\_compute}}
+
+
+{\ttfamily \#include $<$matching\+\_\+compute.\+h$>$}
+
+Inheritance diagram for matching\+\_\+compute\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmatching__compute}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classmatching__compute_ad4f63e797632d715ea11d2133c773b0f}\label{classmatching__compute_ad4f63e797632d715ea11d2133c773b0f}} 
+{\bfseries matching\+\_\+compute} (lide\+\_\+c\+\_\+fifo\+\_\+pointer in)
+\item 
+\mbox{\Hypertarget{classmatching__compute_abd2960d221fac2f2625cc0b17f0b9255}\label{classmatching__compute_abd2960d221fac2f2625cc0b17f0b9255}} 
+int {\bfseries enable} () override
+\item 
+void \mbox{\hyperlink{classmatching__compute_ab001212a1d611fb0d57f5359eb49e284}{invoke}} () override
+\item 
+\mbox{\Hypertarget{classmatching__compute_aee0534aa722f2c3dd519130bf6349c29}\label{classmatching__compute_aee0534aa722f2c3dd519130bf6349c29}} 
+void {\bfseries reset} () override
+\item 
+\mbox{\Hypertarget{classmatching__compute_a354f31ae016915a445e95fd8d80e5218}\label{classmatching__compute_a354f31ae016915a445e95fd8d80e5218}} 
+void {\bfseries connect} (welt\+\_\+cpp\+\_\+graph $\ast$graph) override
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Matching compute actor is assigned to threads. It compute the IoU value of the bounding box pairs getting from simulator. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classmatching__compute_ab001212a1d611fb0d57f5359eb49e284}\label{classmatching__compute_ab001212a1d611fb0d57f5359eb49e284}} 
+\index{matching\_compute@{matching\_compute}!invoke@{invoke}}
+\index{invoke@{invoke}!matching\_compute@{matching\_compute}}
+\doxysubsubsection{\texorpdfstring{invoke()}{invoke()}}
+{\footnotesize\ttfamily void matching\+\_\+compute\+::invoke (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+In M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+C\+O\+M\+P\+U\+TE mode, actor read \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} from fifo and compute the IoU value. If there is nothing to read from fifo, mode will be set to M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+I\+N\+A\+C\+T\+I\+VE. In M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+I\+N\+A\+C\+T\+I\+VE mode, actor is not responsible. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+matching\+\_\+compute.\+h\item 
+matching\+\_\+compute.\+cpp\end{DoxyCompactItemize}
