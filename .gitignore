@@ -1,0 +1,4 @@
+*.DS_Store
+src/object_detection_tiling/cfg/*
+src/object_detection_tiling/build/*
+
