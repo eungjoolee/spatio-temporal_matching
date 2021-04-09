@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -8,6 +9,8 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
+#include <opencv2/core/types.hpp>
+
 
 
 using namespace cv;
@@ -32,7 +35,6 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
         static Mat blobFromImg;
         bool swapRB = true;
         blobFromImage(img, blobFromImg, 1, Size(416, 416), Scalar(), swapRB, false);
-        cout << blobFromImg.size() << endl;
         
         float scale = 1.0 / 255.0;
         Scalar mean = 0;
@@ -100,7 +102,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
     }
 }
 
-void analyze_image(std::string model, std::string config, Mat img)
+stack<Rect> analyze_image(std::string model, std::string config, Mat img)
 {
     Net network = readNet(model, config, "Darknet");
     network.setPreferableBackend(DNN_BACKEND_DEFAULT);
@@ -109,7 +111,6 @@ void analyze_image(std::string model, std::string config, Mat img)
     static Mat blobFromImg;
     bool swapRB = true;
     blobFromImage(img, blobFromImg, 1, Size(416, 416), Scalar(), swapRB, false);
-    cout << blobFromImg.size() << endl;
     
     float scale = 1.0 / 255.0;
     Scalar mean = 0;
@@ -126,6 +127,8 @@ void analyze_image(std::string model, std::string config, Mat img)
     // [x ; y ; w; h; class 1 ; class 2 ; class 3 ;  ; ;....]
     //
     int colsCoordinatesPlusClassScore = outMat.cols;
+    //stack to store result
+    stack<Rect> res;
     // Loop over number of detected object.
     for (int j = 0; j < rowsNoOfDetection; ++j)
     {
@@ -151,8 +154,8 @@ void analyze_image(std::string model, std::string config, Mat img)
             // [x ; y ; w; h;
             int centerX = (int)(outMat.at<float>(j, 0) * img.cols);
             int centerY = (int)(outMat.at<float>(j, 1) * img.rows);
-            int width =   (int)(outMat.at<float>(j, 2) * img.cols+20);
-            int height =   (int)(outMat.at<float>(j, 3) * img.rows+100);
+            int width =  (int)(outMat.at<float>(j, 2) * img.cols+20);
+            int height =  (int)(outMat.at<float>(j, 3) * img.rows+100);
 
             int left = centerX - width / 2;
             int top = centerY - height / 2;
@@ -167,8 +170,9 @@ void analyze_image(std::string model, std::string config, Mat img)
             ss << confidence;
             string conf = ss.str();
 
+            res.push(Rect(left, top, width, height));
             rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
-            cout << "Result " << j << ": top left =(" << left << "," << top << "), (w,h) = (" << width << "," <<height << ")" << endl;
+            cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
             
         }
     }
@@ -176,6 +180,7 @@ void analyze_image(std::string model, std::string config, Mat img)
     namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
     imshow("Display window", img);
     waitKey(2500);
+    return res;
 }
 
 int main(int argc, char* argv[])
@@ -192,6 +197,7 @@ int main(int argc, char* argv[])
     
     int x_stride = 256;
     int y_stride = 256;
+    stack<Rect> final_result;
     for(int i = 0; i < img.rows; i += y_stride)
     {
         for (int j = 0; j < img.cols; j += x_stride)
@@ -204,24 +210,33 @@ int main(int argc, char* argv[])
             }
             else if (i + y_stride < img.rows)
             {
-                cout << "Processing Tile 1" << i * y_stride + j << endl;
                 tile = img(Rect(j,i,img.cols-j-1,y_stride-1));
             }
             else if (j + x_stride < img.cols)
             {
-                cout << "Processing Tile 2" << i * y_stride + j << endl;
                 tile = img(Rect(j,i,x_stride-1,img.rows-i-1));
             }
             else
             {
-                cout << "Processing Tile 3" << i * y_stride + j << endl;
                 tile = img(Rect(j,i,img.cols-j-1,img.rows-i-1));
             }
-            analyze_image(model, config, tile);
+            stack<Rect> result = analyze_image(model, config, tile);
+            while (!result.empty())
+            {
+                Rect local_loc = result.top();
+                result.pop();
+                Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
+                final_result.push(global_loc);
+                //draw result
+                rectangle(img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
+            }
         }
     }
-    analyze_image(model, config, img);
+    //analyze_image(model, config, img);
     //analyze_video(model, config, cap);
+    namedWindow("Result window", WINDOW_AUTOSIZE);// Create a window for display.
+    imshow("Result window", img);
+    waitKey(2500);
     
     return 0;
 }
