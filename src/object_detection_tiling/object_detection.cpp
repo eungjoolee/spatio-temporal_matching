@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <vector>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -102,8 +103,9 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
     }
 }
 
-stack<Rect> analyze_image(std::string model, std::string config, Mat img)
+stack<Rect> analyze_image(std::string model, std::string config, Mat image)
 {
+    Mat img = image.clone();
     Net network = readNet(model, config, "Darknet");
     network.setPreferableBackend(DNN_BACKEND_DEFAULT);
     network.setPreferableTarget(DNN_TARGET_OPENCL);
@@ -172,8 +174,7 @@ stack<Rect> analyze_image(std::string model, std::string config, Mat img)
 
             res.push(Rect(left, top, width, height));
             rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
-            cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
-            
+            cout << "--->---> Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
         }
     }
     
@@ -185,58 +186,84 @@ stack<Rect> analyze_image(std::string model, std::string config, Mat img)
 
 int main(int argc, char* argv[])
 {
-    CommandLineParser parser(argc, argv, "{m model||}{c config||}{s size||}{i image||}");
+    CommandLineParser parser(argc, argv, "{m model||}{c config||}{s size||}{i image||}{p path||}{n num_img||}");
     parser.about("Tiling YOLO v1.0.0");
-    VideoCapture cap("/Users/jushen/Downloads/winter_dogs.mov");
-    Mat img = //imread("/Users/jushen/Documents/yolo-tiling/val2017/000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
+    Mat image = //imread("/Users/jushen/Documents/yolo-tiling/val2017/000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
     imread(parser.get<String>("image"), IMREAD_COLOR);
+    
+    vector<String> images;
+    glob(parser.get<String>("path"), images, false);
+    
     std::string model = //"../cfg/yolov3-tiny.weights";
     parser.get<String>("model");
     std::string config = //"../cfg/yolov3-tiny.cfg";
     parser.get<String>("config");
     
+    int max_images = images.size();
+    int num_images = parser.get<int>("num_img");
+    num_images = num_images > max_images ? max_images : num_images;
     int x_stride = 256;
     int y_stride = 256;
-    stack<Rect> final_result;
-    for(int i = 0; i < img.rows; i += y_stride)
+    
+    for(int k = 0; k < num_images; k++)
     {
-        for (int j = 0; j < img.cols; j += x_stride)
+        cout << "Reading image " << k + 1 << " (" << images[k] << ")..." << endl;
+        cout << "Processing image " << k + 1 << endl;
+        
+        Mat img = imread(images[k], IMREAD_COLOR);
+        Mat output_img = img.clone();
+        int counter = 1;
+        stack<Rect> final_result;
+        for(int i = 0; i < img.rows; i += y_stride)
         {
-            cout << "Processing Tile " << i * y_stride + j << endl;
-            Mat tile;
-            if (i + y_stride < img.rows && j + x_stride < img.cols)
+            for(int j = 0; j < img.cols; j += x_stride)
             {
-                tile = img(Rect(j,i,x_stride-1,y_stride-1));
-            }
-            else if (i + y_stride < img.rows)
-            {
-                tile = img(Rect(j,i,img.cols-j-1,y_stride-1));
-            }
-            else if (j + x_stride < img.cols)
-            {
-                tile = img(Rect(j,i,x_stride-1,img.rows-i-1));
-            }
-            else
-            {
-                tile = img(Rect(j,i,img.cols-j-1,img.rows-i-1));
-            }
-            stack<Rect> result = analyze_image(model, config, tile);
-            while (!result.empty())
-            {
-                Rect local_loc = result.top();
-                result.pop();
-                Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
-                final_result.push(global_loc);
-                //draw result
-                rectangle(img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
+                cout << "---> Processing Tile " << counter++ << "..." << endl;
+                Mat tile;
+                if (i + y_stride < img.rows && j + x_stride < img.cols)
+                {
+                    tile = img(Rect(j,i,x_stride-1,y_stride-1)).clone();
+                }
+                else if (i + y_stride < img.rows)
+                {
+                    tile = img(Rect(j,i,img.cols-j-1,y_stride-1)).clone();
+                }
+                else if (j + x_stride < img.cols)
+                {
+                    tile = img(Rect(j,i,x_stride-1,img.rows-i-1)).clone();
+                }
+                else
+                {
+                    tile = img(Rect(j,i,img.cols-j-1,img.rows-i-1)).clone();
+                }
+                stack<Rect> result = analyze_image(model, config, tile);
+                while(!result.empty())
+                {
+                    Rect local_loc = result.top();
+                    result.pop();
+                    Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
+                    final_result.push(global_loc);
+                    //draw result
+                    rectangle(output_img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
+                }
             }
         }
+        cout << "Processing image complete. Writing output to output.txt... ";
+        FILE* output_file = fopen("output.txt", "a");
+        while(!final_result.empty() && output_file != NULL)
+        {
+            Rect bbox = final_result.top();
+            final_result.pop();
+            int index;
+            sscanf(images[k].c_str(), "%i", &index);
+            fprintf(output_file, "%u\t%u\t%u\t%u\t%u\n", index, bbox.x, bbox.y, bbox.width, bbox.height);
+        }
+        fclose(output_file);
+        cout << "[DONE]" << endl;
+        namedWindow("Result window", WINDOW_AUTOSIZE);// Create a window for display.
+        imshow("Result window", output_img);
+        waitKey(2500);
     }
-    //analyze_image(model, config, img);
-    //analyze_video(model, config, cap);
-    namedWindow("Result window", WINDOW_AUTOSIZE);// Create a window for display.
-    imshow("Result window", img);
-    waitKey(2500);
     
     return 0;
 }
