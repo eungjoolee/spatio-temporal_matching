@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsource_sink_test_graph.a  CMakeFiles/source_sink_test_graph.dir/source_sink_graph.cpp.o
+/usr/bin/ranlib libsource_sink_test_graph.a

@@ -1,0 +1,9 @@
+Test count: 3; test failures: 3; error output mismatches: 3
+Test failures: 
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test01
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test02
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03
+Error comparison failures: 
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test01
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test02
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03

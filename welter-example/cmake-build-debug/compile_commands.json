@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/cmake-build-debug/test/test03",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   -I/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors -I/Users/xiejing/welter/lang/cpp/src/gems/actors/common -I/Users/xiejing/welter/lang/cpp/src/gems/actors/basic -I/Users/xiejing/welter/lang/cpp/src/tools/graph -I/Users/xiejing/welter/lang/c/src/tools/runtime -I/Users/xiejing/welter/lang/c/src/gems/actors/common -I/Users/xiejing/welter/lang/c/src/gems/edges -I/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph -I/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/util -isystem /usr/local/Cellar/opencv/4.5.0_5/include/opencv4  -fstack-protector -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15   -std=gnu++14 -o CMakeFiles/driver3.exe.dir/driver3.cpp.o -c /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03/driver3.cpp",
+  "file": "/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03/driver3.cpp"
+}
+]

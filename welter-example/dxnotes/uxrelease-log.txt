@@ -1,0 +1,26 @@
+uxrelease started on Mon Feb 22 15:11:57 EST 2021
+Ensuring that scripts within the whole tree are executable
+----------------------------
+Additional error details:
+----------------------------
+Contents of other details:
+dxrmcr: 0 carriage return character(s) removed from 'CMakeLists.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'README.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'CMakeLists.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'makeme'.
+dxrmcr: 0 carriage return character(s) removed from 'count_bright_pixels.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'count_bright_pixels.h'.
+dxrmcr: 0 carriage return character(s) removed from 'file_sink.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'file_sink.h'.
+dxrmcr: 0 carriage return character(s) removed from 'file_source.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'file_source.h'.
+dxrmcr: 0 carriage return character(s) removed from 'welter_example_graph.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'welter_example_graph.h'.
+dxrmcr: 0 carriage return character(s) removed from 'CMakeLists.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'README.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'demo_count_bright_pixels.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'input.txt'.
+dxrmcr: 0 carriage return character(s) removed from 'makeme'.
+dxrmcr: 0 carriage return character(s) removed from 'runme'.
+welter-example distribution setup is finished:
+result is in /Users/ssb/home/profiles/shuvra/pkuser/dfw_user/dice_user/tmp/dxdist/welter-example

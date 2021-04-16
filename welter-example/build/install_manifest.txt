@@ -1,0 +1,6 @@
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./libcount_bright_pixels_src.a
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./demo_count_bright_pixels.exe
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./libsource_sink_test_graph.a
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./driver1.exe
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./driver2.exe
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/./driver3.exe

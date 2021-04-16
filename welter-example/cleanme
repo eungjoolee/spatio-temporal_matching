@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+cd src/
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+cd actors/
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+cd ../graph/
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+cd ../../demo
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+rm -rf *.exe
+
+cd ../test/test01
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+rm -rf *.exe
+cd ../test02
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+rm -rf *.exe
+cd ../test03
+rm -rf CMakeCache.txt CMakeFiles/ compile_commands.json \
+        Makefile cmake_install.cmake *.a
+rm -rf *.exe
+
+

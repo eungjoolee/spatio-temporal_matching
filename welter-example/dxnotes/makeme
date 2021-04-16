@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./uxrelease 1>out.txt 2>err.txt

@@ -1,0 +1,198 @@
+#!/usr/bin/env bash
+
+################################################################################
+# @ddblock_begin copyright
+#
+# Copyright (c) 1997-2021
+# Maryland DSPCAD Research Group, The University of Maryland at College Park 
+#
+# Permission is hereby granted, without written agreement and without
+# license or royalty fees, to use, copy, modify, and distribute this
+# software and its documentation for any purpose, provided that the above
+# copyright notice and the following two paragraphs appear in all copies
+# of this software.
+# 
+# IN NO EVENT SHALL THE UNIVERSITY OF MARYLAND BE LIABLE TO ANY PARTY
+# FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+# ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF
+# THE UNIVERSITY OF MARYLAND HAS BEEN ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+# 
+# THE UNIVERSITY OF MARYLAND SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE
+# PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF
+# MARYLAND HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+# ENHANCEMENTS, OR MODIFICATIONS.
+#
+# @ddblock_end copyright
+################################################################################
+
+# Create a distribution version of this package.
+# The root of the directory tree to distribute is taken as the parent
+# of the current working directory.
+
+# Usage: ./uxrelease 
+#
+# This script should be run from the (top level) dxnotes/ subdirectory of the
+# package being released.
+
+# To customize this script for a different package:
+# 1. Adapt the RHS of the assignment to the lxpackage variable
+# 2. Select the subdirectories to include in the list of calls to dxdist
+
+# Export definitions to subprocesses (needed for the filter function)
+set -a
+
+# The name of the package to be released
+lxpackage=welter-example
+
+function lxdisplay {
+echo $*
+echo $* >> "$lxlogfile"
+}
+
+# Distribute a single directory
+# Arg 1: the directory to distribute (base name only)
+# Arg 2: the source path of the directory to distribute
+# Arg 3: the destination path (where to deposit the copy of the directory)
+# Arg 4: the supplementary release filter to apply to the distributed 
+#        directory
+function lxdist {
+    local lxdir="$1"
+    local lxspath="$2"
+    local lxdpath="$3"
+    local lxfilter="$4"
+
+    if [ $# -ne 4 ]; then
+        echo "$FUNCNAME error: arg count"
+        return 1
+    fi
+    dxdist "$lxspath/$lxdir" "$lxdpath/$lxdir" "$lxfilter"
+    return $?
+}
+
+# Define customized filtering for this release. This filter is applied
+# recursively on every directory within the release tree.
+function lx_release_filter {
+    rm -r -f *.bak
+    rm -f *.swp
+    rm -r -f .svn
+    rm -r -f .gitignore
+
+    # DSPCAD-specific configuration files and utilities that are used for
+    # maintenance of the software and not intended to be included in releases.
+    rm -r -f dscconfig
+
+    # Clean up any intermediate project files if they exist
+    dlcclean
+}
+
+#start#
+lxitem=""
+lxprog="`basename $BASH_SOURCE`"
+lxdir=""
+
+if [ $# -ne 0 ]; then
+    echo $lxprog error: arg count
+    exit 1
+fi
+
+#define release-specific settings destination directory
+dxdist_dest="$UXTMP"/dxdist/"$lxpackage"
+dxdist_name="$lxpackage"
+
+# Set up the log files. The details files includes additional details 
+# that are usually not as interesting as what's in the main log file.  
+lxlogfile="uxrelease-log.txt"
+rm -f "$lxlogfile"
+lxdisplay uxrelease started on `date`
+touch "$lxlogfile"
+lxdetails="$UXTMP/uxrelease-details.txt"
+rm -f "$lxdetails"
+touch "$lxdetails"
+lxerrordetails="$UXTMP/uxrelease-error-details.txt"
+rm -f "$lxerrordetails"
+touch "$lxerrordetails"
+
+# Set up the destination directory
+dxpushd "$UXTMP"
+rm -r -f dxdist
+dxvalidate could not remove "$UXTMP"/dxdist
+mkdir dxdist
+cd dxdist
+mkdir "$lxpackage"
+dxpopd
+
+# Set up the source directory (root directory for the release)
+cd ..
+lxsource=`pwd`
+cd dxnotes
+
+################################################################################
+# Distribute selected directories one by one
+################################################################################
+
+# Consider whether or not to include the test directory.
+
+lxdir="data"
+lxdist "$lxdir" "$lxsource" "$dxdist_dest" "lx_release_filter"
+if [ $? -ne 0 ]; then
+    echo $lxprog error: distribution of $lxdir failed
+    exit 1
+fi
+
+lxdir="demo"
+lxdist "$lxdir" "$lxsource" "$dxdist_dest" "lx_release_filter"
+if [ $? -ne 0 ]; then
+    echo $lxprog error: distribution of $lxdir failed
+    exit 1
+fi
+
+lxdir="src"
+lxdist "$lxdir" "$lxsource" "$dxdist_dest" "lx_release_filter"
+if [ $? -ne 0 ]; then
+    echo $lxprog error: distribution of $lxdir failed
+    exit 1
+fi
+
+# Create the README.txt file and add the release date
+cp "$lxsource"/README.txt "$dxdist_dest"
+lxfile="$dxdist_dest"/README.txt
+echo >> "$lxfile"
+echo Release created on `date` >> "$lxfile"
+
+# Copy any other individual files
+cp "$lxsource/CMakeLists.txt" "$dxdist_dest"
+
+# Clean up the files (dos to unix format conversion).
+# Skip the data directory to avoid corrupting the image file.
+dxpushd "$dxdist_dest"
+dxdtud all 1>>"$lxdetails" 2>>"$lxerrordetails"
+cd src
+dxdtut all 1>>"$lxdetails" 2>>"$lxerrordetails"
+cd ../demo
+dxdtut all 1>>"$lxdetails" 2>>"$lxerrordetails"
+dxpopd
+
+# Ensuring that bash files are executable (the permissions may have
+# been changed by preceding operations, such as dxdtuf)
+lxdisplay Ensuring that scripts within the whole tree are executable
+dxpushd "$dxdist_dest"
+dxmxt ""
+dxpopd
+
+# Output other results to the log file
+echo ---------------------------- >> "$lxlogfile"
+echo Additional error details: >> "$lxlogfile"
+cat "$lxerrordetails" >> "$lxlogfile" 
+echo ---------------------------- >> "$lxlogfile"
+echo Contents of other details: >> "$lxlogfile"
+cat "$lxdetails" >> "$lxlogfile"
+
+# Summarize the status
+lxdisplay $dxdist_name distribution setup is finished: 
+lxdisplay result is in $dxdist_dest
+
+
+

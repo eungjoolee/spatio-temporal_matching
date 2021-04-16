@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="count_bright_pixels"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\;CMake Files\src\;CMake Files\demo\;CMake Files\test\;CMake Files\test\util\;CMake Files\test\test01\;CMake Files\test\test02\;CMake Files\test\test03\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="count_bright_pixels_src">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/libcount_bright_pixels_src.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 count_bright_pixels_src"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="count_bright_pixels_src/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/libcount_bright_pixels_src.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 count_bright_pixels_src/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="demo_count_bright_pixels.exe">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/demo_count_bright_pixels.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 demo_count_bright_pixels.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="demo_count_bright_pixels.exe/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/demo_count_bright_pixels.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 demo_count_bright_pixels.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/demo/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="source_sink_test_graph">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/libsource_sink_test_graph.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 source_sink_test_graph"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="source_sink_test_graph/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/libsource_sink_test_graph.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 source_sink_test_graph/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver1.exe">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/driver1.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 driver1.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver1.exe/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/driver1.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 driver1.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver2.exe">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/driver2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 driver2.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver2.exe/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/driver2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 driver2.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver3.exe">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/driver3.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 driver3.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="driver3.exe/fast">
+				<Option output="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/driver3.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/gems/actors/basic"/>
+					<Add directory="/Users/xiejing/welter/lang/cpp/src/tools/graph"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/tools/runtime"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/actors/common"/>
+					<Add directory="/Users/xiejing/welter/lang/c/src/gems/edges"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph"/>
+					<Add directory="/Users/xiejing/spatio-temporal_matching/welter-example/test/util"/>
+					<Add directory="/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 driver3.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/demo/demo_count_bright_pixels.cpp">
+			<Option target="demo_count_bright_pixels.exe"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.cpp">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.h">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_sink.cpp">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_sink.h">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_source.cpp">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_source.h">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/object_detection_tiling/object_detection.cpp">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/object_detection_tiling/object_detection.h">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.cpp">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.h">
+			<Option target="count_bright_pixels_src"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test01/driver1.cpp">
+			<Option target="driver1.exe"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test02/driver2.cpp">
+			<Option target="driver2.exe"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test03/driver3.cpp">
+			<Option target="driver3.exe"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.cpp">
+			<Option target="count_bright_pixels_src"/>
+			<Option target="source_sink_test_graph"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.h">
+			<Option target="count_bright_pixels_src"/>
+			<Option target="source_sink_test_graph"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/../../../../usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/../../../../usr/local/lib/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/demo/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\demo\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/util/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\util\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test01/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\test01\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test02/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\test02\"/>
+		</Unit>
+		<Unit filename="/Users/xiejing/spatio-temporal_matching/welter-example/test/test03/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\test03\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

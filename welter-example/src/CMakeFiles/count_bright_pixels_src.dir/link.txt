@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcount_bright_pixels_src.a  CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o CMakeFiles/count_bright_pixels_src.dir/graph/count_bright_pixels_graph.cpp.o
+/usr/bin/ranlib libcount_bright_pixels_src.a

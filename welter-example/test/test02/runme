@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Script to run this test
+
+./driver2.exe in.txt out.txt
+cat out.txt

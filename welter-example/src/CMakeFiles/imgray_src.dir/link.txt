@@ -1,0 +1,2 @@
+/usr/bin/ar qc libimgray_src.a  CMakeFiles/imgray_src.dir/actors/welt_cpp_imgray.cpp.o CMakeFiles/imgray_src.dir/graph/welt_cpp_imgray_graph.cpp.o
+/usr/bin/ranlib libimgray_src.a

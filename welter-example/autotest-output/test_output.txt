@@ -1,0 +1,28 @@
+Tests started on:
+Tue Feb 23 19:49:50 EST 2021
+-----------------------------------------------------
+Test result for:
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test01
+Files ../correct-output.txt and output.txt differ
+-----------------------------------------------------
+Error comparison result for: 
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test01
+Files ../expected-errors.txt and error_output.txt differ
+-----------------------------------------------------
+Test result for:
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test02
+Files ../correct-output.txt and output.txt differ
+-----------------------------------------------------
+Error comparison result for: 
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test02
+Files ../expected-errors.txt and error_output.txt differ
+-----------------------------------------------------
+Test result for:
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03
+Files ../correct-output.txt and output.txt differ
+-----------------------------------------------------
+Error comparison result for: 
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/test03
+Files ../expected-errors.txt and error_output.txt differ
+Tests completed on:
+Tue Feb 23 19:49:51 EST 2021
