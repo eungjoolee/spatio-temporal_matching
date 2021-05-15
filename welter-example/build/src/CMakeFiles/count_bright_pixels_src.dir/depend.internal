@@ -116,9 +116,9 @@ src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o
  /usr/local/Cellar/opencv/4.5.0_5/include/opencv4/opencv2/video/background_segm.hpp
  /usr/local/Cellar/opencv/4.5.0_5/include/opencv4/opencv2/video/tracking.hpp
  /usr/local/Cellar/opencv/4.5.0_5/include/opencv4/opencv2/videoio.hpp
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o
- /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.cpp
- /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.h
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o
+ /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.cpp
+ /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.h
  /Users/xiejing/welter/lang/c/src/gems/actors/common/welt_c_actor.h
  /Users/xiejing/welter/lang/c/src/gems/actors/common/welt_c_actor_context_type_common.h
  /Users/xiejing/welter/lang/c/src/gems/actors/common/welt_c_basic.h
@@ -456,7 +456,7 @@ src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o
  /usr/local/Cellar/opencv/4.5.0_5/include/opencv4/opencv2/video/tracking.hpp
  /usr/local/Cellar/opencv/4.5.0_5/include/opencv4/opencv2/videoio.hpp
 src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o
- ../src/actors/count_bright_pixels.h
+ ../src/actors/image_tile_partition.h
  ../src/actors/file_sink.h
  ../src/actors/file_source.h
  /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph/welter_example_graph.cpp

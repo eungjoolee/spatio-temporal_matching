@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-../src/actors/count_bright_pixels.h
+../src/actors/image_tile_partition.h
 welt_c_util.h
 ../src/actors/welt_c_util.h
 welt_c_fifo.h
@@ -64,13 +64,13 @@ opencv2/highgui.hpp
 opencv2/opencv.hpp
 -
 
-/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.cpp
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.cpp
 iostream
 -
-count_bright_pixels.h
-/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.h
+image_tile_partition.h
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.h
 
-/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.h
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.h
 welt_c_util.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/welt_c_util.h
 welt_c_fifo.h
@@ -165,8 +165,8 @@ file_sink.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph/file_sink.h
 welt_cpp_imread.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph/welt_cpp_imread.h
-count_bright_pixels.h
-/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph/count_bright_pixels.h
+image_tile_partition.h
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/graph/image_tile_partition.h
 
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/test/util/source_sink_graph.cpp
 iostream

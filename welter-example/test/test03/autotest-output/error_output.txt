@@ -1,2 +1,0 @@
-./runme: line 4: ./driver3.exe: No such file or directory
-cat: out.txt: No such file or directory

@@ -183,19 +183,6 @@ demo_count_bright_pixels.exe/fast:
 .PHONY : demo_count_bright_pixels.exe/fast
 
 #=============================================================================
-# Target rules for targets named source_sink_test_graph
-
-# Build rule for target.
-source_sink_test_graph: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 source_sink_test_graph
-.PHONY : source_sink_test_graph
-
-# fast build rule for target.
-source_sink_test_graph/fast:
-	$(MAKE) -f test/util/CMakeFiles/source_sink_test_graph.dir/build.make test/util/CMakeFiles/source_sink_test_graph.dir/build
-.PHONY : source_sink_test_graph/fast
-
-#=============================================================================
 # Target rules for targets named driver1.exe
 
 # Build rule for target.
@@ -207,32 +194,6 @@ driver1.exe: cmake_check_build_system
 driver1.exe/fast:
 	$(MAKE) -f test/test01/CMakeFiles/driver1.exe.dir/build.make test/test01/CMakeFiles/driver1.exe.dir/build
 .PHONY : driver1.exe/fast
-
-#=============================================================================
-# Target rules for targets named driver2.exe
-
-# Build rule for target.
-driver2.exe: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 driver2.exe
-.PHONY : driver2.exe
-
-# fast build rule for target.
-driver2.exe/fast:
-	$(MAKE) -f test/test02/CMakeFiles/driver2.exe.dir/build.make test/test02/CMakeFiles/driver2.exe.dir/build
-.PHONY : driver2.exe/fast
-
-#=============================================================================
-# Target rules for targets named driver3.exe
-
-# Build rule for target.
-driver3.exe: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 driver3.exe
-.PHONY : driver3.exe
-
-# fast build rule for target.
-driver3.exe/fast:
-	$(MAKE) -f test/test03/CMakeFiles/driver3.exe.dir/build.make test/test03/CMakeFiles/driver3.exe.dir/build
-.PHONY : driver3.exe/fast
 
 # Help Target
 help:
@@ -248,10 +209,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... count_bright_pixels_src"
 	@echo "... demo_count_bright_pixels.exe"
-	@echo "... source_sink_test_graph"
 	@echo "... driver1.exe"
-	@echo "... driver2.exe"
-	@echo "... driver3.exe"
 .PHONY : help
 
 

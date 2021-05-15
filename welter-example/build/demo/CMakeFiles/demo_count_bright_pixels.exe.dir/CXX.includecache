@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-../src/actors/count_bright_pixels.h
+../src/actors/image_tile_partition.h
 welt_c_util.h
 ../src/actors/welt_c_util.h
 welt_c_fifo.h
@@ -81,8 +81,8 @@ file_sink.h
 ../src/graph/file_sink.h
 welt_cpp_imread.h
 ../src/graph/welt_cpp_imread.h
-count_bright_pixels.h
-../src/graph/count_bright_pixels.h
+image_tile_partition.h
+../src/graph/image_tile_partition.h
 
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/demo_count_bright_pixels.cpp
 stdio.h
@@ -105,8 +105,8 @@ file_sink.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/file_sink.h
 file_source.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/file_source.h
-count_bright_pixels.h
-/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/count_bright_pixels.h
+image_tile_partition.h
+/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/image_tile_partition.h
 welt_cpp_imread.h
 /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/demo/welt_cpp_imread.h
 welt_cpp_graph.h

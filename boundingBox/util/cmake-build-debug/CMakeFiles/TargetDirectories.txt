@@ -1,0 +1,7 @@
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/install/local.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/welt_cpp_im_graph_driver.exe.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/install/strip.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/install.dir
+/Users/xiejing/spatio-temporal_matching/boundingBox/util/cmake-build-debug/CMakeFiles/list_install_components.dir

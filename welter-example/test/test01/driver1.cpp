@@ -24,21 +24,33 @@ ENHANCEMENTS, OR MODIFICATIONS.
 extern "C" {
 #include "welt_c_basic.h"
 #include "welt_c_fifo.h"
-#include "welt_c_util.h"
-
 }
+
 #include "welt_cpp_actor.h"
 #include "welt_cpp_graph.h"
-#include "file_source.h"
-#include "file_sink.h"
-#include "source_sink_graph.h"
+#include "welt_cpp_util.h"
+#include "image_tile_partition.h"
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
+using namespace std;
+
+#define FIFO_IN   (0)
+#define FIFO_OUT (1)
+#define FIFO_OUT2 (2)
+#define BUFFER_CAPACITY (1024)
+
+#define READ_ACTOR (0)
 
 int main(int argc, char **argv) {
     char *input_filename;
     char *output_filename;
-    int token_size = sizeof(int);
     int i = 0;
-    int arg_count = 3;
+    int arg_count = 1;
 
     /* Check program usage. */
     if (argc != arg_count) {
@@ -50,22 +62,28 @@ int main(int argc, char **argv) {
     /* Open the input and output file(s). */
     i = 1;
     /* Open input and output files. */
-    input_filename = argv[i++];
-    output_filename = argv[i++];
+//    input_filename = argv[i++];
+//    output_filename = argv[i++];
 
-    /* Generate new count_bright_pixels_graph class */
-    auto* test_src_sink_graph =
-            new source_sink_graph(input_filename, output_filename);
+    auto token_size = sizeof(Mat*);
+    Mat img_in = imread("/Users/xiejing/learnopencv/YOLOv3-Training-Snowman"
+                      "-Detector/darknet/data/dog.jpg");
+    welt_c_fifo_pointer fifo_in = ((welt_c_fifo_pointer)welt_c_fifo_new(
+            BUFFER_CAPACITY, token_size, FIFO_IN));
+    welt_c_fifo_pointer fifo_out1 = ((welt_c_fifo_pointer)welt_c_fifo_new(
+            BUFFER_CAPACITY, token_size, FIFO_OUT));
+    welt_c_fifo_pointer fifo_out2 = ((welt_c_fifo_pointer)welt_c_fifo_new(
+            BUFFER_CAPACITY, token_size, FIFO_OUT2));
 
-    test_src_sink_graph->setIters(3);
+    auto img_in_ptr = &img_in;
+    welt_c_fifo_write(fifo_in, &img_in_ptr);
 
-    /* Execute the graph. */
-    test_src_sink_graph->scheduler();
+    auto det_actor = new image_tile_partition(fifo_in, fifo_out1);
 
-    /* Terminate graph */
-    delete test_src_sink_graph;
+    if(!welt_cpp_util_guarded_execution(det_actor, (char*)"det actor")){
+        cerr << "enable function test failed" << endl;
+        exit(EXIT_FAILURE);
+    }
 
     return 0;
 }
-
-

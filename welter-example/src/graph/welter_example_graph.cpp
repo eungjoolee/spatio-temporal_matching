@@ -55,21 +55,17 @@ welter_example_graph::welter_example_graph
     fifos.reserve(fifo_count);
 
     /* create new fifos and put them into the graph class */
-    fifos[FIFO_IMREAD_COUNT_BRIGHT_PIXELS] =
+    fifos[FIFO_READ_DET] =
             ((welt_c_fifo_pointer)welt_c_fifo_new(
-            BUFFER_CAPACITY, token_size,
-            FIFO_IMREAD_COUNT_BRIGHT_PIXELS));
+                    BUFFER_CAPACITY, token_size,
+                    FIFO_READ_DET));
 
     /* Set the token size according to the token type */
-    token_size = sizeof(int);
-    fifos[FIFO_FILESRC_COUNT_BRIGHT_PIXELS] =
+//    token_size = sizeof(int);
+    fifos[FIFO_DET_SHOW] =
             ((welt_c_fifo_pointer)welt_c_fifo_new(
-            BUFFER_CAPACITY, token_size,
-            FIFO_FILESRC_COUNT_BRIGHT_PIXELS));
-    fifos[FIFO_COUNT_BRIGHT_PIXELS_FILESINK] =
-            ((welt_c_fifo_pointer)welt_c_fifo_new(
-            BUFFER_CAPACITY, token_size,
-            FIFO_COUNT_BRIGHT_PIXELS_FILESINK));
+                    BUFFER_CAPACITY, token_size,
+                    FIFO_DET_SHOW));
 
     /***************************************************************************
     Create actors in the actors vector and put descriptions
@@ -79,29 +75,23 @@ welter_example_graph::welter_example_graph
     actors.reserve(actor_count);
     descriptors.reserve(actor_count);
     actors[ACTOR_IMREAD]=(new welt_cpp_imread(
-            fifos[FIFO_IMREAD_COUNT_BRIGHT_PIXELS],img_file,
+            fifos[FIFO_READ_DET], img_file,
             ACTOR_IMREAD));
     descriptors[ACTOR_IMREAD] =
             ((char*)"actor img read");
 
-    actors[ACTOR_FILESRC] = (new file_source(
-            fifos[FIFO_FILESRC_COUNT_BRIGHT_PIXELS],
-            input_file));
-    descriptors[ACTOR_FILESRC] =
-            ((char*)"actor file source");
-
-    actors[ACTOR_COUNT_BRIGHT_PIXELS] =
-            (new count_bright_pixels(
-            fifos[FIFO_IMREAD_COUNT_BRIGHT_PIXELS],
-            fifos[FIFO_FILESRC_COUNT_BRIGHT_PIXELS],
+    actors[ACTOR_DET] =
+            (new image_tile_detection(
+            fifos[FIFO_READ_DET],
+            fifos[FIFO_DET_SHOW],
             fifos[FIFO_COUNT_BRIGHT_PIXELS_FILESINK]));
-    descriptors[ACTOR_COUNT_BRIGHT_PIXELS] =
+    descriptors[ACTOR_DET] =
             ((char*)"actor CBP");
 
-    actors[ACTOR_FILESINK]= (new file_sink(
+    actors[ACTOR_IMSHOW]= (new file_sink(
             fifos[FIFO_COUNT_BRIGHT_PIXELS_FILESINK],
             output_file));
-    descriptors[ACTOR_FILESINK] =
+    descriptors[ACTOR_IMSHOW] =
             ((char*)"actor file sink");
 }
 
@@ -118,9 +108,8 @@ void welter_example_graph::scheduler() {
     */
     for (iter=0; iter<getIters(); iter++) {
         actors[ACTOR_IMREAD]->invoke();
-        actors[ACTOR_FILESRC]->invoke();
-        actors[ACTOR_COUNT_BRIGHT_PIXELS]->invoke();
-        actors[ACTOR_FILESINK]->invoke();
+        actors[ACTOR_DET]->invoke();
+        actors[ACTOR_IMSHOW]->invoke();
     }
 
     for (i=0; i<ACTOR_COUNT; i++) {
@@ -130,9 +119,6 @@ void welter_example_graph::scheduler() {
 
 void welter_example_graph::setIters(int num_iter) {
     iterations = num_iter;
-}
-int welter_example_graph::getIters() {
-    return iterations;
 }
 
 /* destructor */

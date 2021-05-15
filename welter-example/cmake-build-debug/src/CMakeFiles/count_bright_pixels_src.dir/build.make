@@ -57,18 +57,18 @@ include src/CMakeFiles/count_bright_pixels_src.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/CMakeFiles/count_bright_pixels_src.dir/flags.make
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o: ../src/actors/count_bright_pixels.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.cpp
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o: ../src/actors/image_tile_partition.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_partition.cpp
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.cpp > CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_partition.cpp > CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_partition.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s
 
 src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
 src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o: ../src/actors/file_source.cpp
@@ -96,35 +96,9 @@ src/CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.s"
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_sink.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.s
 
-src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
-src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o: ../src/graph/welter_example_graph.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.cpp
-
-src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.i"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.cpp > CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.i
-
-src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.s"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.cpp -o CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.s
-
-src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
-src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o: ../test/util/source_sink_graph.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.cpp
-
-src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.i"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.cpp > CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.i
-
-src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s"
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.cpp -o CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s
-
 src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
 src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o: ../src/actors/object_detection_tiling/object_detection.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o"
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/object_detection_tiling/object_detection.cpp
 
 src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.i: cmake_force
@@ -135,27 +109,38 @@ src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.s"
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/object_detection_tiling/object_detection.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.s
 
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o: ../src/actors/image_tile_det.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o -c /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_det.cpp
+
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.i"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_det.cpp > CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.i
+
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.s"
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_det.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.s
+
 # Object files for target count_bright_pixels_src
 count_bright_pixels_src_OBJECTS = \
-"CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o" \
+"CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o" \
 "CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o" \
 "CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o" \
-"CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o" \
-"CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o" \
-"CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o"
+"CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o" \
+"CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o"
 
 # External object files for target count_bright_pixels_src
 count_bright_pixels_src_EXTERNAL_OBJECTS =
 
-src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o
+src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o
-src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o
-src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o
+src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/build.make
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libcount_bright_pixels_src.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libcount_bright_pixels_src.a"
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && $(CMAKE_COMMAND) -P CMakeFiles/count_bright_pixels_src.dir/cmake_clean_target.cmake
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/count_bright_pixels_src.dir/link.txt --verbose=$(VERBOSE)
 

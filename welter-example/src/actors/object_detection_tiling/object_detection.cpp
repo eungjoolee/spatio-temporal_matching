@@ -179,7 +179,7 @@ stack<Rect> analyze_image(std::string model, std::string config, Mat img)
     
     namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
     imshow("Display window", img);
-    waitKey(2500);
+    waitKey(250);
     return res;
 }
 

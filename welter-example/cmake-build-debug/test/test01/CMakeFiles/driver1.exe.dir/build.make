@@ -114,7 +114,6 @@ test/test01/driver1.exe: /usr/local/lib/libopencv_xfeatures2d.4.5.0.dylib
 test/test01/driver1.exe: /usr/local/lib/libopencv_xobjdetect.4.5.0.dylib
 test/test01/driver1.exe: /usr/local/lib/libopencv_xphoto.4.5.0.dylib
 test/test01/driver1.exe: src/libcount_bright_pixels_src.a
-test/test01/driver1.exe: test/util/libsource_sink_test_graph.a
 test/test01/driver1.exe: /usr/local/lib/libopencv_highgui.4.5.0.dylib
 test/test01/driver1.exe: /usr/local/lib/libopencv_shape.4.5.0.dylib
 test/test01/driver1.exe: /usr/local/lib/libopencv_datasets.4.5.0.dylib

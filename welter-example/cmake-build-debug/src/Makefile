@@ -171,60 +171,6 @@ count_bright_pixels_src/fast:
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/build
 .PHONY : count_bright_pixels_src/fast
 
-__/test/util/source_sink_graph.o: __/test/util/source_sink_graph.cpp.o
-
-.PHONY : __/test/util/source_sink_graph.o
-
-# target to build an object file
-__/test/util/source_sink_graph.cpp.o:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o
-.PHONY : __/test/util/source_sink_graph.cpp.o
-
-__/test/util/source_sink_graph.i: __/test/util/source_sink_graph.cpp.i
-
-.PHONY : __/test/util/source_sink_graph.i
-
-# target to preprocess a source file
-__/test/util/source_sink_graph.cpp.i:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.i
-.PHONY : __/test/util/source_sink_graph.cpp.i
-
-__/test/util/source_sink_graph.s: __/test/util/source_sink_graph.cpp.s
-
-.PHONY : __/test/util/source_sink_graph.s
-
-# target to generate assembly for a file
-__/test/util/source_sink_graph.cpp.s:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s
-.PHONY : __/test/util/source_sink_graph.cpp.s
-
-actors/count_bright_pixels.o: actors/count_bright_pixels.cpp.o
-
-.PHONY : actors/count_bright_pixels.o
-
-# target to build an object file
-actors/count_bright_pixels.cpp.o:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o
-.PHONY : actors/count_bright_pixels.cpp.o
-
-actors/count_bright_pixels.i: actors/count_bright_pixels.cpp.i
-
-.PHONY : actors/count_bright_pixels.i
-
-# target to preprocess a source file
-actors/count_bright_pixels.cpp.i:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i
-.PHONY : actors/count_bright_pixels.cpp.i
-
-actors/count_bright_pixels.s: actors/count_bright_pixels.cpp.s
-
-.PHONY : actors/count_bright_pixels.s
-
-# target to generate assembly for a file
-actors/count_bright_pixels.cpp.s:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s
-.PHONY : actors/count_bright_pixels.cpp.s
-
 actors/file_sink.o: actors/file_sink.cpp.o
 
 .PHONY : actors/file_sink.o
@@ -279,6 +225,60 @@ actors/file_source.cpp.s:
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.s
 .PHONY : actors/file_source.cpp.s
 
+actors/image_tile_det.o: actors/image_tile_det.cpp.o
+
+.PHONY : actors/image_tile_det.o
+
+# target to build an object file
+actors/image_tile_det.cpp.o:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o
+.PHONY : actors/image_tile_det.cpp.o
+
+actors/image_tile_det.i: actors/image_tile_det.cpp.i
+
+.PHONY : actors/image_tile_det.i
+
+# target to preprocess a source file
+actors/image_tile_det.cpp.i:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.i
+.PHONY : actors/image_tile_det.cpp.i
+
+actors/image_tile_det.s: actors/image_tile_det.cpp.s
+
+.PHONY : actors/image_tile_det.s
+
+# target to generate assembly for a file
+actors/image_tile_det.cpp.s:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.s
+.PHONY : actors/image_tile_det.cpp.s
+
+actors/image_tile_partition.o: actors/image_tile_partition.cpp.o
+
+.PHONY : actors/image_tile_partition.o
+
+# target to build an object file
+actors/image_tile_partition.cpp.o:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o
+.PHONY : actors/image_tile_partition.cpp.o
+
+actors/image_tile_partition.i: actors/image_tile_partition.cpp.i
+
+.PHONY : actors/image_tile_partition.i
+
+# target to preprocess a source file
+actors/image_tile_partition.cpp.i:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i
+.PHONY : actors/image_tile_partition.cpp.i
+
+actors/image_tile_partition.s: actors/image_tile_partition.cpp.s
+
+.PHONY : actors/image_tile_partition.s
+
+# target to generate assembly for a file
+actors/image_tile_partition.cpp.s:
+	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s
+.PHONY : actors/image_tile_partition.cpp.s
+
 actors/object_detection_tiling/object_detection.o: actors/object_detection_tiling/object_detection.cpp.o
 
 .PHONY : actors/object_detection_tiling/object_detection.o
@@ -306,33 +306,6 @@ actors/object_detection_tiling/object_detection.cpp.s:
 	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.s
 .PHONY : actors/object_detection_tiling/object_detection.cpp.s
 
-graph/welter_example_graph.o: graph/welter_example_graph.cpp.o
-
-.PHONY : graph/welter_example_graph.o
-
-# target to build an object file
-graph/welter_example_graph.cpp.o:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o
-.PHONY : graph/welter_example_graph.cpp.o
-
-graph/welter_example_graph.i: graph/welter_example_graph.cpp.i
-
-.PHONY : graph/welter_example_graph.i
-
-# target to preprocess a source file
-graph/welter_example_graph.cpp.i:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.i
-.PHONY : graph/welter_example_graph.cpp.i
-
-graph/welter_example_graph.s: graph/welter_example_graph.cpp.s
-
-.PHONY : graph/welter_example_graph.s
-
-# target to generate assembly for a file
-graph/welter_example_graph.cpp.s:
-	cd /Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug && $(MAKE) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.s
-.PHONY : graph/welter_example_graph.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -346,24 +319,21 @@ help:
 	@echo "... count_bright_pixels_src"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... __/test/util/source_sink_graph.o"
-	@echo "... __/test/util/source_sink_graph.i"
-	@echo "... __/test/util/source_sink_graph.s"
-	@echo "... actors/count_bright_pixels.o"
-	@echo "... actors/count_bright_pixels.i"
-	@echo "... actors/count_bright_pixels.s"
 	@echo "... actors/file_sink.o"
 	@echo "... actors/file_sink.i"
 	@echo "... actors/file_sink.s"
 	@echo "... actors/file_source.o"
 	@echo "... actors/file_source.i"
 	@echo "... actors/file_source.s"
+	@echo "... actors/image_tile_det.o"
+	@echo "... actors/image_tile_det.i"
+	@echo "... actors/image_tile_det.s"
+	@echo "... actors/image_tile_partition.o"
+	@echo "... actors/image_tile_partition.i"
+	@echo "... actors/image_tile_partition.s"
 	@echo "... actors/object_detection_tiling/object_detection.o"
 	@echo "... actors/object_detection_tiling/object_detection.i"
 	@echo "... actors/object_detection_tiling/object_detection.s"
-	@echo "... graph/welter_example_graph.o"
-	@echo "... graph/welter_example_graph.i"
-	@echo "... graph/welter_example_graph.s"
 .PHONY : help
 
 

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+################################################################################
+# @ddblock_begin copyright
+#
+# Copyright (c) 1997-2020
+# Maryland DSPCAD Research Group, The University of Maryland at College Park 
+# All rights reserved.
+
+# IN NO EVENT SHALL THE UNIVERSITY OF MARYLAND BE LIABLE TO ANY PARTY
+# FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+# ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF
+# THE UNIVERSITY OF MARYLAND HAS BEEN ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+#
+# THE UNIVERSITY OF MARYLAND SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE
+# PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF
+# MARYLAND HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+# ENHANCEMENTS, OR MODIFICATIONS.
+# 
+# @ddblock_end copyright
+################################################################################
+
+# Script to configure this project
+
+dlcppincludepath="-I. -I$UXWELTERC/src/apps/basic \
+-I$UXWELTERC/src/gems/actors/basic \
+-I$UXWELTERC/src/tools/graph \
+-I$UXWELTERC/src/gems/edges/basic -I$UXWELTERC/src/gems/edges/common \
+-I$UXWELTERC/src/gems/actors/common \
+-I$UXWELTERC/src/tools/runtime \
+-I$UXWELTER/exp/lang/cpp/src/gems/actors/basic \
+-I$UXWELTER/exp/lang/cpp/src/gems/actors/common \
+-I$UXWELTER/exp/lang/cpp/src/tools/runtime \
+-I$UXWELTER/exp/lang/cpp/src/tools/graph \
+-I$UXWELTER/exp/lang/cpp/src/apps/basic"
+dlcppmiscflags=""
+dlcpplibs="$WELTERCGEN/lide_c_app_basic.a \
+$WELTERCGEN/lide_c_edges_basic.a \
+$WELTERCGEN/lide_c_actors_basic.a \
+$WELTERCGEN/lide_c_actors_common.a \
+$WELTERCGEN/lide_c_graph_common.a \
+$WELTERCGEN/lide_c_runtime.a \
+$UXWELTER/exp/lang/cpp/src/tools/runtime/welt_cpp_runtime.a \
+$UXWELTER/exp/lang/cpp/src/gems/actors/basic/welt_cpp_actors_basic.a \
+$UXWELTER/exp/lang/cpp/src/apps/basic/welt_cpp_app_basic.a \
+-lopencv_videoio -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui \
+-lopencv_ml -lopencv_video -lopencv_core -lstdc++  -lopencv_features2d"
+dlcpptargetfile="welt_cpp_im_graph_driver.exe"
+dlcppinstalldir=""
+dlcppobjs="welt_cpp_im_graph_driver.o"
+dlcppverbose=""

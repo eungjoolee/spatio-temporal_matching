@@ -1,0 +1,94 @@
+\hypertarget{class_bounding__box__pair}{}\doxysection{Bounding\+\_\+box\+\_\+pair Class Reference}
+\label{class_bounding__box__pair}\index{Bounding\_box\_pair@{Bounding\_box\_pair}}
+
+
+{\ttfamily \#include $<$Bounding\+\_\+box\+\_\+pair.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bounding__box__pair_ad3f1287b9151fa89bde5f9bae5238de4}\label{class_bounding__box__pair_ad3f1287b9151fa89bde5f9bae5238de4}} 
+{\bfseries Bounding\+\_\+box\+\_\+pair} (\mbox{\hyperlink{classobj_data}{obj\+Data}} $\ast$dataA, \mbox{\hyperlink{classobj_data}{obj\+Data}} $\ast$dataB)
+\item 
+\mbox{\Hypertarget{class_bounding__box__pair_af57e208938e9aa881050f7c5d57411de}\label{class_bounding__box__pair_af57e208938e9aa881050f7c5d57411de}} 
+bool {\bfseries update} (\mbox{\hyperlink{classobj_data}{obj\+Data}} data\+In)
+\item 
+bool \mbox{\hyperlink{class_bounding__box__pair_a5c28ca8680ef3300d534fccf515d5014}{compute}} ()
+\item 
+double \mbox{\hyperlink{class_bounding__box__pair_a5fc78dccd4b3621581f15b3fcd796842}{ioU}} (\mbox{\hyperlink{struct_point}{Point}} l1, \mbox{\hyperlink{struct_point}{Point}} r1, \mbox{\hyperlink{struct_point}{Point}} l2, \mbox{\hyperlink{struct_point}{Point}} r2)
+\item 
+bool \mbox{\hyperlink{class_bounding__box__pair_ae8edcc1f58b04363202a6a676c8b2cae}{do\+Overlap}} (\mbox{\hyperlink{struct_point}{Point}} l1, \mbox{\hyperlink{struct_point}{Point}} r1, \mbox{\hyperlink{struct_point}{Point}} l2, \mbox{\hyperlink{struct_point}{Point}} r2)
+\item 
+\mbox{\Hypertarget{class_bounding__box__pair_a3f2d616bce9dc3ba85443b1482be8b17}\label{class_bounding__box__pair_a3f2d616bce9dc3ba85443b1482be8b17}} 
+void {\bfseries output} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bounding__box__pair_af136e404f8bf18aedddb6710ccfedf71}\label{class_bounding__box__pair_af136e404f8bf18aedddb6710ccfedf71}} 
+deque$<$ \mbox{\hyperlink{classobj_data}{obj\+Data}} $\ast$ $>$ {\bfseries data\+Vec}
+\item 
+\mbox{\Hypertarget{class_bounding__box__pair_a942d633f2aea9ed085a82085afcbbf33}\label{class_bounding__box__pair_a942d633f2aea9ed085a82085afcbbf33}} 
+double {\bfseries result}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class of bounding box pairs. There are exactly two \mbox{\hyperlink{classobj_data}{obj\+Data}} in a \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}}. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_bounding__box__pair_a5c28ca8680ef3300d534fccf515d5014}\label{class_bounding__box__pair_a5c28ca8680ef3300d534fccf515d5014}} 
+\index{Bounding\_box\_pair@{Bounding\_box\_pair}!compute@{compute}}
+\index{compute@{compute}!Bounding\_box\_pair@{Bounding\_box\_pair}}
+\doxysubsubsection{\texorpdfstring{compute()}{compute()}}
+{\footnotesize\ttfamily bool Bounding\+\_\+box\+\_\+pair\+::compute (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Method storing the IoU value of two bounding boxes in a pair \begin{DoxyReturn}{Returns}
+If compute is successful. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_bounding__box__pair_ae8edcc1f58b04363202a6a676c8b2cae}\label{class_bounding__box__pair_ae8edcc1f58b04363202a6a676c8b2cae}} 
+\index{Bounding\_box\_pair@{Bounding\_box\_pair}!doOverlap@{doOverlap}}
+\index{doOverlap@{doOverlap}!Bounding\_box\_pair@{Bounding\_box\_pair}}
+\doxysubsubsection{\texorpdfstring{doOverlap()}{doOverlap()}}
+{\footnotesize\ttfamily bool Bounding\+\_\+box\+\_\+pair\+::do\+Overlap (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_point}{Point}}}]{l1,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{r1,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{l2,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{r2 }\end{DoxyParamCaption})}
+
+Check if the two bounding boxes has overlapping area. 
+\begin{DoxyParams}{Parameters}
+{\em l1} & is the bottom left point \\
+\hline
+{\em r1} & is the bottom right point \\
+\hline
+{\em l2} & is the upper left point \\
+\hline
+{\em r2} & is the upper right point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+boolean value indicating if overlap 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_bounding__box__pair_a5fc78dccd4b3621581f15b3fcd796842}\label{class_bounding__box__pair_a5fc78dccd4b3621581f15b3fcd796842}} 
+\index{Bounding\_box\_pair@{Bounding\_box\_pair}!ioU@{ioU}}
+\index{ioU@{ioU}!Bounding\_box\_pair@{Bounding\_box\_pair}}
+\doxysubsubsection{\texorpdfstring{ioU()}{ioU()}}
+{\footnotesize\ttfamily double Bounding\+\_\+box\+\_\+pair\+::ioU (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_point}{Point}}}]{l1,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{r1,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{l2,  }\item[{\mbox{\hyperlink{struct_point}{Point}}}]{r2 }\end{DoxyParamCaption})}
+
+Method computing the IoU value of two bounding boxes in a pair 
+\begin{DoxyParams}{Parameters}
+{\em l1} & is the bottom left point \\
+\hline
+{\em r1} & is the bottom right point \\
+\hline
+{\em l2} & is the upper left point \\
+\hline
+{\em r2} & is the upper right point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The value of IoU 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Bounding\+\_\+box\+\_\+pair.\+h\item 
+Bounding\+\_\+box\+\_\+pair.\+cpp\end{DoxyCompactItemize}

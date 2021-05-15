@@ -1,4 +1,4 @@
-project(count_bright_pixels)
+project(yolotiledet)
 cmake_minimum_required(VERSION 2.8)
 find_package(OpenCV QUIET)
 set(CMAKE_CXX_STANDARD 14)

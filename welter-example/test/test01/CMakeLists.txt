@@ -1,7 +1,17 @@
 INCLUDE_DIRECTORIES(
-		${PROJECT_SOURCE_DIR}/src/actors
-		${PROJECT_SOURCE_DIR}/src/graph
-		${PROJECT_SOURCE_DIR}/test/util)
+		$ENV{UXWELTER}/lang/c/src/gems/actors/basic
+		$ENV{UXWELTER}/lang/c/src/gems/actors/common
+		$ENV{UXWELTER}/lang/c/src/gems/edges
+		$ENV{UXWELTER}/lang/c/src/tools/runtime
+		$ENV{UXWELTER}/lang/c/src/tools/graph
+
+		$ENV{UXWELTER}/lang/cpp/src/apps/basic
+		$ENV{UXWELTER}/lang/cpp/src/gems/actors/common
+		$ENV{UXWELTER}/lang/cpp/src/gems/actors/basic
+		$ENV{UXWELTER}/lang/cpp/src/tools/graph
+		$ENV{UXWELTER}/lang/cpp/src/tools/runtime
+		$ENV{UXWELTER}/lang/cpp/src/utils
+)
 
 LINK_DIRECTORIES(
 		$ENV{WELTERGEN}
@@ -14,7 +24,7 @@ TARGET_LINK_LIBRARIES(
 		driver1.exe
 		${OpenCV_LIBS}
 		count_bright_pixels_src
-		source_sink_test_graph
+#		source_sink_test_graph
 		welt_c_edges
 		welt_c_runtime
 		welt_cpp_actors_basic

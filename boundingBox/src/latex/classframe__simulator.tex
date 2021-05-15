@@ -1,0 +1,101 @@
+\hypertarget{classframe__simulator}{}\doxysection{frame\+\_\+simulator Class Reference}
+\label{classframe__simulator}\index{frame\_simulator@{frame\_simulator}}
+
+
+{\ttfamily \#include $<$frame\+\_\+simulator.\+h$>$}
+
+Inheritance diagram for frame\+\_\+simulator\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classframe__simulator}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classframe__simulator_ac4197a8df08318109fd0610678863cfb}{frame\+\_\+simulator}} (char $\ast$file, int max\+\_\+thread\+\_\+num)
+\item 
+int \mbox{\hyperlink{classframe__simulator_a10114d6b7f001c65ca723fbd40476773}{enable}} () override
+\item 
+void \mbox{\hyperlink{classframe__simulator_a6473fef1c08f46f68acfcadcaf3f652a}{invoke}} () override
+\item 
+void \mbox{\hyperlink{classframe__simulator_ac631b2cdb2c623c66674c50a87b59563}{reset}} () override
+\item 
+void \mbox{\hyperlink{classframe__simulator_a63f20b5440f67989f748c819cfc96c5b}{connect}} (welt\+\_\+cpp\+\_\+graph $\ast$graph) override
+\item 
+void \mbox{\hyperlink{classframe__simulator_a177cd9878ab7fa53ddc5343b944579b6}{frame\+\_\+reader}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+There is no actual image/stream frames go into the actor. Bounding boxes of a frame is read from a txt file instead. Or they could be the output of the predecessor actor and read from fifos. It’s a C\+F\+DF (core functional dataflow) actor so that it has three modes--update mode, process mode, and output mode.
+
+Output\+: object bounding boxes info (bounding box id, width, height, coordinate x, y) of the frames will be written on to the fifo. Please note one frame might have more than one object bounding boxes. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classframe__simulator_ac4197a8df08318109fd0610678863cfb}\label{classframe__simulator_ac4197a8df08318109fd0610678863cfb}} 
+\index{frame\_simulator@{frame\_simulator}!frame\_simulator@{frame\_simulator}}
+\index{frame\_simulator@{frame\_simulator}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{frame\_simulator()}{frame\_simulator()}}
+{\footnotesize\ttfamily frame\+\_\+simulator\+::frame\+\_\+simulator (\begin{DoxyParamCaption}\item[{char $\ast$}]{file,  }\item[{int}]{max\+\_\+thread\+\_\+num }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & The path of the input txt file containing object bounding boxes info (bounding box id, width, height, coordinate x, y) of the frames. Please note each frame might have more than one object bounding boxes. \\
+\hline
+{\em max\+\_\+thread\+\_\+num} & The maximum number of available thread spared to execute the program. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classframe__simulator_a63f20b5440f67989f748c819cfc96c5b}\label{classframe__simulator_a63f20b5440f67989f748c819cfc96c5b}} 
+\index{frame\_simulator@{frame\_simulator}!connect@{connect}}
+\index{connect@{connect}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{connect()}{connect()}}
+{\footnotesize\ttfamily void frame\+\_\+simulator\+::connect (\begin{DoxyParamCaption}\item[{welt\+\_\+cpp\+\_\+graph $\ast$}]{graph }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+Override the connect abstract method in welter 
+\begin{DoxyParams}{Parameters}
+{\em graph} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classframe__simulator_a10114d6b7f001c65ca723fbd40476773}\label{classframe__simulator_a10114d6b7f001c65ca723fbd40476773}} 
+\index{frame\_simulator@{frame\_simulator}!enable@{enable}}
+\index{enable@{enable}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{enable()}{enable()}}
+{\footnotesize\ttfamily int frame\+\_\+simulator\+::enable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+Override the enable abstract method in welter Check if there are enough tokens to fire the actor. \# required tokens = 0 \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classframe__simulator_a177cd9878ab7fa53ddc5343b944579b6}\label{classframe__simulator_a177cd9878ab7fa53ddc5343b944579b6}} 
+\index{frame\_simulator@{frame\_simulator}!frame\_reader@{frame\_reader}}
+\index{frame\_reader@{frame\_reader}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{frame\_reader()}{frame\_reader()}}
+{\footnotesize\ttfamily void frame\+\_\+simulator\+::frame\+\_\+reader (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Read bounding boxes from an input txt file. Store them into a queue \mbox{\Hypertarget{classframe__simulator_a6473fef1c08f46f68acfcadcaf3f652a}\label{classframe__simulator_a6473fef1c08f46f68acfcadcaf3f652a}} 
+\index{frame\_simulator@{frame\_simulator}!invoke@{invoke}}
+\index{invoke@{invoke}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{invoke()}{invoke()}}
+{\footnotesize\ttfamily void frame\+\_\+simulator\+::invoke (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+Override the invoke abstract method in welter Fire the actor There are 4 modes in the invoke function\+: F\+R\+A\+M\+E\+\_\+\+S\+I\+M\+\_\+\+P\+R\+O\+C\+E\+SS mode assign \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} in bounding\+Box\+Pair\+Vec to fifos connected with \mbox{\hyperlink{classmatching__compute}{matching\+\_\+compute}} actor. In one iteration, thread\+\_\+num \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} is written to thread\+\_\+num fifos, one in each. Iteration is repeated until there is no \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} in bounding\+Box\+Pair\+Vec. When iteration ends, mode is set to F\+R\+A\+M\+E\+\_\+\+S\+I\+M\+\_\+\+U\+P\+D\+A\+TE
+
+F\+R\+A\+M\+E\+\_\+\+S\+I\+M\+\_\+\+U\+P\+D\+A\+TE mode finds the some of \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} which have the maximum I\+OU value and matches the \mbox{\hyperlink{classobj_data}{obj\+Data}} in them (track the object bounding box). Then it empties the old bounding\+Box\+Pair\+Vec and reinitialize it with all possible \mbox{\hyperlink{class_bounding__box__pair}{Bounding\+\_\+box\+\_\+pair}} from frame t-\/1, t, and t+1, and pushes them into the bounding\+Box\+Pair\+Vec. mode is set back to F\+R\+A\+M\+E\+\_\+\+S\+I\+M\+\_\+\+P\+R\+O\+C\+E\+SS at the end.
+
+F\+R\+A\+M\+E\+\_\+\+S\+I\+M\+\_\+\+O\+U\+T\+P\+UT print the tracking bounding box result. Bounding boxes in every frame is labeled with an index number, which tracks the objects.
+
+In M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+I\+N\+A\+C\+T\+I\+VE mode, actor is not responsible. \mbox{\Hypertarget{classframe__simulator_ac631b2cdb2c623c66674c50a87b59563}\label{classframe__simulator_ac631b2cdb2c623c66674c50a87b59563}} 
+\index{frame\_simulator@{frame\_simulator}!reset@{reset}}
+\index{reset@{reset}!frame\_simulator@{frame\_simulator}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void frame\+\_\+simulator\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+Override the reset abstract method in welter 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+frame\+\_\+simulator.\+h\item 
+frame\+\_\+simulator.\+cpp\end{DoxyCompactItemize}

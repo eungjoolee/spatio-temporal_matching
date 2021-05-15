@@ -39,7 +39,7 @@ extern "C" {
 #include "welt_cpp_actor.h"
 #include "file_sink.h"
 #include "file_source.h"
-#include "count_bright_pixels.h"
+#include "image_tile_partition.h"
 #include "welt_cpp_imread.h"
 #include "welt_cpp_graph.h"
 #include "welter_example_graph.h"

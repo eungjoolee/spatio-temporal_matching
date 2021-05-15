@@ -34,10 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/cmake_install.cmake")
   include("/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test01/cmake_install.cmake")
-  include("/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test02/cmake_install.cmake")
-  include("/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/test03/cmake_install.cmake")
 
 endif()
 

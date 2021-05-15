@@ -17,15 +17,17 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/Users/xiejing/welter/lang/c/src/tools/runtime"
   "/Users/xiejing/welter/lang/c/src/gems/actors/common"
   "/Users/xiejing/welter/lang/c/src/gems/edges"
-  "../src/graph"
-  "../test/util"
+  "/Users/xiejing/welter/lang/c/src/gems/actors/basic"
+  "/Users/xiejing/welter/lang/c/src/tools/graph"
+  "/Users/xiejing/welter/lang/cpp/src/apps/basic"
+  "/Users/xiejing/welter/lang/cpp/src/tools/runtime"
+  "/Users/xiejing/welter/lang/cpp/src/utils"
   "/usr/local/Cellar/opencv/4.5.0_5/include/opencv4"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/DependInfo.cmake"
-  "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/test/util/CMakeFiles/source_sink_test_graph.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

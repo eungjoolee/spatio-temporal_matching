@@ -217,32 +217,32 @@ __/test/util/source_sink_graph.cpp.s:
 	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s
 .PHONY : __/test/util/source_sink_graph.cpp.s
 
-actors/count_bright_pixels.o: actors/count_bright_pixels.cpp.o
+actors/image_tile_partition.o: actors/image_tile_partition.cpp.o
 
-.PHONY : actors/count_bright_pixels.o
+.PHONY : actors/image_tile_partition.o
 
 # target to build an object file
-actors/count_bright_pixels.cpp.o:
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o
-.PHONY : actors/count_bright_pixels.cpp.o
+actors/image_tile_partition.cpp.o:
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o
+.PHONY : actors/image_tile_partition.cpp.o
 
-actors/count_bright_pixels.i: actors/count_bright_pixels.cpp.i
+actors/image_tile_partition.i: actors/image_tile_partition.cpp.i
 
-.PHONY : actors/count_bright_pixels.i
+.PHONY : actors/image_tile_partition.i
 
 # target to preprocess a source file
-actors/count_bright_pixels.cpp.i:
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i
-.PHONY : actors/count_bright_pixels.cpp.i
+actors/image_tile_partition.cpp.i:
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i
+.PHONY : actors/image_tile_partition.cpp.i
 
-actors/count_bright_pixels.s: actors/count_bright_pixels.cpp.s
+actors/image_tile_partition.s: actors/image_tile_partition.cpp.s
 
-.PHONY : actors/count_bright_pixels.s
+.PHONY : actors/image_tile_partition.s
 
 # target to generate assembly for a file
-actors/count_bright_pixels.cpp.s:
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s
-.PHONY : actors/count_bright_pixels.cpp.s
+actors/image_tile_partition.cpp.s:
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/count_bright_pixels_src.dir/build.make src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s
+.PHONY : actors/image_tile_partition.cpp.s
 
 actors/file_sink.o: actors/file_sink.cpp.o
 
@@ -341,9 +341,9 @@ help:
 	@echo "... __/test/util/source_sink_graph.o"
 	@echo "... __/test/util/source_sink_graph.i"
 	@echo "... __/test/util/source_sink_graph.s"
-	@echo "... actors/count_bright_pixels.o"
-	@echo "... actors/count_bright_pixels.i"
-	@echo "... actors/count_bright_pixels.s"
+	@echo "... actors/image_tile_partition.o"
+	@echo "... actors/image_tile_partition.i"
+	@echo "... actors/image_tile_partition.s"
 	@echo "... actors/file_sink.o"
 	@echo "... actors/file_sink.i"
 	@echo "... actors/file_sink.s"

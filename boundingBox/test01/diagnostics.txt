@@ -1,0 +1,21 @@
+actor x source visit complete.
+actor y source visit complete.
+actor z source visit complete.
+actor add visit complete.
+actor sink visit complete.
+actor x source visit complete.
+actor y source visit complete.
+actor z source visit complete.
+actor add visit complete.
+actor sink visit complete.
+actor x source visit complete.
+actor y source visit complete.
+actor z source visit complete.
+actor add visit complete.
+actor sink visit complete.
+delete file source actor
+delete file source actor
+delete file source actor
+delete add actor
+delete file sink actor
+delete add graph

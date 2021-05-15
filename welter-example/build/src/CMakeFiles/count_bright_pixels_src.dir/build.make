@@ -76,18 +76,18 @@ include src/CMakeFiles/count_bright_pixels_src.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/CMakeFiles/count_bright_pixels_src.dir/flags.make
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o: ../src/actors/count_bright_pixels.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o"
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o -c /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.cpp
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o: ../src/actors/image_tile_partition.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o"
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o -c /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.cpp
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i"
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.cpp > CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.i
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i"
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.cpp > CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.i
 
-src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s"
-	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/count_bright_pixels.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.s
+src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s"
+	cd /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/build/src && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/xiejing/enee408m-dev/reference-code/lab04/welter-example/src/actors/image_tile_partition.cpp -o CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.s
 
 src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o: src/CMakeFiles/count_bright_pixels_src.dir/flags.make
 src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o: ../src/actors/file_source.cpp
@@ -143,7 +143,7 @@ src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.s:
 
 # Object files for target count_bright_pixels_src
 count_bright_pixels_src_OBJECTS = \
-"CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o" \
+"CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o" \
 "CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o" \
 "CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o" \
 "CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o" \
@@ -152,7 +152,7 @@ count_bright_pixels_src_OBJECTS = \
 # External object files for target count_bright_pixels_src
 count_bright_pixels_src_EXTERNAL_OBJECTS =
 
-src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o
+src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o
 src/libcount_bright_pixels_src.a: src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o

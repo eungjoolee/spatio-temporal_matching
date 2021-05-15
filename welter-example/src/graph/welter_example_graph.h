@@ -50,26 +50,25 @@ extern "C" {
 #include "file_source.h"
 #include "file_sink.h"
 #include "welt_cpp_imread.h"
-#include "count_bright_pixels.h"
+#include "image_tile_partition.h"
 
 /* The capacity of all FIFOs in the graph. */
 #define BUFFER_CAPACITY (1024)
 
 /* An enumeration of the actors in this application. */
 #define ACTOR_IMREAD (0)
-#define ACTOR_FILESRC (1)
-#define ACTOR_COUNT_BRIGHT_PIXELS (2)
-#define ACTOR_FILESINK (3)
+#define ACTOR_DET (1)
+#define ACTOR_IMSHOW (2)
 
 /* An enumeration of the edges in this application. The naming convention
 for the constants is FIFO_<source actor>_<sink actor>. */
-#define FIFO_IMREAD_COUNT_BRIGHT_PIXELS (0)
-#define FIFO_FILESRC_COUNT_BRIGHT_PIXELS (1)
+#define FIFO_READ_DET (0)
+#define FIFO_DET_SHOW (1)
 #define FIFO_COUNT_BRIGHT_PIXELS_FILESINK (2)
 
 /* The total numbers of graph elements in the application. */
-#define ACTOR_COUNT (4)
-#define FIFO_COUNT (3)
+#define ACTOR_COUNT (3)
+#define FIFO_COUNT (2)
 
 /* Graph class definition*/
 class welter_example_graph : public welt_cpp_graph{
@@ -88,12 +87,6 @@ public:
 
     /* Scheduler for this graph */
     void scheduler() override;
-
-    /*Set the value of the Iters parameter.*/
-    void setIters(int num_iter);
-
-    /*Set the value of the Iters parameter.*/
-    int getIters();
 
 private:
     char *img_file;

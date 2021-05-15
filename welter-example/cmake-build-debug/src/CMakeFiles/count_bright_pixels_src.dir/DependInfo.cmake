@@ -4,12 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/xiejing/spatio-temporal_matching/welter-example/test/util/source_sink_graph.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/__/test/util/source_sink_graph.cpp.o"
-  "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/count_bright_pixels.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/count_bright_pixels.cpp.o"
   "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_sink.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/file_sink.cpp.o"
   "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/file_source.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/file_source.cpp.o"
+  "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_det.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_det.cpp.o"
+  "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/image_tile_partition.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/image_tile_partition.cpp.o"
   "/Users/xiejing/spatio-temporal_matching/welter-example/src/actors/object_detection_tiling/object_detection.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/actors/object_detection_tiling/object_detection.cpp.o"
-  "/Users/xiejing/spatio-temporal_matching/welter-example/src/graph/welter_example_graph.cpp" "/Users/xiejing/spatio-temporal_matching/welter-example/cmake-build-debug/src/CMakeFiles/count_bright_pixels_src.dir/graph/welter_example_graph.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 

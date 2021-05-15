@@ -8,8 +8,8 @@ dxrmcr: 0 carriage return character(s) removed from 'CMakeLists.txt'.
 dxrmcr: 0 carriage return character(s) removed from 'README.txt'.
 dxrmcr: 0 carriage return character(s) removed from 'CMakeLists.txt'.
 dxrmcr: 0 carriage return character(s) removed from 'makeme'.
-dxrmcr: 0 carriage return character(s) removed from 'count_bright_pixels.cpp'.
-dxrmcr: 0 carriage return character(s) removed from 'count_bright_pixels.h'.
+dxrmcr: 0 carriage return character(s) removed from 'image_tile_partition.cpp'.
+dxrmcr: 0 carriage return character(s) removed from 'image_tile_partition.h'.
 dxrmcr: 0 carriage return character(s) removed from 'file_sink.cpp'.
 dxrmcr: 0 carriage return character(s) removed from 'file_sink.h'.
 dxrmcr: 0 carriage return character(s) removed from 'file_source.cpp'.
