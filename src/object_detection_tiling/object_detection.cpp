@@ -243,17 +243,30 @@ int main(int argc, char* argv[])
                     result.pop();
                     Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
                     final_result.push(global_loc);
-                    //draw result
-                    rectangle(output_img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
                 }
             }
         }
+        
+        cout << "Combining results..." << endl;
+        vector<Rect> merged_result;
+        
+        while(!final_result.empty())
+        {
+            merged_result.push_back(final_result.top());
+            final_result.pop();
+        }
+        
+        groupRectangles(merged_result, 1, 0.8); //merge rectangles
+        
         cout << "Processing image complete. Writing output to output.txt... ";
         FILE* output_file = fopen("output.txt", "a");
-        while(!final_result.empty() && output_file != NULL)
+        for(int i = 0; i < merged_result.size() && output_file != NULL; i++)
         {
-            Rect bbox = final_result.top();
-            final_result.pop();
+            //draw result
+            rectangle(output_img, merged_result[i], Scalar(255, 0, 0), 2, 8, 0);
+
+            Rect bbox = merged_result[i];
+
             int index;
             sscanf(images[k].c_str(), "%i", &index);
             fprintf(output_file, "%u\t%u\t%u\t%u\t%u\n", index, bbox.x, bbox.y, bbox.width, bbox.height);
