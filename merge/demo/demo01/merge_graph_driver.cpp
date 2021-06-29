@@ -44,36 +44,50 @@ extern "C" {
 using namespace std;
 
 #define BUFFER_CAPACITY 1024
+#define ITERATIONS 5
 
 int main(int argc, char ** argv) {
-    int merge_output_token_size = sizeof(int) * 5;
+    int merge_output_box_token_size = sizeof(int) * 4;
     int input_partition_token_size = sizeof(cv::Mat*);
+    int merge_output_count_token_size = sizeof(int);
 
     /* Initialize input and output fifo to graph */
     welt_c_fifo_pointer in_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(BUFFER_CAPACITY, input_partition_token_size, 0);
-    welt_c_fifo_pointer out_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(BUFFER_CAPACITY, merge_output_token_size, 1);
+    welt_c_fifo_pointer out_box_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(BUFFER_CAPACITY, merge_output_box_token_size, 1);
+    welt_c_fifo_pointer out_count_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(BUFFER_CAPACITY, merge_output_count_token_size, 2);
 
     /* Create a new merge_graph with the input and output */
-    auto *mgraph = new merge_graph(in_fifo, out_fifo);
+    auto *mgraph = new merge_graph(in_fifo, out_box_fifo, out_count_fifo, 4, 2);
 
     /* Fill the input fifo with data */
     cv::Mat inputImage = cv::imread("testimage.jpg", cv::IMREAD_COLOR);
     cv::Mat *in = &inputImage;
     welt_c_fifo_write(in_fifo, &in);
+    welt_c_fifo_write(in_fifo, &in);
 
     /* Run the graph to completion */
-    mgraph->scheduler();
+    mgraph->scheduler(ITERATIONS);
 
     /* Print out the results */
     cout << "Results:" << endl;
-    while (welt_c_fifo_population(out_fifo)) {
-        int output[5];
-        welt_c_fifo_read(out_fifo, &output);
+    int frame;
+    while (welt_c_fifo_population(out_count_fifo)) {
+        int size;
+        welt_c_fifo_read(out_count_fifo, &size);
+        
+        cout << "Frame " << frame << " with " << size << " boxes" << endl;
 
-        for (int i = 0; i < 5; i++) {
-            cout << output[i] << " ";
+        for (int i = 0; i < size; i++) {
+            int output[4];
+            welt_c_fifo_read(out_box_fifo, &output);
+
+            for (int i = 0; i < 4; i++) {
+                cout << output[i] << " ";
+            }
+            cout << endl;
         }
-        cout << endl;
+
+        frame++;
     }
 
     return 0;

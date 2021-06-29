@@ -1,6 +1,5 @@
-#ifndef _merge_graph_h
-#define _merge_graph_h
-
+#ifndef _frame_dist_h
+#define _frame_dist_h
 /*******************************************************************************
 @ddblock_begin copyright
 
@@ -30,45 +29,55 @@ ENHANCEMENTS, OR MODIFICATIONS.
 *******************************************************************************/
 
 /*************************************************************************
- * This is a dataflow graph that links the tile_partition, many tile_detection
- * and the merge actor
+ * TODO Descriptions
  * 
  *************************************************************************/
 
+
+#include <string>
 extern "C" {
-#include "welt_c_basic.h"
-#include "welt_c_fifo.h"
-#include "welt_c_util.h"
+    #include "welt_c_util.h"
+    #include "welt_c_fifo.h"
 }
-
 #include "welt_cpp_actor.h"
-#include "welt_cpp_graph.h"
-#include "../actors/image_tile_partition.h"
-#include "../actors/image_tile_det.h"
-#include "../actors/detection_merge.h"
+#include "objData.h"
+#include "Bounding_box_pair.h"
 
-/* Capacity of FIFOs in the graph */
-#define BUFFER_CAPACITY 1024
+/* Actor modes */
+#define FRAME_DIST_MODE_READ_FRAME 0
+#define FRAME_DIST_MODE_DISTRIBUTE 1
+#define FRAME_DIST_MODE_WRITE 2
 
-class merge_graph : public welt_cpp_graph {
-public:
+class frame_dist : public welt_cpp_actor {
+    public: 
+        frame_dist(
+            welt_c_fifo_pointer count_in,
+            welt_c_fifo_pointer boxes_in,
+            welt_c_fifo_pointer * match_out_list,
+            welt_c_fifo_pointer * match_out_count_list,
+            welt_c_fifo_pointer * match_in_list,
+            int num_matching_actors,
+            welt_c_fifo_pointer data_out,
+            welt_c_fifo_pointer count_out);
 
-    /*************************************************************************
-     * Construct an instance of the dataflow graph. The arguments are in order:
-     * 
-     *************************************************************************/
+        ~frame_dist() override;
 
-    merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_box_out, welt_c_fifo_pointer fifo_count_out, int num_detection_actors, int stride);
-    ~merge_graph();
-
-    void scheduler() override;
-    void scheduler(int iters);
-
-private:
-    welt_c_fifo_pointer * merge_fifo_list_in;
-    int iterations;
-    int num_detection_actors;
-    int stride;
+        bool enable() override;
+        void invoke() override;
+        void reset() override;
+        void connect(welt_cpp_graph *graph) override;
+    private:
+        welt_c_fifo_pointer count_in;
+        welt_c_fifo_pointer boxes_in;
+        welt_c_fifo_pointer * match_out_list;
+        welt_c_fifo_pointer * match_out_count_list;
+        welt_c_fifo_pointer * match_in_list;
+        int num_matching_actors;
+        welt_c_fifo_pointer data_out;
+        welt_c_fifo_pointer count_out;
+        vector<objData> frames[3];
+        vector<Bounding_box_pair> bounding_box_pair_vec;
+        int frame_size;
 };
 
 #endif

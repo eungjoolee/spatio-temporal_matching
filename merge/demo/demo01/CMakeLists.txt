@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(
         $ENV{UXWELTER}/exp/lang/cpp/src/tools/runtime
 
         $ENV{UXWELTER}/lang/cpp/src/gems/actors/common
-        $ENV{UXWELTER}/lang/./cpp/src/tools/graph
+        $ENV{UXWELTER}/lang/cpp/src/tools/graph
 #        $ENV{UXWELTER}/exp/lang/cpp/src/apps/basic
 
 )

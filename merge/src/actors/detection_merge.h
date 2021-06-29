@@ -30,20 +30,19 @@ ENHANCEMENTS, OR MODIFICATIONS.
 *******************************************************************************/
 
 /*******************************************************************************
- * The primary mode of this actor is the MERGE mode. The actor consumes one token
+ * The primary mode of this actor is the COMPUTE mode. The actor consumes one token
  * from each of its input edges upon firing, which each represent a row
- * of object detection. Each of these rows has scores from element 5 to the number
- * of classes.
+ * of object detection. 
  * 
  * Inputs(s): The token type is Rect
  * 
  * Output(s): The token type is stack<Rect>
  * 
- * Actor modes and transitions: The MERGE mode consumes one token from each input
- * edge and processes them, merging them into a result which is placed on its
- * output edge.
+ * Actor modes and transitions: The COMPUTE mode consumes one token from each input
+ * edge and processes them, merging them into a result. This result is placed on its
+ * output edge in the WRITE mode.
  * 
- * Initial mode: The actor starts in the MERGE mode
+ * Initial mode: The actor starts in the COMPUTE mode
 *******************************************************************************/
 
 
@@ -67,8 +66,9 @@ extern "C" {
 #include <opencv2/core/types.hpp>
 
 /* Actor modes */
-#define DETECTION_MERGE_MODE_MERGE 1
-#define DETECTION_MERGE_MODE_ERROR 2
+#define DETECTION_MERGE_MODE_COMPUTE 1
+#define DETECTION_MERGE_MODE_WRITE 2
+#define DETECTION_MERGE_MODE_ERROR 3
 
 class detection_merge : public welt_cpp_actor {
 public:
@@ -76,7 +76,7 @@ public:
  * Construct a detection_merge actor with the specified fifo inputs in an
  * array, the size of the array, and a pointer to the output fifo 
  *************************************************************************/
-    detection_merge(welt_c_fifo_pointer  * in, int n, welt_c_fifo_pointer out);
+    detection_merge(welt_c_fifo_pointer  * in, int n, welt_c_fifo_pointer out_box, welt_c_fifo_pointer out_count);
 
     /* Destructor */
     ~detection_merge() override; 
@@ -91,9 +91,11 @@ public:
 
 private:
     welt_c_fifo_pointer * in;
-    welt_c_fifo_pointer out;
+    welt_c_fifo_pointer out_box;
+    welt_c_fifo_pointer out_count;
     int n;
     int frame_index;
+    vector<cv::Rect> to_write;
 };
 
 #endif

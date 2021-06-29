@@ -47,17 +47,16 @@ ENHANCEMENTS, OR MODIFICATIONS.
 using namespace std;
 using namespace cv;
 
-merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_out) {
-    /* Set default number of graph iterations */
-    iterations = 1;
-    int num_detection_actors = 4;
-    int stride = 2;
-
+merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_box_out, welt_c_fifo_pointer fifo_count_out, int num_detection_actors, int stride) {
+    this->stride = stride;
+    this->num_detection_actors = num_detection_actors;
+    
     /* Initialize the fifos */
     int input_partition_token_size = sizeof(cv::Mat*);
     int partition_detection_token_size = sizeof(cv::Mat*);
     int detection_merge_token_size = sizeof(stack<Rect>*);
-    int merge_output_token_size = sizeof(int) * 5;
+    int merge_output_box_token_size = sizeof(int) * 4;
+    int merge_output_count_token_size = sizeof(int);
     
     /*************************************************************************
      * Reserve the appropriate FIFOs
@@ -86,7 +85,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_o
 
     /* Merge to output actor */
     merge_output_idx = fifo_num;
-    //fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, merge_output_token_size, ++fifo_num));
+    //fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, merge_output_box_token_size, ++fifo_num));
     
     fifo_count = fifo_num;
 
@@ -103,6 +102,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_o
         &fifos[partition_detection_idx],
         num_detection_actors
     ));
+    descriptors.push_back((char *)"Tile Partition Actor");
     actor_num++;
 
     /* Detection actors */
@@ -113,6 +113,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_o
             i / stride,
             i % stride
         ));
+        descriptors.push_back((char *)"Detection Actor");
         actor_num++;
     }
 
@@ -121,8 +122,10 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_o
     actors.push_back(new detection_merge(
         &fifos[detection_merge_idx],
         num_detection_actors,
-        fifo_out
+        fifo_box_out,
+        fifo_count_out
     ));
+    descriptors.push_back((char *)"Merge Actor");
     actor_num++;
 
     actor_count = actor_num;
@@ -144,6 +147,11 @@ void merge_graph::scheduler() {
     for (i = 0; i < actor_count; i++) {
         delete actors[i];
     }
+}
+
+void merge_graph::scheduler(int iters) {
+    this->iterations = iters;
+    this->scheduler();
 }
 
 merge_graph::~merge_graph() {

@@ -107,7 +107,7 @@ void image_tile_partition::invoke() {
             {
                 for (int j = 0; j < img.cols; j += x_stride)
                 {
-                    cout << "Processing Tile " << i * y_stride + j << endl;
+                    cout << "Processing Tile (" << i << ", " << j << ")" << endl;
                     cv::Mat tile;
                     if (i + y_stride < img.rows && j + x_stride < img.cols)
                     {
