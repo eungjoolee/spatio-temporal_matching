@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
 
     /* Print out the results */
     cout << "Results:" << endl;
-    int frame;
+    int frame = 0;
     while (welt_c_fifo_population(out_count_fifo)) {
         int size;
         welt_c_fifo_read(out_count_fifo, &size);
@@ -89,6 +89,13 @@ int main(int argc, char ** argv) {
 
         frame++;
     }
+
+    welt_c_fifo_free(in_fifo);
+    welt_c_fifo_free(out_box_fifo);
+    welt_c_fifo_free(out_count_fifo);
+
+    
+    merge_graph_terminate(mgraph);
 
     return 0;
 }

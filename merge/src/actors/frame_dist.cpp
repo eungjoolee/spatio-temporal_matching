@@ -34,10 +34,11 @@ frame_dist::frame_dist(
     this->num_matching_actors = num_matching_actors;
     this->data_out = data_out;
     this->count_out = count_out;
+    this->frame_idx = 0;
 
-    for (int i = 0; i < 3; i++) {
-        frames[i].reserve(512);
-    }
+    bounding_box_pair_vec.clear();
+
+    mode = FRAME_DIST_MODE_READ_FRAME;
 }
 
 bool frame_dist::enable() {
@@ -61,7 +62,7 @@ bool frame_dist::enable() {
                before writing to an output edge  */
             result = (
                 (welt_c_fifo_capacity(count_out) - welt_c_fifo_population(count_out) > 0) &&
-                (welt_c_fifo_capacity(data_out) - welt_c_fifo_population(data_out) >= frames[1].size())
+                (welt_c_fifo_capacity(data_out) - welt_c_fifo_population(data_out) >= frames[frame_idx - 1].size())
             );
             for (int i = 0; i < num_matching_actors; i++) {
                 result = result && (welt_c_fifo_population(match_in_list[i]) > 0);
@@ -86,10 +87,7 @@ void frame_dist::invoke() {
             int bounding_box_id = 1;
             
             /* Push previous frame data down one */
-            frames[0].clear();
-            frames[0] = frames[1];
-            frames[1] = frames[2];
-            frames[2].clear();
+            vector<objData> frame;
 
             welt_c_fifo_read(count_in, &count);
 
@@ -98,12 +96,13 @@ void frame_dist::invoke() {
                 welt_c_fifo_read(boxes_in, &data);
                 auto new_box = objData(bounding_box_id, data[0], data[1], data[2], data[3]);
                 bounding_box_id++;
-                frames[2].push_back(new_box);
+                frame.push_back(new_box);
             }
+            frames.push_back(frame);
 
             /*************************************************************************
              * Update the bounding box pair vectors (much like FRAME_SIM_UPDATE in the
-             * frame simulator example with frame_idx = 1
+             * frame simulator example with frame_idx = 1)
              * 
              * We are ok to clear the bounding_box_pair_vec because the compute actors are
              * done with the data and an output has been written to the output fifo (or
@@ -112,15 +111,20 @@ void frame_dist::invoke() {
              *************************************************************************/           
 
             bounding_box_pair_vec.clear();
-            for (int i = 0; i < frames[1].size(); ++i) {
-                for (int j = 0; j < frames[2].size(); ++j) {
-                    Bounding_box_pair pair = Bounding_box_pair(
-                        &frames[1][i],
-                        &frames[2][j]
-                    );
-                    bounding_box_pair_vec.push_back(pair);
+            if (frame_idx >= 2) {
+                for (int i = 0; i < frames[frame_idx - 1].size(); ++i) {
+                    for (int j = 0; j < frames[frame_idx].size(); ++j) {
+                        Bounding_box_pair pair = Bounding_box_pair(
+                            &frames[frame_idx - 1][i],
+                            &frames[frame_idx][j]
+                        );
+                        bounding_box_pair_vec.push_back(pair);
+                    }
                 }
             }
+
+            
+            frame_idx++;
             mode = FRAME_DIST_MODE_DISTRIBUTE;
         }
         break;
@@ -170,8 +174,8 @@ void frame_dist::invoke() {
 
             /* Set bounding box ids based on calculated values */
             if (!bounding_box_pair_vec.empty()) {
-                int batch_size = frames[0].size();
-                int batch_num = frames[1].size();
+                int batch_size = frames[frame_idx - 2].size();
+                int batch_num = frames[frame_idx - 1].size();
                 auto max_pair = bounding_box_pair_vec.begin();
                 for (int j = 0; j < batch_num; j++) {
                     double max_val = 0;
@@ -187,10 +191,10 @@ void frame_dist::invoke() {
             }
 
             /* Place the output and its size on an output edge */
-            for (auto i : frames[1]) {
+            for (auto i : frames[frame_idx - 1]) {
                 welt_c_fifo_write(data_out, &i);
             }
-            int size = frames[1].size();
+            int size = frames[frame_idx - 1].size();
             welt_c_fifo_write(count_out, &size);
 
             mode = FRAME_DIST_MODE_READ_FRAME;
@@ -207,6 +211,10 @@ void frame_dist::connect(welt_cpp_graph *graph) {
 
 }
 
-frame_dist::~frame_dist() {
+void frame_dist_terminate(frame_dist *context) {
+    delete context;
+}
 
+frame_dist::~frame_dist() {
+    cout << "delete frame dist actor" << endl;
 }

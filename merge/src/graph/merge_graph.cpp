@@ -40,6 +40,13 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
 
+extern "C" {
+#include "welt_c_basic.h"
+#include "welt_c_fifo.h"
+#include "welt_c_util.h"
+#include "welt_c_actor.h"
+}
+
 #include "../actors/detection_merge.h"
 #include "../actors/image_tile_det.h"
 #include "../actors/image_tile_partition.h"
@@ -74,13 +81,13 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
     /* Partiton to detection actors */
     partition_detection_idx = fifo_num;
     for (int i = 0; i < num_detection_actors; i++) {
-        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, partition_detection_token_size, ++fifo_num));
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(MERGE_BUFFER_CAPACITY, partition_detection_token_size, ++fifo_num));
     }
 
     /* Detection to merge actor */
     detection_merge_idx = fifo_num;
     for (int i = 0; i < num_detection_actors; i++) {
-        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, detection_merge_token_size, ++fifo_num));
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(MERGE_BUFFER_CAPACITY, detection_merge_token_size, ++fifo_num));
     }
 
     /* Merge to output actor */
@@ -131,6 +138,10 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
     actor_count = actor_num;
 }
 
+int merge_graph::get_num_detection_actors() {
+    return num_detection_actors;
+}
+
 void merge_graph::scheduler() {
     int i; 
     int iter;
@@ -143,10 +154,6 @@ void merge_graph::scheduler() {
             }
         }
     }
-
-    for (i = 0; i < actor_count; i++) {
-        delete actors[i];
-    }
 }
 
 void merge_graph::scheduler(int iters) {
@@ -154,6 +161,27 @@ void merge_graph::scheduler(int iters) {
     this->scheduler();
 }
 
-merge_graph::~merge_graph() {
+void merge_graph_terminate(merge_graph * graph) {
     
+    int idx = 0;
+
+    image_tile_partition_terminate((image_tile_partition *)graph->actors[idx]);
+    idx++;
+
+    for (int i = 0; i < graph->get_num_detection_actors(); i++) {
+        image_tile_det_terminate((image_tile_det *)graph->actors[idx]);
+        idx++;
+    }
+
+    detection_merge_terminate((detection_merge *)graph->actors[idx]);
+
+    for (int i = 0; i < graph->fifo_count; i++) {
+        welt_c_fifo_free(graph->fifos[i]);
+    }
+
+    delete graph;
+}
+
+merge_graph::~merge_graph() {
+    cout << "delete merge graph" << endl;
 }

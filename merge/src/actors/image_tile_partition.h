@@ -96,4 +96,6 @@ private:
     int num;
 };
 
+void image_tile_partition_terminate(image_tile_partition *);
+
 #endif

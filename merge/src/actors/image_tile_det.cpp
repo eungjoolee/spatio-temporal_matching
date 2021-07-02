@@ -131,7 +131,12 @@ void image_tile_det::reset() {
     mode = DET_MODE_PROCESS;
 }
 
+void image_tile_det_terminate(image_tile_det * actor) {
+    delete actor;
+}
+
 image_tile_det::~image_tile_det() {
+    cout << "delete image tile detection actor" << endl;
 }
 
 void image_tile_det::connect(welt_cpp_graph *graph) {

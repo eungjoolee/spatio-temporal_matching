@@ -30,6 +30,13 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <iostream>
 #include <stack>
 
+extern "C" {
+#include "welt_c_basic.h"
+#include "welt_c_fifo.h"
+#include "welt_c_util.h"
+#include "welt_c_actor.h"
+}
+
 #include "../actors/frame_dist.h"
 #include "../actors/matching_compute.h"
 #include "../actors/Bounding_box_pair.h"
@@ -59,19 +66,19 @@ dist_graph::dist_graph(welt_c_fifo_pointer data_in, welt_c_fifo_pointer count_in
     /* frame_dist to matching_compute count fifos */
     compute_count_in_idx = fifo_num;
     for (int i = 0; i < num_matching_actors; i++) {
-        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, compute_count_in_token_size, ++fifo_num));
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(DIST_BUFFER_CAPACITY, compute_count_in_token_size, ++fifo_num));
     }
 
     /* frame_dist to matching_compute data fifos */
     compute_data_in_idx = fifo_num;
     for (int i = 0; i < num_matching_actors; i++) {
-        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, compute_data_in_token_size, ++fifo_num));
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(DIST_BUFFER_CAPACITY, compute_data_in_token_size, ++fifo_num));
     }
 
     /* matching_compute to frame_dist count fifos */
     compute_out_idx = fifo_num;
     for (int i = 0; i < num_matching_actors; i++) {
-        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(BUFFER_CAPACITY, compute_out_token_size, ++fifo_num));
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(DIST_BUFFER_CAPACITY, compute_out_token_size, ++fifo_num));
     }
 
     fifo_count = fifo_num;
@@ -122,10 +129,6 @@ void dist_graph::scheduler() {
             }
         }
     }
-
-    for (i = 0; i < actor_count; i++) {
-        delete actors[i];
-    }
 }
 
 void dist_graph::scheduler(int iters) {
@@ -133,6 +136,20 @@ void dist_graph::scheduler(int iters) {
     this->scheduler();
 }
 
+void dist_graph_terminate(dist_graph * context) {
+    frame_dist_terminate((frame_dist *)context->actors[0]);
+
+    for (int i = 1; i < context->actor_count; i++) {
+        matching_compute_terminate((matching_compute *)context->actors[i]);
+    }
+
+    for (int i = 0; i < context->fifo_count; i++) {
+        welt_c_fifo_free((welt_c_fifo_pointer) context->fifos[i]);
+    }
+
+    delete context;
+}
+
 dist_graph::~dist_graph() {
-    
+    cout << "delete dist graph" << endl;
 }

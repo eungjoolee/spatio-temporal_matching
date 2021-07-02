@@ -95,4 +95,6 @@ private:
     int j;
 };
 
+void image_tile_det_terminate(image_tile_det * actor);
+
 #endif

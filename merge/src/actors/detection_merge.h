@@ -98,4 +98,6 @@ private:
     vector<cv::Rect> to_write;
 };
 
+void detection_merge_terminate(detection_merge * actor);
+
 #endif

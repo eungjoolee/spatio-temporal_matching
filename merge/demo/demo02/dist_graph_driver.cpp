@@ -19,8 +19,12 @@ using namespace std;
 
 int main(int argc, char ** argv) {
     int iterations = ITERATIONS;
-    if (argc > 1)
+    int num_match = NUM_MATCHING_ACTORS;
+    if (argc > 1) {
         sscanf(argv[1], "%d", &iterations);
+        if (argc > 2)
+            sscanf(argv[2], "%d", &num_match);
+    }
 
     int data_input_token_size = sizeof(int) * 4;
     int count_input_token_size = sizeof(int);
@@ -34,7 +38,7 @@ int main(int argc, char ** argv) {
     welt_c_fifo_pointer count_out_fifo = (welt_c_fifo_pointer) welt_c_fifo_new(DRV_BUFFER_CAPACITY, count_output_token_size, 3);
 
     /* Initialize dist graph */
-    auto graph = new dist_graph(data_in_fifo, count_in_fifo, data_out_fifo, count_out_fifo, NUM_MATCHING_ACTORS);
+    auto graph = new dist_graph(data_in_fifo, count_in_fifo, data_out_fifo, count_out_fifo, num_match);
 
     /* Fill the input fifo with data */
     int frame_idx_prev = 1;
@@ -81,9 +85,12 @@ int main(int argc, char ** argv) {
 
         getline(fp, new_line);
     }
+    fp.close();
 
     /* Run scheduler */
     graph->scheduler(iterations);
+
+    dist_graph_terminate(graph);
 
     /* Write results to stdout */
     int frame_id = 0;
@@ -100,6 +107,11 @@ int main(int argc, char ** argv) {
         }
         cout << endl;
     }
+
+    welt_c_fifo_free(data_in_fifo);
+    welt_c_fifo_free(count_in_fifo);
+    welt_c_fifo_free(data_out_fifo);
+    welt_c_fifo_free(count_out_fifo);
 
     return 0;
 }

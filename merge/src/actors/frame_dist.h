@@ -75,9 +75,13 @@ class frame_dist : public welt_cpp_actor {
         int num_matching_actors;
         welt_c_fifo_pointer data_out;
         welt_c_fifo_pointer count_out;
-        vector<objData> frames[3];
+        //vector<objData> frames[3];
+        deque<vector<objData>> frames;
         vector<Bounding_box_pair> bounding_box_pair_vec;
         int frame_size;
+        int frame_idx;
 };
+
+void frame_dist_terminate(frame_dist *context);
 
 #endif

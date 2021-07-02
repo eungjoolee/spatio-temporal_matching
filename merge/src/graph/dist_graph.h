@@ -49,7 +49,7 @@ extern "C" {
 #include "../actors/matching_compute.h"
 #include "../actors/Bounding_box_pair.h"
 
-#define BUFFER_CAPACITY 1024
+#define DIST_BUFFER_CAPACITY 1024
 
 class dist_graph : public welt_cpp_graph {
     public:
@@ -68,5 +68,7 @@ class dist_graph : public welt_cpp_graph {
         int iterations;
         int num_matching_actors;
 };
+
+void dist_graph_terminate(dist_graph * context);
 
 #endif

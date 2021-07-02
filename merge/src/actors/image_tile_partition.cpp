@@ -166,7 +166,12 @@ void image_tile_partition::reset() {
     mode = CBP_MODE_PROCESS;
 }
 
+void image_tile_partition_terminate(image_tile_partition * actor) {
+    delete actor;
+}
+
 image_tile_partition::~image_tile_partition() {
+    cout << "delete image tile partition actor" << endl;
 }
 
 void image_tile_partition::connect(welt_cpp_graph *graph) {

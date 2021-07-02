@@ -113,8 +113,13 @@ void detection_merge::reset() {
     this->mode = DETECTION_MERGE_MODE_COMPUTE;
 }
 
+void detection_merge_terminate(detection_merge * actor) {
+    delete actor;
+}
+
 detection_merge::~detection_merge() {
     /* No dynamically allocated fields or streams that need closing */
+    cout << "delete detection merge actor" << endl;
 }
 
 void detection_merge::connect(welt_cpp_graph *graph) {
