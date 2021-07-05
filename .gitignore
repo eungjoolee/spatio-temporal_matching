@@ -2,4 +2,5 @@
 src/object_detection_tiling/cfg/*
 src/object_detection_tiling/build/*
 merge/demo/demo01/cfg/*
+merge/demo/cfg/*
 
