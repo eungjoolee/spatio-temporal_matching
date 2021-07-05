@@ -95,32 +95,64 @@ combined_graph::combined_graph(
 
 void combined_graph::scheduler() {
     /* Create a thread for each graph */
-    auto thr = new pthread_t[2];
+    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
+    struct timespec begin, end;
+    double wall_time;
+    int iter, i;
 
-    /* Merge scheduler */
-    pthread_create(&thr[0], nullptr, this->merge_scheduler_thread, (void *) this->merge);
+    clock_gettime(CLOCK_MONOTONIC, &begin);
+    /* Simple scheduler */
+    for (iter = 0; iter < this->iterations; iter++) {
+        for (i = 0; i < this->merge->actor_count; i++) {
+            pthread_create(&thr[i], nullptr, combined_multithread_scheduler, (void *)this->merge->actors[i]);
+        }
+        
+        for (i = 0; i < this->dist->actor_count; i++) {
+            pthread_create(&thr[i + this->merge->actor_count], nullptr, combined_multithread_scheduler, (void *)this->dist->actors[i]);
+        }
 
-    /* Dist scheduler */
-    pthread_create(&thr[1], nullptr, this->dist_scheduler_thread, (void *) this->dist);
-
-    for (int i = 0; i < 2; i++) {
-        pthread_join(thr[i], NULL);
+        for (i = 0; i < this->merge->actor_count + this->dist->actor_count; i++) {
+            pthread_join(thr[i], NULL);
+        }
     }
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    wall_time = end.tv_sec - begin.tv_sec;
+    wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
+
+    cout << "combined graph scheduler ran " << this->iterations << " iterations in " << wall_time << " sec" << endl;
+
+    delete thr;
+}
+
+void combined_graph::set_iters(int iters) {
+    this->iterations = iters;
 }
 
 void combined_graph::scheduler(int iterations) {
-    this->iterations = iterations
+    this->set_iters(iterations);
     this->scheduler();
 }
 
-void * combined_graph::merge_scheduler_thread(void * arg) {
-    merge_graph * merge = (merge_graph *) arg;
+void * combined_multithread_scheduler(void * arg) {
+    welt_cpp_actor *actor = (welt_cpp_actor *) arg;
 
-    merge->scheduler(this->iterations);
+    if (actor->enable())
+        actor->invoke();
+
+    return nullptr;
 }
 
-void * combined_graph::dist_scheduler_thread(void * arg) {
-    merge_graph * dist = (dist_graph *) arg;
+void combined_graph_terminate(combined_graph *context) {
+    dist_graph_terminate(context->dist);
+    merge_graph_terminate(context->merge);
 
-    dist->scheduler(this->iterations);
+    for (int i = 0; i < context->fifo_count; i++) {
+        welt_c_fifo_free((welt_c_fifo_pointer) context->fifos[i]);
+    }
+
+    delete context;
+}
+
+combined_graph::~combined_graph() {
+    cout << "delete combined graph" << endl;
 }

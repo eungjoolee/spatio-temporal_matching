@@ -156,8 +156,12 @@ void merge_graph::scheduler() {
     }
 }
 
-void merge_graph::scheduler(int iters) {
+void merge_graph::set_iters(int iters) {
     this->iterations = iters;
+}
+
+void merge_graph::scheduler(int iters) {
+    this->set_iters(iters);
     this->scheduler();
 }
 

@@ -38,6 +38,10 @@ frame_dist::frame_dist(
 
     bounding_box_pair_vec.clear();
 
+    for (int i = 0; i < 3; i++) {
+        frames[i].clear();
+    }
+
     mode = FRAME_DIST_MODE_READ_FRAME;
 }
 
@@ -57,15 +61,17 @@ bool frame_dist::enable() {
                 }
             }
             break;
-        case FRAME_DIST_MODE_WRITE:
-            /* Once work is distributed to the matching actors, wait until all matches have confirmed that they are done 
-               before writing to an output edge  */
-            result = (
-                (welt_c_fifo_capacity(count_out) - welt_c_fifo_population(count_out) > 0) &&
-                (welt_c_fifo_capacity(data_out) - welt_c_fifo_population(data_out) >= frames[frame_idx - 1].size())
-            );
-            for (int i = 0; i < num_matching_actors; i++) {
-                result = result && (welt_c_fifo_population(match_in_list[i]) > 0);
+        case FRAME_DIST_MODE_WRITE: {
+                /* Once work is distributed to the matching actors, wait until all matches have confirmed that they are done 
+                before writing to an output edge  */
+                vector<objData> * frame = get_frame();
+                result = (
+                    (welt_c_fifo_capacity(count_out) - welt_c_fifo_population(count_out) > 0) &&
+                    (welt_c_fifo_capacity(data_out) - welt_c_fifo_population(data_out) >= frame->size())
+                );
+                for (int i = 0; i < num_matching_actors; i++) {
+                    result = result && (welt_c_fifo_population(match_in_list[i]) > 0);
+                }
             }
             break;
         default:
@@ -79,7 +85,7 @@ void frame_dist::invoke() {
     switch (mode) {
         case FRAME_DIST_MODE_READ_FRAME: {
             /*************************************************************************
-             * Read in a new frame and place it in the frames[2]
+             * Read in a new frame and place it in the current frame index
              * 
              *************************************************************************/
             int count;
@@ -87,18 +93,22 @@ void frame_dist::invoke() {
             int bounding_box_id = 1;
             
             /* Push previous frame data down one */
-            vector<objData> frame;
+            //vector<objData> frame;
 
             welt_c_fifo_read(count_in, &count);
+            
+            vector<objData> * next_frame = get_next_frame();
+            vector<objData> * frame = get_frame();
 
             /* Read in count data into frame */
+            next_frame->clear();
             for (int i = 0; i < count; i++) {
                 welt_c_fifo_read(boxes_in, &data);
                 auto new_box = objData(bounding_box_id, data[0], data[1], data[2], data[3]);
                 bounding_box_id++;
-                frame.push_back(new_box);
+                next_frame->push_back(new_box);
             }
-            frames.push_back(frame);
+            //frames.push_back(frame);
 
             /*************************************************************************
              * Update the bounding box pair vectors (much like FRAME_SIM_UPDATE in the
@@ -111,19 +121,18 @@ void frame_dist::invoke() {
              *************************************************************************/           
 
             bounding_box_pair_vec.clear();
-            if (frame_idx >= 2) {
-                for (int i = 0; i < frames[frame_idx - 1].size(); ++i) {
-                    for (int j = 0; j < frames[frame_idx].size(); ++j) {
+            if (frame_idx >= 1) {
+                for (int i = 0; i < frame->size(); ++i) {
+                    for (int j = 0; j < next_frame->size(); ++j) {
                         Bounding_box_pair pair = Bounding_box_pair(
-                            &frames[frame_idx - 1][i],
-                            &frames[frame_idx][j]
+                            &(*frame)[i],
+                            &(*next_frame)[j]
                         );
                         bounding_box_pair_vec.push_back(pair);
                     }
                 }
             }
 
-            
             frame_idx++;
             mode = FRAME_DIST_MODE_DISTRIBUTE;
         }
@@ -173,9 +182,11 @@ void frame_dist::invoke() {
             }
 
             /* Set bounding box ids based on calculated values */
+            vector<objData> * last_frame = get_prev_frame();
+            vector<objData> * frame = get_frame();
             if (!bounding_box_pair_vec.empty()) {
-                int batch_size = frames[frame_idx - 2].size();
-                int batch_num = frames[frame_idx - 1].size();
+                int batch_size = last_frame->size();
+                int batch_num = frame->size();
                 auto max_pair = bounding_box_pair_vec.begin();
                 for (int j = 0; j < batch_num; j++) {
                     double max_val = 0;
@@ -191,16 +202,28 @@ void frame_dist::invoke() {
             }
 
             /* Place the output and its size on an output edge */
-            for (auto i : frames[frame_idx - 1]) {
+            for (auto i : *frame) {
                 welt_c_fifo_write(data_out, &i);
             }
-            int size = frames[frame_idx - 1].size();
+            int size = frame->size();
             welt_c_fifo_write(count_out, &size);
 
             mode = FRAME_DIST_MODE_READ_FRAME;
         }
         break;
     }
+}
+
+vector<objData> * frame_dist::get_next_frame() {
+    return &frames[(frame_idx) % 3];
+}
+
+vector<objData> * frame_dist::get_frame() {
+    return &frames[(frame_idx - 1) % 3];
+}
+
+vector<objData> * frame_dist::get_prev_frame() {
+    return &frames[(frame_idx - 2) % 3];
 }
 
 void frame_dist::reset() {

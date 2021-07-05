@@ -66,7 +66,7 @@ bool image_tile_partition::enable() {
         case CBP_MODE_PROCESS:
             result = (welt_c_fifo_population(in_image) >= 1);
             for (int i = 0; i < num; i++) {
-                result = result & (welt_c_fifo_population(out_tiles[i]) < welt_c_fifo_capacity(out_tiles[i]));
+                result = result & (welt_c_fifo_population(out_tiles[i]) == 0); //welt_c_fifo_capacity(out_tiles[i]));
             }
             break;
         case CBP_MODE_ERROR:
@@ -98,6 +98,9 @@ void image_tile_partition::invoke() {
 
 //            VideoCapture cap("/Users/jushen/Downloads/winter_dogs.mov");
             cv::Mat img = *img_color;
+
+            while(mats.size()) 
+                mats.pop();
 
             int x_stride = 256;
             int y_stride = 256;

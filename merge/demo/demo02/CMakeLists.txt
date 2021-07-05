@@ -6,6 +6,9 @@ SET(CMAKE_CXX_STANDARD 14)
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
+SET(THREADS_PREFER_PTHREAD_FLAG on)
+
+find_package(Threads REQUIRED)
 find_package(OpenCV REQUIRED) 
 
 INCLUDE_DIRECTORIES(
@@ -52,6 +55,7 @@ TARGET_LINK_LIBRARIES(
     $ENV{WELTERGEN}/libwelt_c_runtime.a
 
     ${OpenCV_LIBS}
+    pthread
 )
 
 INSTALL(TARGETS dist_graph_driver.exe DESTINATION ${PROJECT_SOURCE_DIR})

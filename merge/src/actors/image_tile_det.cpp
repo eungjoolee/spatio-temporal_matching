@@ -90,9 +90,9 @@ void image_tile_det::invoke() {
             //imread("/Users/jushen/Documents/yolo-tiling/val2017
             // /000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
 //                    imread(parser.get<String>("image"), IMREAD_COLOR);
-            std::string model = "./cfg/yolov3-tiny.weights";
+            std::string model = "../cfg/yolov3-tiny.weights";
 //                    parser.get<String>("model");
-            std::string config = "./cfg/yolov3-tiny.cfg";
+            std::string config = "../cfg/yolov3-tiny.cfg";
 //                    parser.get<String>("config");
 
             int x_stride = 256;

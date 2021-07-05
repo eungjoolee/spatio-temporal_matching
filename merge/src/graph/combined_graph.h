@@ -61,11 +61,13 @@ class combined_graph : public welt_cpp_graph {
         
         ~combined_graph();
 
+        void set_iters(int iters);
         void scheduler() override;
         void scheduler(int iters);
-        void * merge_scheduler_thread(void * arg);
-        void * dist_scheduler_thread(void * arg);
 
+        dist_graph * dist;
+        merge_graph * merge;
+        
     private:
         welt_c_fifo_pointer data_in;
         welt_c_fifo_pointer data_out;
@@ -73,7 +75,10 @@ class combined_graph : public welt_cpp_graph {
         int num_detection_actors;
         int stride;
         int num_matching_actors;
-        dist_graph * dist;
-        merge_graph * merge;
         int iterations;
-}
+};
+
+void *combined_multithread_scheduler(void * arg);
+void combined_graph_terminate(combined_graph * context);
+
+#endif

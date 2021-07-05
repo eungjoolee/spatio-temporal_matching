@@ -60,7 +60,7 @@ int main(int argc, char ** argv) {
     auto *mgraph = new merge_graph(in_fifo, out_box_fifo, out_count_fifo, 4, 2);
 
     /* Fill the input fifo with data */
-    cv::Mat inputImage = cv::imread("testimage.jpg", cv::IMREAD_COLOR);
+    cv::Mat inputImage = cv::imread("../testimage.jpg", cv::IMREAD_COLOR);
     cv::Mat *in = &inputImage;
     welt_c_fifo_write(in_fifo, &in);
     welt_c_fifo_write(in_fifo, &in);

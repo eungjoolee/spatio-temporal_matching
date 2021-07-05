@@ -61,6 +61,7 @@ public:
     merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_box_out, welt_c_fifo_pointer fifo_count_out, int num_detection_actors, int stride);
     ~merge_graph();
 
+    void set_iters(int iters);
     void scheduler() override;
     void scheduler(int iters);
     

@@ -29,6 +29,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include "dist_graph.h"
 #include <iostream>
 #include <stack>
+#include <pthread.h>
 
 extern "C" {
 #include "welt_c_basic.h"
@@ -117,23 +118,50 @@ dist_graph::dist_graph(welt_c_fifo_pointer data_in, welt_c_fifo_pointer count_in
     actor_count = actor_num;
 }
 
+void dist_graph::set_iters(int iters) {
+    this->iterations = iters;
+}
+
+
 void dist_graph::scheduler() {
     int i;
     int iter;
+    auto thr = new pthread_t[actor_count];
+    struct timespec begin, end;
+    double wall_time;
 
+    clock_gettime(CLOCK_MONOTONIC, &begin);
     /* Simple scheduler */
     for (iter = 0; iter < this->iterations; iter++) {
         for (i = 0; i < actor_count; i++) {
-            if (actors[i]->enable()) {
-                actors[i]->invoke();
-            }
+            pthread_create(&thr[i], nullptr, dist_multithread_scheduler, (void *)actors[i]);
+        }
+
+        for (i = 0; i < actor_count; i++) {
+            pthread_join(thr[i], NULL);
         }
     }
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    wall_time = end.tv_sec - begin.tv_sec;
+    wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
+
+    cout << "dist graph scheduler ran " << this->iterations << " iterations in " << wall_time << " sec" << endl;
+
+    delete thr;
 }
 
 void dist_graph::scheduler(int iters) {
-    this->iterations = iters;
+    this->set_iters(iters);
     this->scheduler();
+}
+
+void * dist_multithread_scheduler(void * arg) {
+    welt_cpp_actor *actor = (welt_cpp_actor *) arg;
+
+    if (actor->enable())
+        actor->invoke();
+
+    return nullptr;
 }
 
 void dist_graph_terminate(dist_graph * context) {

@@ -57,6 +57,7 @@ class dist_graph : public welt_cpp_graph {
 
         ~dist_graph();
 
+        void set_iters(int iters);
         void scheduler() override;
         void scheduler(int iters);
 
@@ -69,6 +70,7 @@ class dist_graph : public welt_cpp_graph {
         int num_matching_actors;
 };
 
+void * dist_multithread_scheduler(void * arg);
 void dist_graph_terminate(dist_graph * context);
 
 #endif

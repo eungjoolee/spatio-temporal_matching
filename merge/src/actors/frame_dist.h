@@ -67,6 +67,10 @@ class frame_dist : public welt_cpp_actor {
         void reset() override;
         void connect(welt_cpp_graph *graph) override;
     private:
+        vector<objData> * get_next_frame();
+        vector<objData> * get_frame();
+        vector<objData> * get_prev_frame();
+
         welt_c_fifo_pointer count_in;
         welt_c_fifo_pointer boxes_in;
         welt_c_fifo_pointer * match_out_list;
@@ -75,8 +79,8 @@ class frame_dist : public welt_cpp_actor {
         int num_matching_actors;
         welt_c_fifo_pointer data_out;
         welt_c_fifo_pointer count_out;
-        //vector<objData> frames[3];
-        deque<vector<objData>> frames;
+        vector<objData> frames[3];
+//        deque<vector<objData>> frames;
         vector<Bounding_box_pair> bounding_box_pair_vec;
         int frame_size;
         int frame_idx;
