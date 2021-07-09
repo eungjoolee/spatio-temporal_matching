@@ -26,13 +26,12 @@ ENHANCEMENTS, OR MODIFICATIONS.
 @ddblock_end copyright
 *******************************************************************************/
 
-#include <iostream>
-
 #include "image_tile_partition.h"
 //#include "./object_detection_tiling/common.hpp"
 #include "./object_detection_tiling/object_detection.h"
 
 #include <iostream>
+#include <sstream>
 #include <stack>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -66,7 +65,7 @@ bool image_tile_partition::enable() {
         case CBP_MODE_PROCESS:
             result = (welt_c_fifo_population(in_image) >= 1);
             for (int i = 0; i < num; i++) {
-                result = result & (welt_c_fifo_population(out_tiles[i]) == 0); //welt_c_fifo_capacity(out_tiles[i]));
+                result = result & (welt_c_fifo_population(out_tiles[i]) == 0);// < welt_c_fifo_capacity(out_tiles[i]));
             }
             break;
         case CBP_MODE_ERROR:
@@ -84,7 +83,7 @@ bool image_tile_partition::enable() {
 void image_tile_partition::invoke() {
     switch (mode) {
         case CBP_MODE_PROCESS: {
-            char** config_in = nullptr;
+            //char** config_in = nullptr;
             cv::Mat* img_color= nullptr;
             /* read img fifo and store in in_image*/
             welt_c_fifo_read(in_image, &img_color);
@@ -110,7 +109,7 @@ void image_tile_partition::invoke() {
             {
                 for (int j = 0; j < img.cols; j += x_stride)
                 {
-                    cout << "Processing Tile (" << i << ", " << j << ")" << endl;
+                    //cout << "Processing Tile (" << i << ", " << j << ")" << endl;
                     cv::Mat tile;
                     if (i + y_stride < img.rows && j + x_stride < img.cols)
                     {
@@ -132,6 +131,16 @@ void image_tile_partition::invoke() {
                     cv::Mat* tile_send = &mats.top();
                     welt_c_fifo_write((welt_c_fifo_pointer) out_tiles[tile_id], &tile_send);                 
                     tile_id++;
+                    
+                    //stringstream stream;
+                    //stream << "put image for " << i << ", " << j << " at " << (long)tile_send << " on output edge from " << (long)img_color << endl;
+                    //cout << stream.str();
+
+                    //stringstream stream2; 
+                    //stream2 << "tile sent to " << i << ", " << j << endl;
+                    //imshow(stream2.str(), tile);
+                    //waitKey(0);
+                
 //                    stack<Rect> result = analyze_image(model, config, tile);
 //                    while (!result.empty())
 //                    {

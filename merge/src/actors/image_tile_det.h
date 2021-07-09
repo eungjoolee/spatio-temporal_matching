@@ -57,11 +57,13 @@ extern "C" {
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
 #include <stack>
 
 /* Actor modes */
 #define DET_MODE_PROCESS (1)
-#define DET_MODE_ERROR (2)
+#define DET_MODE_WRITE (2)
+#define DET_MODE_ERROR (3)
 
 /* count_bright_pixels actor class, it inherits actor class  */
 class image_tile_det : public welt_cpp_actor {
@@ -72,7 +74,7 @@ public:
     output FIFO connection.
     *************************************************************************/
     image_tile_det(welt_c_fifo_pointer in_image_fifo,
-            welt_c_fifo_pointer out_fifo, int tile_i, int tile_j);
+            welt_c_fifo_pointer out_data_fifo, welt_c_fifo_pointer out_count_fifo, int tile_i, int tile_j);
 
     ~image_tile_det() override;
 
@@ -89,10 +91,12 @@ private:
     welt_c_fifo_pointer in_image;
 //    welt_c_fifo_pointer in_config;
     welt_c_fifo_pointer out;
+    welt_c_fifo_pointer out_count;
     /* tile id */
-    stack<stack<cv::Rect>> rects;
+    stack<cv::Rect> rects;
     int i;
     int j;
+    cv::dnn::Net network;
 };
 
 void image_tile_det_terminate(image_tile_det * actor);

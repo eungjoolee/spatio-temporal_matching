@@ -16,17 +16,23 @@ using namespace cv;
 using namespace std;
 using namespace dnn;
 
-detection_merge::detection_merge(welt_c_fifo_pointer * in, 
-                                 int n, 
-                                 welt_c_fifo_pointer out_box,
-                                 welt_c_fifo_pointer out_count) { 
+detection_merge::detection_merge(
+    welt_c_fifo_pointer * in,
+    welt_c_fifo_pointer * in_count,
+    int n, 
+    welt_c_fifo_pointer out_box,
+    welt_c_fifo_pointer out_count) { 
+
     this->in = in;
+    this->in_count = in_count;
     this->n = n;
     this->out_box = out_box;
     this->out_count = out_count;
     this->frame_index = 0;
 
     this->mode = DETECTION_MERGE_MODE_COMPUTE;
+
+    to_write.clear();
 
     reset();
 }
@@ -38,7 +44,8 @@ bool detection_merge::enable() {
         case DETECTION_MERGE_MODE_COMPUTE:
             result = TRUE;
             for (int i = 0; i < n; i++) {
-                result = result && (welt_c_fifo_population(in[i]) > 0);
+                /* Assume that if there is a token on the count fifo there is enough data on data fifo */
+                result = result && (welt_c_fifo_population(in_count[i]) > 0);
             }
             break;
         case DETECTION_MERGE_MODE_WRITE:
@@ -66,20 +73,22 @@ void detection_merge::invoke() {
                 vector<Rect> merged_result;
 
                 for(int j = 0; j < n; j++) {
-                    stack<Rect>* final_result_in;
-                    welt_c_fifo_read(in[j], &final_result_in);
+                    int count;
+                    welt_c_fifo_read(in_count[j], &count);
 
-                    while(!final_result_in->empty()) {
-                        merged_result.push_back(final_result_in->top());
-                        final_result_in->pop();
+                    for (int i = 0; i < count; i++) {
+                        Rect next;
+                        welt_c_fifo_read(in[j], &next);
+                        merged_result.push_back(next);
                     }
-
+                    
                     /* Merge rectangles */
                     groupRectangles(merged_result, 1, 0.8);
-
+                    
                     for (int i = 0; i < merged_result.size(); i++) {
                         to_write.push_back(merged_result[i]);
                     }
+                    merged_result.clear();
                 }
 
                 mode = DETECTION_MERGE_MODE_WRITE;

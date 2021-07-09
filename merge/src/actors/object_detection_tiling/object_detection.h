@@ -15,11 +15,13 @@
 
 using namespace std;
 using namespace cv;
+using namespace dnn;
 
 stack<Rect> analyze_image(std::string model, std::string config, Mat img);
 
 void analyze_video(std::string model, std::string config, VideoCapture cap);
 
+stack<Rect> analyze_image(Net network, Mat img);
 stack<Rect> analyze_image(std::string model, std::string config, Mat img);
 
 #endif //COUNT_BRIGHT_PIXELS_OBJECT_DETECTION_H

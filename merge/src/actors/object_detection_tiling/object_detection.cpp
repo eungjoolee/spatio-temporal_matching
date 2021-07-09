@@ -102,12 +102,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
     }
 }
 
-stack<Rect> analyze_image(std::string model, std::string config, Mat img)
-{
-    Net network = readNet(model, config, "Darknet");
-    network.setPreferableBackend(DNN_BACKEND_DEFAULT);
-    network.setPreferableTarget(DNN_TARGET_OPENCL);
-    
+stack<Rect> analyze_image(Net network, Mat img) {
     static Mat blobFromImg;
     bool swapRB = true;
     blobFromImage(img, blobFromImg, 1, Size(416, 416), Scalar(), swapRB, false);
@@ -161,26 +156,35 @@ stack<Rect> analyze_image(std::string model, std::string config, Mat img)
             int top = centerY - height / 2;
 
 
-            stringstream ss;
-            ss << PositionOfMax.x;
-            string clas = ss.str();
-            int color = PositionOfMax.x * 10;
-            putText(img, clas, Point(left, top), 1, 2, Scalar(color, 255, 255), 2, false);
-            stringstream ss2;
-            ss << confidence;
-            string conf = ss.str();
+            //stringstream ss;
+            //ss << PositionOfMax.x;
+            //string clas = ss.str();
+            //int color = PositionOfMax.x * 10;
+            //putText(img, clas, Point(left, top), 1, 2, Scalar(color, 255, 255), 2, false);
+            //stringstream ss2;
+            //ss << confidence;
+            //string conf = ss.str();
 
             res.push(Rect(left, top, width, height));
-            rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
-            cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
+            //rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
+            //cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
             
         }
     }
     
-    namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
-    imshow("Display window", img);
-    waitKey(250);
+    //namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
+    //imshow("Display window", img);
+    //waitKey(250);
     return res;
+}
+
+stack<Rect> analyze_image(std::string model, std::string config, Mat img)
+{
+    Net network = readNet(model, config, "Darknet");
+    network.setPreferableBackend(DNN_BACKEND_DEFAULT);
+    network.setPreferableTarget(DNN_TARGET_OPENCL);
+    
+    return analyze_image(network, img);
 }
 
 //int main(int argc, char* argv[])

@@ -27,6 +27,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 *******************************************************************************/
 
 #include <iostream>
+#include <sstream>
 
 #include "image_tile_det.h"
 //#include "./object_detection_tiling/common.hpp"
@@ -44,29 +45,40 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
+#include <opencv2/dnn.hpp>
 
 
 using namespace std;
 
-image_tile_det::image_tile_det (welt_c_fifo_pointer in_image_fifo,
-                welt_c_fifo_pointer out_fifo, int tile_i, int tile_j)
-{
+image_tile_det::image_tile_det (
+    welt_c_fifo_pointer in_image_fifo,
+    welt_c_fifo_pointer out_data_fifo, 
+    welt_c_fifo_pointer out_count_fifo, 
+    int tile_i, 
+    int tile_j) {
+
     mode = DET_MODE_PROCESS;
     in_image = (welt_c_fifo_pointer)in_image_fifo; /* input image */
 //    in_config = (welt_c_fifo_pointer)in_thresh_fifo; /* input threshold */
-    out = (welt_c_fifo_pointer)out_fifo; /* output */
+    out = out_data_fifo; /* output */
+    out_count = out_count_fifo;
     i = tile_i;
     j = tile_j;
+
+    std::string config = "../cfg/yolov3-tiny.cfg";
+    std::string model = "../cfg/yolov3-tiny.weights";
+
+    network = cv::dnn::readNet(model, config, "Darknet");    
 }
 
 bool image_tile_det::enable() {
     boolean result = FALSE;
     switch (mode) {
         case DET_MODE_PROCESS:
-            result = (welt_c_fifo_population(in_image) >= 1)
-//                    && (welt_c_fifo_population(in_config) >= 1)
-                    && (welt_c_fifo_population(out)
-                    < welt_c_fifo_capacity(out));
+            result = (welt_c_fifo_population(in_image) >= 1);
+            break;
+        case DET_MODE_WRITE:
+            result = (welt_c_fifo_capacity(out) - welt_c_fifo_population(out) >= rects.size());
             break;
         case DET_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
@@ -90,33 +102,58 @@ void image_tile_det::invoke() {
             //imread("/Users/jushen/Documents/yolo-tiling/val2017
             // /000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
 //                    imread(parser.get<String>("image"), IMREAD_COLOR);
-            std::string model = "../cfg/yolov3-tiny.weights";
 //                    parser.get<String>("model");
-            std::string config = "../cfg/yolov3-tiny.cfg";
+
 //                    parser.get<String>("config");
 
             int x_stride = 256;
             int y_stride = 256;
-            stack<Rect> final_result;
-            cout << "Processing Tile " << i * y_stride + j << endl;
-            stack<Rect> result = analyze_image(model, config, tile);
+
+            //cout << "Processing Tile " << i * y_stride + j << endl;
+            stack<Rect> result = analyze_image(this->network, tile);
+
             while (!result.empty())
             {
                 Rect local_loc = result.top();
                 result.pop();
-                Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
-                final_result.push(global_loc);
+                Rect global_loc = Rect(local_loc.x + j * x_stride, local_loc.y + i * y_stride, local_loc.width, local_loc.height);
+                this->rects.push(global_loc);
                 //draw result
-//                rectangle(img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
+                //rectangle(tile, global_loc, Scalar(255, 0, 0), 2, 8, 0);
             }
-            /* Push final result to output fifo */
-            rects.push(final_result);
-            stack<Rect> * write_result = &rects.top();
-            welt_c_fifo_write(out, &write_result);
 
-            mode = DET_MODE_PROCESS;
-            break;
+        
+            //stringstream stream;
+            //stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
+            //cout << stream.str();
+
+            //stringstream stream2; 
+            //stream2 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
+            //imshow(stream2.str(), tile);
+            //waitKey(0);
+
+            //imshow(stream.str(), tile);
+            //waitKey(0);
+            //destroyWindow(stream.str());
+            
+
+            mode = DET_MODE_WRITE;
         }
+        break;
+        case DET_MODE_WRITE : {
+            /* Push final result to output fifo */
+            int size = this->rects.size();
+            while (!this->rects.empty()) {
+                Rect next = this->rects.top();
+                this->rects.pop();
+                welt_c_fifo_write(out, &next);
+            }
+
+            /* Write count last */
+            welt_c_fifo_write(out_count, &size);
+            mode = DET_MODE_PROCESS;
+        }
+        break;
         case DET_MODE_ERROR: {
             /* Remain in the same mode, and do nothing. */
             break;

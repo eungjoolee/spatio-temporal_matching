@@ -44,7 +44,12 @@ extern "C" {
 using namespace std;
 
 #define BUFFER_CAPACITY 1024
-#define ITERATIONS 5
+#define ITERATIONS 500
+#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0015/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
+#define NUM_DETECTION_ACTORS 10
+#define STRIDE 5
+#define NUM_IMAGES 40
+
 
 int main(int argc, char ** argv) {
     int merge_output_box_token_size = sizeof(int) * 4;
@@ -57,16 +62,37 @@ int main(int argc, char ** argv) {
     welt_c_fifo_pointer out_count_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(BUFFER_CAPACITY, merge_output_count_token_size, 2);
 
     /* Create a new merge_graph with the input and output */
-    auto *mgraph = new merge_graph(in_fifo, out_box_fifo, out_count_fifo, 4, 2);
+    auto *mgraph = new merge_graph(in_fifo, out_box_fifo, out_count_fifo, NUM_DETECTION_ACTORS, STRIDE);
 
     /* Fill the input fifo with data */
-    cv::Mat inputImage = cv::imread("../testimage.jpg", cv::IMREAD_COLOR);
-    cv::Mat *in = &inputImage;
-    welt_c_fifo_write(in_fifo, &in);
-    welt_c_fifo_write(in_fifo, &in);
+    vector<cv::Mat> input_images;
 
-    /* Run the graph to completion */
+    for (int i = 0; i < NUM_IMAGES; i++) {
+        std::stringstream next_img;
+        next_img << IMAGE_ROOT_DIRECTORY << std::setfill('0') << std::setw(6) << i << ".png";
+        input_images.push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
+    }
+
+    for (int i = 0; i < NUM_IMAGES; i++) {
+        cv::Mat *ptr = &input_images[i];
+        welt_c_fifo_write(in_fifo, &ptr);
+    }
+
+    /* Run the graph to completion (track time to simulate framerate) */
+    struct timespec begin, end;
+    double wall_time;
+    int frame_time_ms;
+    clock_gettime(CLOCK_MONOTONIC, &begin);
+
     mgraph->scheduler(ITERATIONS);
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    wall_time = end.tv_sec - begin.tv_sec;
+    wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
+
+    frame_time_ms = (int) (wall_time * 1000 / NUM_IMAGES);
+
+    cout << "frame time of " << frame_time_ms << " ms (" << NUM_IMAGES/wall_time << "fps)" << endl;
 
     /* Print out the results */
     cout << "Results:" << endl;
@@ -94,7 +120,6 @@ int main(int argc, char ** argv) {
     welt_c_fifo_free(out_box_fifo);
     welt_c_fifo_free(out_count_fifo);
 
-    
     merge_graph_terminate(mgraph);
 
     return 0;
