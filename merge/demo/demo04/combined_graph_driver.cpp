@@ -104,7 +104,7 @@ int main(int argc, char ** argv) {
 
     /* Write results to stdout */
     int frame_id = 0;
-    cv::namedWindow("output", cv::WINDOW_NORMAL);
+    cv::namedWindow("output");
     while (welt_c_fifo_population(count_out_fifo) > 0) {
         objData data;
         int count = 0;

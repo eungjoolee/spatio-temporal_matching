@@ -103,7 +103,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
 }
 
 stack<Rect> analyze_image(Net network, Mat img) {
-    static Mat blobFromImg;
+    Mat blobFromImg; // making this static improves performance at the expense of making the method not thread-safe
     bool swapRB = true;
     blobFromImage(img, blobFromImg, 1, Size(416, 416), Scalar(), swapRB, false);
     

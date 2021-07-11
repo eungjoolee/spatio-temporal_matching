@@ -58,6 +58,7 @@ extern "C" {
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <stack>
+#include <pthread.h>
 
 /* Actor modes */
 #define CBP_MODE_PROCESS (1)
@@ -99,7 +100,6 @@ private:
     welt_c_fifo_pointer * in_confirm;
     welt_c_fifo_pointer * out_tiles;
     std::vector<cv::Mat> frame;
-    std::stack<cv::Mat> mats;
     int num;
 };
 

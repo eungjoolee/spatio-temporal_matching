@@ -83,7 +83,7 @@ void detection_merge::invoke() {
                     }
                     
                     /* Merge rectangles */
-                    groupRectangles(merged_result, 1, 0.8);
+                    groupRectangles(merged_result, 1, 0.5);
                     
                     for (int i = 0; i < merged_result.size(); i++) {
                         to_write.push_back(merged_result[i]);

@@ -30,6 +30,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 //#include "./object_detection_tiling/common.hpp"
 #include "./object_detection_tiling/object_detection.h"
 
+#include <pthread.h>
 #include <iostream>
 #include <sstream>
 #include <stack>

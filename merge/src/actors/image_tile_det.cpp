@@ -46,7 +46,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/dnn.hpp>
-
+#include <pthread.h>
 
 using namespace std;
 
@@ -71,7 +71,7 @@ image_tile_det::image_tile_det (
     std::string config = "../cfg/yolov3-tiny.cfg";
     std::string model = "../cfg/yolov3-tiny.weights";
 
-    network = cv::dnn::readNet(model, config, "Darknet");    
+    network = cv::dnn::readNet(model, config, "Darknet"); 
 }
 
 bool image_tile_det::enable() {
@@ -104,7 +104,8 @@ void image_tile_det::invoke() {
             cv::Mat* img_color= nullptr;
             /* read img fifo and store in in_image*/
             welt_c_fifo_read(in_image, &img_color);
-            Mat tile = *img_color;
+            Mat tile = (*img_color);
+            
             //imread("/Users/jushen/Documents/yolo-tiling/val2017
             // /000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
 //                    imread(parser.get<String>("image"), IMREAD_COLOR);
@@ -116,6 +117,7 @@ void image_tile_det::invoke() {
             int y_stride = 256;
 
             //cout << "Processing Tile " << i * y_stride + j << endl;
+            
             stack<Rect> result = analyze_image(this->network, tile);
 
             while (!result.empty())
@@ -127,17 +129,19 @@ void image_tile_det::invoke() {
                 //draw result
                 //rectangle(tile, global_loc, Scalar(255, 0, 0), 2, 8, 0);
             }
-
+            
+            /* Processing frame is complete, send confirmation back to partition actor */
+            welt_c_fifo_write(out_confirm, &frame_index);
         
-            stringstream stream;
-            stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
-            cout << stream.str();
+            //stringstream stream;
+            //stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
+            //cout << stream.str();
 
-            stringstream stream3; 
-            stream3 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
-            imshow(stream3.str(), tile);
-            moveWindow(stream3.str(), j * (x_stride + 40) + 1200, i * (y_stride + 40) + 800);
-            waitKey(10);
+            //stringstream stream3; 
+            //stream3 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
+            //imshow(stream3.str(), tile);
+            //moveWindow(stream3.str(), j * (x_stride + 40) + 1200, i * (y_stride + 40) + 800);
+            //waitKey(10);
 
             //imshow(stream.str(), tile);
             //waitKey(0);
@@ -158,9 +162,6 @@ void image_tile_det::invoke() {
             /* Write count last */
             welt_c_fifo_write(out_count, &size);
 
-            
-            /* Processing frame is complete, send confirmation back to partition actor */
-            welt_c_fifo_write(out_confirm, &frame_index);
             frame_index++;
             mode = DET_MODE_PROCESS;
         }

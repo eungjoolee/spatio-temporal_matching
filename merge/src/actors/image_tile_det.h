@@ -59,6 +59,7 @@ extern "C" {
 #include <opencv2/opencv.hpp>
 #include <opencv2/dnn.hpp>
 #include <stack>
+#include <pthread.h>
 
 /* Actor modes */
 #define DET_MODE_PROCESS (1)
