@@ -61,6 +61,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
     /* Initialize the fifos */
     int input_partition_token_size = sizeof(cv::Mat*);
     int partition_detection_token_size = sizeof(cv::Mat*);
+    int detection_partition_token_size = sizeof(unsigned int);
     int detection_merge_data_token_size = sizeof(Rect);
     int detection_merge_data_count_size = sizeof(int);
     int merge_output_box_token_size = sizeof(int) * 4;
@@ -73,6 +74,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
 
     int fifo_num = 0;
     int partition_detection_idx;
+    int detection_partition_idx;
     int detection_merge_data_idx;
     int detection_merge_count_idx;
     int merge_output_idx;
@@ -84,6 +86,12 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
     partition_detection_idx = fifo_num;
     for (int i = 0; i < num_detection_actors; i++) {
         fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(MERGE_BUFFER_CAPACITY, partition_detection_token_size, ++fifo_num));
+    }
+
+    /* Detection to partition actors (confirmation tokens) */
+    detection_partition_idx = fifo_num;
+    for (int i = 0; i < num_detection_actors; i++) {
+        fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(MERGE_BUFFER_CAPACITY, detection_partition_token_size, ++fifo_num));
     }
 
     /* Detection to merge actor (data) */
@@ -114,6 +122,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
     /* Tile partition actor */
     actors.push_back(new image_tile_partition(
         fifo_in,
+        &fifos[detection_partition_idx],
         &fifos[partition_detection_idx],
         num_detection_actors
     ));
@@ -126,6 +135,7 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
             fifos[partition_detection_idx + i],
             fifos[detection_merge_data_idx + i],
             fifos[detection_merge_count_idx + i],
+            fifos[detection_partition_idx + i],
             i / stride,
             i % stride
         ));

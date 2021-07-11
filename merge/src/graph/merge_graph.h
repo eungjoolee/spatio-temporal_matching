@@ -48,7 +48,7 @@ extern "C" {
 #include "../actors/detection_merge.h"
 
 /* Capacity of FIFOs in the graph */
-#define MERGE_BUFFER_CAPACITY 1024
+#define MERGE_BUFFER_CAPACITY 20
 
 class merge_graph : public welt_cpp_graph {
 public:

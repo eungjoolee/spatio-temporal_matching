@@ -61,7 +61,9 @@ extern "C" {
 
 /* Actor modes */
 #define CBP_MODE_PROCESS (1)
-#define CBP_MODE_ERROR (2)
+#define CBP_MODE_WRITE (2)
+#define CBP_MODE_CLEANUP (3)
+#define CBP_MODE_ERROR (4)
 
 /* count_bright_pixels actor class, it inherits actor class  */
 class image_tile_partition : public welt_cpp_actor {
@@ -71,9 +73,12 @@ public:
     with the specified input FIFO connections, and the specified
     output FIFO connection.
     *************************************************************************/
-    image_tile_partition(welt_c_fifo_pointer in_image,
-                         welt_c_fifo_pointer * out_list, 
-                         int n);
+    image_tile_partition(
+        welt_c_fifo_pointer in_image_fifo,
+        welt_c_fifo_pointer * in_confirm_list,
+        welt_c_fifo_pointer * out_list, 
+        int n
+        );
 
     ~image_tile_partition() override;
 
@@ -91,7 +96,9 @@ public:
 private:
     welt_c_fifo_pointer in_image;
 //    welt_c_fifo_pointer in_config;
+    welt_c_fifo_pointer * in_confirm;
     welt_c_fifo_pointer * out_tiles;
+    std::vector<cv::Mat> frame;
     std::stack<cv::Mat> mats;
     int num;
 };

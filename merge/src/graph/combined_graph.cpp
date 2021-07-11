@@ -93,63 +93,42 @@ combined_graph::combined_graph(
     actor_count = 0;
 }
 
+void combined_graph::single_thread_scheduler() {
+    for (int iter = 0; iter < this->iterations; iter++) {
+        for (int i = 0; i < this->merge->actor_count; i++) {
+            while (this->merge->actors[i]->enable()) {
+               this->merge->actors[i]->invoke();
+            }
+        }
+        
+        for (int i = 0; i < this->dist->actor_count; i++) {
+            while (this->dist->actors[i]->enable()) {
+                this->dist->actors[i]->invoke();
+            }
+        }
+    }
+}
+
 void combined_graph::scheduler() {
     /* Create a thread for each graph */
     auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
-    struct timespec begin, end;
-    double wall_time;
     int iter, i;
 
-    clock_gettime(CLOCK_MONOTONIC, &begin);
     /* Simple scheduler */
     for (iter = 0; iter < this->iterations; iter++) {
-        
-        /*
-        if (this->merge->actors[0]->enable()) 
-            this->merge->actors[0]->invoke();
-
-        for (i = 1; i < this->merge->actor_count - 1; i++) {
+        for (i = 0; i < this->merge->actor_count; i++) {
             pthread_create(&thr[i], nullptr, combined_multithread_scheduler, (void *)this->merge->actors[i]);
         }
-        */
 
         for (i = 0; i < this->dist->actor_count; i++) {
             pthread_create(&thr[i + this->merge->actor_count], nullptr, combined_multithread_scheduler, (void *)this->dist->actors[i]);
         }
         
-        /*
-        for (i = 1; i < this->merge->actor_count - 1; i++) {
+        for (i = 0 /* this->merge->actor_count*/; i < this->merge->actor_count + this->dist->actor_count; i++) {
             pthread_join(thr[i], NULL);
         }
-        
-        if (this->merge->actors[this->merge->actor_count - 1]->enable()) 
-            this->merge->actors[this->merge->actor_count - 1]->invoke();
-        */
 
-        for (i = this->merge->actor_count; i < this->merge->actor_count + this->dist->actor_count; i++) {
-            pthread_join(thr[i], NULL);
-        }
-        
-        /* Single-threaded scheduler for detection graph */
-        for (i = 0; i < this->merge->actor_count; i++) {
-           if (this->merge->actors[i]->enable()) {
-               this->merge->actors[i]->invoke();
-           }
-        }
-
-        /*
-        for (i = 0; i < this->dist->actor_count; i++) {
-           if (this->dist->actors[i]->enable()) {
-               this->dist->actors[i]->invoke();
-           }
-        }
-        */
     }
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    wall_time = end.tv_sec - begin.tv_sec;
-    wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
-
-    cout << "combined graph scheduler ran " << this->iterations << " iterations in " << wall_time << " sec" << endl;
 
     delete thr;
 }
@@ -158,15 +137,10 @@ void combined_graph::set_iters(int iters) {
     this->iterations = iters;
 }
 
-void combined_graph::scheduler(int iterations) {
-    this->set_iters(iterations);
-    this->scheduler();
-}
-
 void * combined_multithread_scheduler(void * arg) {
     welt_cpp_actor *actor = (welt_cpp_actor *) arg;
 
-    if (actor->enable())
+    while (actor->enable())
         actor->invoke();
 
     return nullptr;

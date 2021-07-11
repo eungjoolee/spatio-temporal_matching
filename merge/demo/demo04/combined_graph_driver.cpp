@@ -9,6 +9,7 @@ extern "C" {
 #include <iostream>
 #include <string.h>
 #include <fstream>
+#include <sstream>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -25,18 +26,22 @@ using namespace std;
 using namespace cv;
 
 #define DRV_BUFFER_CAPACITY 6000
-#define NUM_IMAGES 60
+#define NUM_IMAGES 25
 #define ITERATIONS 500
 #define NUM_DETECTION_ACTORS 10
 #define STRIDE 5
 #define NUM_MATCHING_ACTORS 2
-#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0018/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
+#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0019/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
 
 int main(int argc, char ** argv) {
     int iterations = ITERATIONS;
     int num_match = NUM_MATCHING_ACTORS;
+    bool multi_thread = TRUE;
     if (argc > 1) {
         sscanf(argv[1], "%d", &iterations);
+        if (argc > 2) {
+            multi_thread = FALSE;
+        }
     }
 
     int data_in_token_size = sizeof(cv::Mat *);
@@ -77,7 +82,15 @@ int main(int argc, char ** argv) {
     int frame_time_ms;
     clock_gettime(CLOCK_MONOTONIC, &begin);
 
-    graph->scheduler(iterations);
+    graph->set_iters(iterations);
+
+    if (multi_thread) {
+        cout << "starting multithreaded scheduler" << endl;
+        graph->scheduler();
+    } else { 
+        cout << "starting single threaded scheduler" << endl;
+        graph->single_thread_scheduler();
+    }
 
     clock_gettime(CLOCK_MONOTONIC, &end);
     wall_time = end.tv_sec - begin.tv_sec;
@@ -107,13 +120,33 @@ int main(int argc, char ** argv) {
             /* Draw bounding boxes on image */
             cv::Rect newRect = Rect(data.getX(), data.getY(), data.getW(), data.getH());
 
-            cv::rectangle(input_images[frame_id], newRect, cv::Scalar((75 * data.getId()) % 255, 0, 255));
+            cv::rectangle(input_images[frame_id], newRect, cv::Scalar(0, 255, 0));
+            stringstream stream;
+            stream << data.getId();
+            cv::putText(
+                input_images[frame_id], 
+                stream.str(), 
+                cv::Point(data.getX(), data.getY()),
+                cv::FONT_HERSHEY_DUPLEX,
+                1,
+                cv::Scalar(0, 255, 0),
+                1);
         }
         cout << endl;
         
+        /* Draw tile bounding boxes on image */
+        for (int i = 0; i < NUM_DETECTION_ACTORS / STRIDE; i++) {
+            cv::line(input_images[frame_id], cv::Point(0,256 * i), cv::Point(50, 256 * i), cv::Scalar(255,0,0), 1);
+        }
+
+        for (int i = 0; i < STRIDE; i++) {
+            cv::line(input_images[frame_id], cv::Point(256 * i,0), cv::Point(256 * i, 50), cv::Scalar(255,0,0), 1);
+        }
+
         /* Display image */
         cv::imshow("output", input_images[frame_id]);
         cv::waitKey(frame_time_ms);
+        
         
         frame_id++;
     }

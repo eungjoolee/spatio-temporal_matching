@@ -50,12 +50,14 @@ using namespace cv;
 
 image_tile_partition::image_tile_partition(
         welt_c_fifo_pointer in_image_fifo,
+        welt_c_fifo_pointer * in_confirm_list,
         welt_c_fifo_pointer * out_list, 
         int n) {
 
     mode = CBP_MODE_PROCESS;
-    in_image = (welt_c_fifo_pointer)in_image_fifo; /* input image */
-    out_tiles = (welt_c_fifo_pointer *)out_list; /* array of output fifos; assumed to have enough to fit tiles */
+    in_image = in_image_fifo; /* input image */
+    in_confirm = in_confirm_list; /* array of input fifos used to confirm when a frame is done being used by detection actors */
+    out_tiles = out_list; /* array of output fifos; assumed to have enough to fit tiles */
     num = n; /* length of input fifo array */
 }
 
@@ -64,8 +66,17 @@ bool image_tile_partition::enable() {
     switch (mode) {
         case CBP_MODE_PROCESS:
             result = (welt_c_fifo_population(in_image) >= 1);
+            break;
+        case CBP_MODE_WRITE:
+            result = TRUE;
             for (int i = 0; i < num; i++) {
-                result = result & (welt_c_fifo_population(out_tiles[i]) == 0);// < welt_c_fifo_capacity(out_tiles[i]));
+                result = result & (welt_c_fifo_capacity(out_tiles[i]) - welt_c_fifo_population(out_tiles[i]) > 0);
+            }
+            break;
+        case CBP_MODE_CLEANUP: 
+            result = TRUE;
+            for (int i = 0; i < num; i++) {
+                result = result & (welt_c_fifo_population(in_confirm[i]) > 0);
             }
             break;
         case CBP_MODE_ERROR:
@@ -98,9 +109,6 @@ void image_tile_partition::invoke() {
 //            VideoCapture cap("/Users/jushen/Downloads/winter_dogs.mov");
             cv::Mat img = *img_color;
 
-            while(mats.size()) 
-                mats.pop();
-
             int x_stride = 256;
             int y_stride = 256;
             stack<Rect> final_result;
@@ -127,10 +135,7 @@ void image_tile_partition::invoke() {
                     {
                         tile = img(Rect(j,i,img.cols-j-1,img.rows-i-1));
                     }
-                    mats.push(tile);
-                    cv::Mat* tile_send = &mats.top();
-                    welt_c_fifo_write((welt_c_fifo_pointer) out_tiles[tile_id], &tile_send);                 
-                    tile_id++;
+                    frame.push_back(tile);
                     
                     //stringstream stream;
                     //stream << "put image for " << i << ", " << j << " at " << (long)tile_send << " on output edge from " << (long)img_color << endl;
@@ -140,27 +145,30 @@ void image_tile_partition::invoke() {
                     //stream2 << "tile sent to " << i << ", " << j << endl;
                     //imshow(stream2.str(), tile);
                     //waitKey(0);
-                
-//                    stack<Rect> result = analyze_image(model, config, tile);
-//                    while (!result.empty())
-//                    {
-//                        Rect local_loc = result.top();
-//                        result.pop();
-//                        Rect global_loc = Rect(local_loc.x + j, local_loc.y + i, local_loc.width, local_loc.height);
-//                        final_result.push(global_loc);
-//                        //draw result
-//                        rectangle(img, global_loc, Scalar(255, 0, 0), 2, 8, 0);
-//                    }
                 }
             }
 
-//            welt_c_fifo_write_block()
-            //analyze_image(model, config, img);
-            //analyze_video(model, config, cap);
-//            namedWindow("Result window", WINDOW_AUTOSIZE);// Create a window for display.
-//            imshow("Result window", img);
-//            waitKey(2500);
+            mode = CBP_MODE_WRITE;
+            break;
+        }
+        case CBP_MODE_WRITE: {
+            for(int i = 0; i < num; i++)
+            {
+                cv::Mat* tile_send = &frame[i];
+                welt_c_fifo_write(out_tiles[i], &tile_send);                 
+            }
+            
+            mode = CBP_MODE_CLEANUP;
+            break;
+        }
+        case CBP_MODE_CLEANUP: {
+            for (int i = 0; i < num; i++) {
+                int discard;
+                welt_c_fifo_read(in_confirm[i], &discard);
+            }
 
+            // all detectors are done with this frame, can discard the mats
+            frame.clear();
             mode = CBP_MODE_PROCESS;
             break;
         }

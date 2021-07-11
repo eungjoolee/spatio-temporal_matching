@@ -54,6 +54,7 @@ image_tile_det::image_tile_det (
     welt_c_fifo_pointer in_image_fifo,
     welt_c_fifo_pointer out_data_fifo, 
     welt_c_fifo_pointer out_count_fifo, 
+    welt_c_fifo_pointer out_confirm_fifo,
     int tile_i, 
     int tile_j) {
 
@@ -62,8 +63,10 @@ image_tile_det::image_tile_det (
 //    in_config = (welt_c_fifo_pointer)in_thresh_fifo; /* input threshold */
     out = out_data_fifo; /* output */
     out_count = out_count_fifo;
+    out_confirm = out_confirm_fifo;
     i = tile_i;
     j = tile_j;
+    frame_index = 0;
 
     std::string config = "../cfg/yolov3-tiny.cfg";
     std::string model = "../cfg/yolov3-tiny.weights";
@@ -78,7 +81,10 @@ bool image_tile_det::enable() {
             result = (welt_c_fifo_population(in_image) >= 1);
             break;
         case DET_MODE_WRITE:
-            result = (welt_c_fifo_capacity(out) - welt_c_fifo_population(out) >= rects.size());
+            result = (
+                (welt_c_fifo_capacity(out) - welt_c_fifo_population(out) >= rects.size()) &&
+                (welt_c_fifo_capacity(out_confirm) - welt_c_fifo_population(out_confirm) > 0)
+                );
             break;
         case DET_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
@@ -123,19 +129,19 @@ void image_tile_det::invoke() {
             }
 
         
-            //stringstream stream;
-            //stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
-            //cout << stream.str();
+            stringstream stream;
+            stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
+            cout << stream.str();
 
-            //stringstream stream2; 
-            //stream2 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
-            //imshow(stream2.str(), tile);
-            //waitKey(0);
+            stringstream stream3; 
+            stream3 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
+            imshow(stream3.str(), tile);
+            moveWindow(stream3.str(), j * (x_stride + 40) + 1200, i * (y_stride + 40) + 800);
+            waitKey(10);
 
             //imshow(stream.str(), tile);
             //waitKey(0);
             //destroyWindow(stream.str());
-            
 
             mode = DET_MODE_WRITE;
         }
@@ -151,6 +157,11 @@ void image_tile_det::invoke() {
 
             /* Write count last */
             welt_c_fifo_write(out_count, &size);
+
+            
+            /* Processing frame is complete, send confirmation back to partition actor */
+            welt_c_fifo_write(out_confirm, &frame_index);
+            frame_index++;
             mode = DET_MODE_PROCESS;
         }
         break;

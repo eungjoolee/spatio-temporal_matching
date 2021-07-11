@@ -61,9 +61,9 @@ class combined_graph : public welt_cpp_graph {
         
         ~combined_graph();
 
+        void single_thread_scheduler();
         void set_iters(int iters);
         void scheduler() override;
-        void scheduler(int iters);
 
         dist_graph * dist;
         merge_graph * merge;

@@ -73,8 +73,14 @@ public:
     with the specified input FIFO connections, and the specified
     output FIFO connection.
     *************************************************************************/
-    image_tile_det(welt_c_fifo_pointer in_image_fifo,
-            welt_c_fifo_pointer out_data_fifo, welt_c_fifo_pointer out_count_fifo, int tile_i, int tile_j);
+    image_tile_det(
+        welt_c_fifo_pointer in_image_fifo,
+        welt_c_fifo_pointer out_data_fifo, 
+        welt_c_fifo_pointer out_count_fifo, 
+        welt_c_fifo_pointer out_confirm_fifo,
+        int tile_i, 
+        int tile_j
+        );
 
     ~image_tile_det() override;
 
@@ -92,8 +98,10 @@ private:
 //    welt_c_fifo_pointer in_config;
     welt_c_fifo_pointer out;
     welt_c_fifo_pointer out_count;
+    welt_c_fifo_pointer out_confirm;
     /* tile id */
     stack<cv::Rect> rects;
+    unsigned int frame_index;
     int i;
     int j;
     cv::dnn::Net network;
