@@ -124,7 +124,8 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
         fifo_in,
         &fifos[detection_partition_idx],
         &fifos[partition_detection_idx],
-        num_detection_actors
+        num_detection_actors,
+        5
     ));
     descriptors.push_back((char *)"Tile Partition Actor");
     actor_num++;

@@ -53,13 +53,37 @@ image_tile_partition::image_tile_partition(
         welt_c_fifo_pointer in_image_fifo,
         welt_c_fifo_pointer * in_confirm_list,
         welt_c_fifo_pointer * out_list, 
-        int n) {
+        int n,
+        int buffer_size) {
 
     mode = CBP_MODE_PROCESS;
     in_image = in_image_fifo; /* input image */
     in_confirm = in_confirm_list; /* array of input fifos used to confirm when a frame is done being used by detection actors */
     out_tiles = out_list; /* array of output fifos; assumed to have enough to fit tiles */
     num = n; /* length of input fifo array */
+
+    frame_index = 0;  
+    cleared_index = 0;
+
+    frame_buffer_size = buffer_size;
+
+    frames = new vector<cv::Mat>[frame_buffer_size];
+}
+
+vector<cv::Mat> * image_tile_partition::get_frame(unsigned int index) {
+    return &frames[index % frame_buffer_size];
+}
+
+void image_tile_partition::clear_frame(unsigned int index) {
+    frames[index % frame_buffer_size].clear();
+}
+
+unsigned int image_tile_partition::capacity() {
+    return frame_buffer_size - frame_index + cleared_index;
+}
+
+unsigned int image_tile_partition::population() {
+    return frame_index - cleared_index;
 }
 
 bool image_tile_partition::enable() {
@@ -113,6 +137,7 @@ void image_tile_partition::invoke() {
             int x_stride = 256;
             int y_stride = 256;
             stack<Rect> final_result;
+            vector<cv::Mat> * frame = get_frame(frame_index);
             int tile_id = 0;
             for(int i = 0; i < img.rows; i += y_stride)
             {
@@ -136,7 +161,7 @@ void image_tile_partition::invoke() {
                     {
                         tile = img(Rect(j,i,img.cols-j-1,img.rows-i-1));
                     }
-                    frame.push_back(tile);
+                    frame->push_back(tile);
                     
                     //stringstream stream;
                     //stream << "put image for " << i << ", " << j << " at " << (long)tile_send << " on output edge from " << (long)img_color << endl;
@@ -153,13 +178,20 @@ void image_tile_partition::invoke() {
             break;
         }
         case CBP_MODE_WRITE: {
+            vector<cv::Mat> * frame = get_frame(frame_index);
             for(int i = 0; i < num; i++)
             {
-                cv::Mat* tile_send = &frame[i];
+                cv::Mat* tile_send = &frame->at(i);
                 welt_c_fifo_write(out_tiles[i], &tile_send);                 
             }
+
+            frame_index++;
             
-            mode = CBP_MODE_CLEANUP;
+            if (capacity() == 0) {
+                mode = CBP_MODE_CLEANUP;
+            } else {
+                mode = CBP_MODE_PROCESS;
+            }
             break;
         }
         case CBP_MODE_CLEANUP: {
@@ -169,8 +201,14 @@ void image_tile_partition::invoke() {
             }
 
             // all detectors are done with this frame, can discard the mats
-            frame.clear();
-            mode = CBP_MODE_PROCESS;
+            clear_frame(cleared_index);
+            cleared_index++;
+
+            if (population() == 0) {
+                mode = CBP_MODE_PROCESS;
+            } else {
+                mode = CBP_MODE_CLEANUP;
+            }
             break;
         }
         case CBP_MODE_ERROR: {

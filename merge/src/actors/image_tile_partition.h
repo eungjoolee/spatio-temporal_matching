@@ -78,7 +78,8 @@ public:
         welt_c_fifo_pointer in_image_fifo,
         welt_c_fifo_pointer * in_confirm_list,
         welt_c_fifo_pointer * out_list, 
-        int n
+        int n,
+        int frame_buffer_size = 1
         );
 
     ~image_tile_partition() override;
@@ -95,11 +96,19 @@ public:
  
 
 private:
+    std::vector<cv::Mat> * get_frame(unsigned int index);
+    void clear_frame(unsigned int index);
+    unsigned int capacity();
+    unsigned int population();
+
     welt_c_fifo_pointer in_image;
 //    welt_c_fifo_pointer in_config;
     welt_c_fifo_pointer * in_confirm;
     welt_c_fifo_pointer * out_tiles;
-    std::vector<cv::Mat> frame;
+    std::vector<cv::Mat> * frames;
+    int frame_buffer_size;
+    unsigned int frame_index;
+    unsigned int cleared_index;
     int num;
 };
 
