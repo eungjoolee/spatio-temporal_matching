@@ -64,7 +64,8 @@ int main(int argc, char ** argv) {
         welt_c_fifo_write(data_in_fifo, &in);
 
     /* Run the graph to completion */
-    graph->scheduler(iterations);
+    graph->set_iters(ITERATIONS);
+    graph->scheduler();
 
     combined_graph_terminate(graph);
 

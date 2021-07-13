@@ -48,7 +48,7 @@ extern "C" {
 #include "../actors/detection_merge.h"
 
 /* Capacity of FIFOs in the graph */
-#define MERGE_BUFFER_CAPACITY 20
+#define MERGE_BUFFER_CAPACITY 50
 
 class merge_graph : public welt_cpp_graph {
 public:
@@ -58,7 +58,17 @@ public:
      * 
      *************************************************************************/
 
-    merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_box_out, welt_c_fifo_pointer fifo_count_out, int num_detection_actors, int stride);
+    merge_graph(
+        welt_c_fifo_pointer fifo_in, 
+        welt_c_fifo_pointer fifo_box_out, 
+        welt_c_fifo_pointer fifo_count_out, 
+        int num_detection_actors, 
+        int stride, 
+        int tile_x_size = 256, 
+        int tile_y_size = 256, 
+        int partition_buffer_size = 5,
+        double eps = 0.5
+        );
     ~merge_graph();
 
     void set_iters(int iters);
@@ -71,7 +81,11 @@ private:
     welt_c_fifo_pointer * merge_fifo_list_in;
     int iterations;
     int num_detection_actors;
+    int tile_x_size;
+    int tile_y_size;
+    int partition_buffer_size;
     int stride;
+    double eps;
 };
 
 void merge_graph_terminate(merge_graph * graph);

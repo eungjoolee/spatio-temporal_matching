@@ -54,7 +54,9 @@ image_tile_partition::image_tile_partition(
         welt_c_fifo_pointer * in_confirm_list,
         welt_c_fifo_pointer * out_list, 
         int n,
-        int buffer_size) {
+        int buffer_size,
+        int tile_x_size,
+        int tile_y_size) {
 
     mode = CBP_MODE_PROCESS;
     in_image = in_image_fifo; /* input image */
@@ -64,6 +66,9 @@ image_tile_partition::image_tile_partition(
 
     frame_index = 0;  
     cleared_index = 0;
+
+    x_stride = tile_x_size;
+    y_stride = tile_y_size;
 
     frame_buffer_size = buffer_size;
 
@@ -134,8 +139,8 @@ void image_tile_partition::invoke() {
 //            VideoCapture cap("/Users/jushen/Downloads/winter_dogs.mov");
             cv::Mat img = *img_color;
 
-            int x_stride = 256;
-            int y_stride = 256;
+            //int x_stride = 256;
+            //int y_stride = 256;
             stack<Rect> final_result;
             vector<cv::Mat> * frame = get_frame(frame_index);
             int tile_id = 0;

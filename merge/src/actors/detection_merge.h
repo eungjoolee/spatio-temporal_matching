@@ -76,7 +76,13 @@ public:
  * Construct a detection_merge actor with the specified fifo inputs in an
  * array, the size of the array, and a pointer to the output fifo 
  *************************************************************************/
-    detection_merge(welt_c_fifo_pointer  * in, welt_c_fifo_pointer * in_count, int n, welt_c_fifo_pointer out_box, welt_c_fifo_pointer out_count);
+    detection_merge(
+        welt_c_fifo_pointer  * in, 
+        welt_c_fifo_pointer * in_count, 
+        int n, 
+        welt_c_fifo_pointer out_box, 
+        welt_c_fifo_pointer out_count, 
+        double eps = 0.5);
 
     /* Destructor */
     ~detection_merge() override; 
@@ -97,6 +103,7 @@ private:
     int n;
     int frame_index;
     vector<cv::Rect> to_write;
+    double eps;
 };
 
 void detection_merge_terminate(detection_merge * actor);

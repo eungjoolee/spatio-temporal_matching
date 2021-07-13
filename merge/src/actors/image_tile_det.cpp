@@ -56,7 +56,10 @@ image_tile_det::image_tile_det (
     welt_c_fifo_pointer out_count_fifo, 
     welt_c_fifo_pointer out_confirm_fifo,
     int tile_i, 
-    int tile_j) {
+    int tile_j,
+    int tile_x,
+    int tile_y
+    ) {
 
     mode = DET_MODE_PROCESS;
     in_image = (welt_c_fifo_pointer)in_image_fifo; /* input image */
@@ -66,6 +69,8 @@ image_tile_det::image_tile_det (
     out_confirm = out_confirm_fifo;
     i = tile_i;
     j = tile_j;
+    x_stride = tile_x;
+    y_stride = tile_y;
     frame_index = 0;
 
     std::string config = "../cfg/yolov3-tiny.cfg";
@@ -113,8 +118,8 @@ void image_tile_det::invoke() {
 
 //                    parser.get<String>("config");
 
-            int x_stride = 256;
-            int y_stride = 256;
+            //int x_stride = 256;
+            //int y_stride = 256;
 
             //cout << "Processing Tile " << i * y_stride + j << endl;
             

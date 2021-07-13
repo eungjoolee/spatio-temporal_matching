@@ -46,7 +46,7 @@ extern "C" {
 #include "dist_graph.h"
 #include "merge_graph.h"
 
-#define COMBINED_BUFFER_CAPACITY 1024
+#define COMBINED_BUFFER_CAPACITY 20
 
 class combined_graph : public welt_cpp_graph {
     public:
@@ -55,8 +55,12 @@ class combined_graph : public welt_cpp_graph {
             welt_c_fifo_pointer data_out, 
             welt_c_fifo_pointer count_out, 
             int num_detection_actors,
-            int stride,
-            int num_matching_actors
+            int tile_stride,
+            int num_matching_actors,
+            int tile_x_size = 256,
+            int tile_y_size = 256,
+            int partition_buffer_size = 5,
+            double eps = 0.5
             );
         
         ~combined_graph();
@@ -73,8 +77,12 @@ class combined_graph : public welt_cpp_graph {
         welt_c_fifo_pointer data_out;
         welt_c_fifo_pointer count_out;
         int num_detection_actors;
-        int stride;
+        int tile_stride; // number of tiles across entire image (for example, a 1920 x 1024 image with tile_x_size = 256 would be 8 (ceiling of 1920 / 256))
+        int tile_x_size;
+        int tile_y_size;
         int num_matching_actors;
+        int partition_buffer_size;
+        double eps;
         int iterations;
 };
 

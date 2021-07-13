@@ -79,7 +79,9 @@ public:
         welt_c_fifo_pointer * in_confirm_list,
         welt_c_fifo_pointer * out_list, 
         int n,
-        int frame_buffer_size = 1
+        int buffer_size = 1,
+        int tile_x_size = 256,
+        int tile_y_size = 256
         );
 
     ~image_tile_partition() override;
@@ -109,6 +111,9 @@ private:
     int frame_buffer_size;
     unsigned int frame_index;
     unsigned int cleared_index;
+    double eps;
+    int x_stride;
+    int y_stride;
     int num;
 };
 

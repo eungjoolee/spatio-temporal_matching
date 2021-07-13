@@ -54,10 +54,25 @@ extern "C" {
 using namespace std;
 using namespace cv;
 
-merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_box_out, welt_c_fifo_pointer fifo_count_out, int num_detection_actors, int stride) {
+merge_graph::merge_graph(
+        welt_c_fifo_pointer fifo_in, 
+        welt_c_fifo_pointer fifo_box_out, 
+        welt_c_fifo_pointer fifo_count_out, 
+        int num_detection_actors, 
+        int stride, 
+        int tile_x_size, 
+        int tile_y_size, 
+        int partition_buffer_size, 
+        double eps
+        ) {
+
     this->stride = stride;
     this->num_detection_actors = num_detection_actors;
-    
+    this->tile_x_size = tile_x_size;
+    this->tile_y_size = tile_y_size;
+    this->partition_buffer_size = partition_buffer_size;
+    this->eps = eps;
+
     /* Initialize the fifos */
     int input_partition_token_size = sizeof(cv::Mat*);
     int partition_detection_token_size = sizeof(cv::Mat*);
@@ -125,7 +140,9 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
         &fifos[detection_partition_idx],
         &fifos[partition_detection_idx],
         num_detection_actors,
-        5
+        partition_buffer_size,
+        tile_x_size,
+        tile_y_size
     ));
     descriptors.push_back((char *)"Tile Partition Actor");
     actor_num++;
@@ -138,7 +155,9 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
             fifos[detection_merge_count_idx + i],
             fifos[detection_partition_idx + i],
             i / stride,
-            i % stride
+            i % stride,
+            tile_x_size,
+            tile_y_size
         ));
         descriptors.push_back((char *)"Detection Actor");
         actor_num++;
@@ -151,7 +170,8 @@ merge_graph::merge_graph(welt_c_fifo_pointer fifo_in, welt_c_fifo_pointer fifo_b
         &fifos[detection_merge_count_idx],
         num_detection_actors,
         fifo_box_out,
-        fifo_count_out
+        fifo_count_out,
+        eps
     ));
     descriptors.push_back((char *)"Merge Actor");
     actor_num++;

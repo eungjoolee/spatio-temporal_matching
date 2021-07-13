@@ -21,7 +21,8 @@ detection_merge::detection_merge(
     welt_c_fifo_pointer * in_count,
     int n, 
     welt_c_fifo_pointer out_box,
-    welt_c_fifo_pointer out_count) { 
+    welt_c_fifo_pointer out_count,
+    double eps) { 
 
     this->in = in;
     this->in_count = in_count;
@@ -29,6 +30,7 @@ detection_merge::detection_merge(
     this->out_box = out_box;
     this->out_count = out_count;
     this->frame_index = 0;
+    this->eps = eps;
 
     this->mode = DETECTION_MERGE_MODE_COMPUTE;
 
@@ -83,7 +85,7 @@ void detection_merge::invoke() {
                     }
                     
                     /* Merge rectangles */
-                    groupRectangles(merged_result, 1, 0.5);
+                    groupRectangles(merged_result, 1, eps);
                     
                     for (int i = 0; i < merged_result.size(); i++) {
                         to_write.push_back(merged_result[i]);

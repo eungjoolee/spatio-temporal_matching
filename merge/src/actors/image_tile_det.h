@@ -80,7 +80,9 @@ public:
         welt_c_fifo_pointer out_count_fifo, 
         welt_c_fifo_pointer out_confirm_fifo,
         int tile_i, 
-        int tile_j
+        int tile_j,
+        int tile_x_size = 256,
+        int tile_y_size = 256
         );
 
     ~image_tile_det() override;
@@ -105,6 +107,8 @@ private:
     unsigned int frame_index;
     int i;
     int j;
+    int x_stride;
+    int y_stride;
     cv::dnn::Net network;
 };
 

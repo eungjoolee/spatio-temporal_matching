@@ -36,14 +36,23 @@ combined_graph::combined_graph(
     welt_c_fifo_pointer data_out,
     welt_c_fifo_pointer count_out,
     int num_detection_actors,
-    int stride,
-    int num_matching_actors) {
+    int tile_stride,
+    int num_matching_actors,
+    int tile_x_size,
+    int tile_y_size,
+    int partition_buffer_size,
+    double eps
+    ) {
     
     this->data_in = data_in;
     this->data_out = data_out;
     this->count_out = count_out;
     this->num_detection_actors = num_detection_actors;
-    this->stride = stride;
+    this->tile_stride = tile_stride;
+    this->tile_x_size = tile_x_size;
+    this->tile_y_size = tile_y_size;
+    this->eps = eps;
+    this->partition_buffer_size = partition_buffer_size;
     this->num_matching_actors = num_matching_actors;
     
     /*************************************************************************
@@ -79,7 +88,11 @@ combined_graph::combined_graph(
         fifos[merge_dist_data_idx],
         fifos[merge_dist_count_idx],
         num_detection_actors,
-        stride
+        tile_stride,
+        tile_x_size,
+        tile_y_size,
+        partition_buffer_size,
+        eps
     );
 
     dist = new dist_graph(

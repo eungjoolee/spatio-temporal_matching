@@ -30,7 +30,11 @@ using namespace cv;
 #define ITERATIONS 500
 #define NUM_DETECTION_ACTORS 10
 #define STRIDE 5
+#define TILE_X_SIZE 256
+#define TILE_Y_SIZE 256
 #define NUM_MATCHING_ACTORS 2
+#define PARTITION_BUFFER_SIZE 5
+#define EPS 0.3
 #define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0019/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
 
 int main(int argc, char ** argv) {
@@ -60,7 +64,11 @@ int main(int argc, char ** argv) {
         count_out_fifo, 
         NUM_DETECTION_ACTORS,
         STRIDE,
-        NUM_MATCHING_ACTORS);
+        NUM_MATCHING_ACTORS,
+        TILE_X_SIZE,
+        TILE_Y_SIZE,
+        PARTITION_BUFFER_SIZE,
+        EPS);
     
     /* Fill the input fifo with data */
     vector<cv::Mat> input_images;
