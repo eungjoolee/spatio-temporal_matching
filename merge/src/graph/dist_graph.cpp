@@ -44,8 +44,16 @@ extern "C" {
 
 using namespace std;
 
-dist_graph::dist_graph(welt_c_fifo_pointer data_in, welt_c_fifo_pointer count_in, welt_c_fifo_pointer data_out, welt_c_fifo_pointer count_out, int num_matching_actors) {
+dist_graph::dist_graph(
+    welt_c_fifo_pointer data_in, 
+    welt_c_fifo_pointer count_in, 
+    welt_c_fifo_pointer data_out, 
+    welt_c_fifo_pointer count_out, 
+    int num_matching_actors,
+    int dist_buffer_size) {
+
     this->num_matching_actors = num_matching_actors;
+    this->dist_buffer_size = dist_buffer_size;
 
     /*************************************************************************
      * Initialize fifos
@@ -99,7 +107,8 @@ dist_graph::dist_graph(welt_c_fifo_pointer data_in, welt_c_fifo_pointer count_in
         &fifos[compute_out_idx],
         num_matching_actors,
         data_out,
-        count_out
+        count_out,
+        dist_buffer_size
     ));
     descriptors.push_back((char *)"Frame distributor actor");
     actor_num++;
@@ -141,6 +150,9 @@ void dist_graph::scheduler() {
             pthread_join(thr[i], NULL);
         }
     }
+
+    flush_dist_buffer();
+
     clock_gettime(CLOCK_MONOTONIC, &end);
     wall_time = end.tv_sec - begin.tv_sec;
     wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
@@ -148,6 +160,27 @@ void dist_graph::scheduler() {
     cout << "dist graph scheduler ran " << this->iterations << " iterations in " << wall_time << " sec" << endl;
 
     delete thr;
+}
+
+void dist_graph::single_thread_scheduler() {
+    for (int iter = 0; iter < this->iterations; iter++) {
+        for (int i = 0; i < actor_count; i++) {
+            if (actors[i]->enable()) {
+                actors[i]->invoke();
+            }
+        }
+    }
+
+    flush_dist_buffer();
+}
+
+void dist_graph::flush_dist_buffer() {
+    frame_dist * dist = (frame_dist *) actors[0];
+    dist->begin_flush_buffer();
+    for(int i = 0; i < dist_buffer_size; i++) {
+        if (dist->enable())
+            dist->invoke();
+    }
 }
 
 void dist_graph::scheduler(int iters) {

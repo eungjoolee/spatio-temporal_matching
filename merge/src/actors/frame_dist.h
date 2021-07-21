@@ -58,7 +58,8 @@ class frame_dist : public welt_cpp_actor {
             welt_c_fifo_pointer * match_in_list,
             int num_matching_actors,
             welt_c_fifo_pointer data_out,
-            welt_c_fifo_pointer count_out);
+            welt_c_fifo_pointer count_out,
+            int buffer_size = 7);
 
         ~frame_dist() override;
 
@@ -66,10 +67,14 @@ class frame_dist : public welt_cpp_actor {
         void invoke() override;
         void reset() override;
         void connect(welt_cpp_graph *graph) override;
+
+        void begin_flush_buffer();
     private:
-        vector<objData> * get_next_frame();
-        vector<objData> * get_frame();
-        vector<objData> * get_prev_frame();
+        vector<objData> * get_frame(int index);
+        vector<Bounding_box_pair> * get_bounding_box_pair_vec(int index);
+
+        int frame_capacity();
+        int bounding_box_pair_capacity();
 
         welt_c_fifo_pointer count_in;
         welt_c_fifo_pointer boxes_in;
@@ -79,11 +84,14 @@ class frame_dist : public welt_cpp_actor {
         int num_matching_actors;
         welt_c_fifo_pointer data_out;
         welt_c_fifo_pointer count_out;
-        vector<objData> frames[3];
+        vector<objData> * frames;
 //        deque<vector<objData>> frames;
-        vector<Bounding_box_pair> bounding_box_pair_vec;
-        int frame_size;
+        vector<Bounding_box_pair> * bounding_box_pair_vecs;
         int frame_idx;
+        int frame_tail;
+        int bounding_box_idx;
+        int bounding_box_tail;
+        int buffer_size;
 };
 
 void frame_dist_terminate(frame_dist *context);

@@ -49,17 +49,26 @@ extern "C" {
 #include "../actors/matching_compute.h"
 #include "../actors/Bounding_box_pair.h"
 
-#define DIST_BUFFER_CAPACITY 100
+#define DIST_BUFFER_CAPACITY 1000
 
 class dist_graph : public welt_cpp_graph {
     public:
-        dist_graph(welt_c_fifo_pointer data_in, welt_c_fifo_pointer count_in, welt_c_fifo_pointer data_out, welt_c_fifo_pointer count_out, int num_matching_actors);
+        dist_graph(
+            welt_c_fifo_pointer data_in, 
+            welt_c_fifo_pointer count_in, 
+            welt_c_fifo_pointer data_out, 
+            welt_c_fifo_pointer count_out, 
+            int num_matching_actors,
+            int dist_buffer_size = 7);
 
         ~dist_graph();
 
         void set_iters(int iters);
         void scheduler() override;
         void scheduler(int iters);
+        void single_thread_scheduler();
+
+        void flush_dist_buffer();
 
     private:
         welt_c_fifo_pointer data_in;
@@ -68,6 +77,7 @@ class dist_graph : public welt_cpp_graph {
         welt_c_fifo_pointer count_out;
         int iterations;
         int num_matching_actors;
+        int dist_buffer_size;
 };
 
 void * dist_multithread_scheduler(void * arg);

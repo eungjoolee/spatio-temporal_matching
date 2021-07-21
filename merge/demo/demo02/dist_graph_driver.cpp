@@ -88,6 +88,7 @@ int main(int argc, char ** argv) {
     fp.close();
 
     /* Run scheduler */
+    //graph->set_iters(iterations);
     graph->scheduler(iterations);
 
     dist_graph_terminate(graph);

@@ -143,6 +143,8 @@ void combined_graph::scheduler() {
 
     }
 
+    this->dist->flush_dist_buffer();
+
     delete thr;
 }
 
