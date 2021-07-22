@@ -1,0 +1,6 @@
+rm -rf CMakeFiles
+rm cmake_install.cmake
+rm CMakeCache.txt
+rm combined_graph_driver.exe
+rm compile_commands.json
+rm Makefile

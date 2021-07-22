@@ -59,7 +59,7 @@ class dist_graph : public welt_cpp_graph {
             welt_c_fifo_pointer data_out, 
             welt_c_fifo_pointer count_out, 
             int num_matching_actors,
-            int dist_buffer_size = 7);
+            int dist_buffer_size = 10);
 
         ~dist_graph();
 

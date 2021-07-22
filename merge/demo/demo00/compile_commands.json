@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/amatti/spatio-temporal_matching/merge/demo/demo00",
+  "command": "/usr/bin/c++   -I/home/amatti/welter/lang/c/src/gems/actors/common -I/home/amatti/welter/lang/c/src/gems/edges/basic -I/home/amatti/welter/lang/c/src/gems/edges/common -I/home/amatti/welter/lang/c/src/tools/runtime -I/home/amatti/welter/lang/c/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/common -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/basic -I/home/amatti/welter/exp/lang/cpp/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/tools/runtime -I/home/amatti/welter/lang/cpp/src/gems/actors/common -I/home/amatti/welter/lang/cpp/src/tools/graph -isystem /usr/local/include/opencv4    -std=gnu++14 -o CMakeFiles/driver.exe.dir/driver.cpp.o -c /home/amatti/spatio-temporal_matching/merge/demo/demo00/driver.cpp",
+  "file": "/home/amatti/spatio-temporal_matching/merge/demo/demo00/driver.cpp"
+},
+{
+  "directory": "/home/amatti/spatio-temporal_matching/merge/demo/demo00",
+  "command": "/usr/bin/c++   -I/home/amatti/welter/lang/c/src/gems/actors/common -I/home/amatti/welter/lang/c/src/gems/edges/basic -I/home/amatti/welter/lang/c/src/gems/edges/common -I/home/amatti/welter/lang/c/src/tools/runtime -I/home/amatti/welter/lang/c/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/common -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/basic -I/home/amatti/welter/exp/lang/cpp/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/tools/runtime -I/home/amatti/welter/lang/cpp/src/gems/actors/common -I/home/amatti/welter/lang/cpp/src/tools/graph -isystem /usr/local/include/opencv4    -std=gnu++14 -o CMakeFiles/driver.exe.dir/home/amatti/spatio-temporal_matching/merge/src/actors/Bounding_box_pair.cpp.o -c /home/amatti/spatio-temporal_matching/merge/src/actors/Bounding_box_pair.cpp",
+  "file": "/home/amatti/spatio-temporal_matching/merge/src/actors/Bounding_box_pair.cpp"
+},
+{
+  "directory": "/home/amatti/spatio-temporal_matching/merge/demo/demo00",
+  "command": "/usr/bin/c++   -I/home/amatti/welter/lang/c/src/gems/actors/common -I/home/amatti/welter/lang/c/src/gems/edges/basic -I/home/amatti/welter/lang/c/src/gems/edges/common -I/home/amatti/welter/lang/c/src/tools/runtime -I/home/amatti/welter/lang/c/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/common -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/basic -I/home/amatti/welter/exp/lang/cpp/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/tools/runtime -I/home/amatti/welter/lang/cpp/src/gems/actors/common -I/home/amatti/welter/lang/cpp/src/tools/graph -isystem /usr/local/include/opencv4    -std=gnu++14 -o CMakeFiles/driver.exe.dir/home/amatti/spatio-temporal_matching/merge/src/actors/objData.cpp.o -c /home/amatti/spatio-temporal_matching/merge/src/actors/objData.cpp",
+  "file": "/home/amatti/spatio-temporal_matching/merge/src/actors/objData.cpp"
+},
+{
+  "directory": "/home/amatti/spatio-temporal_matching/merge/demo/demo00",
+  "command": "/usr/bin/c++   -I/home/amatti/welter/lang/c/src/gems/actors/common -I/home/amatti/welter/lang/c/src/gems/edges/basic -I/home/amatti/welter/lang/c/src/gems/edges/common -I/home/amatti/welter/lang/c/src/tools/runtime -I/home/amatti/welter/lang/c/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/common -I/home/amatti/welter/exp/lang/cpp/src/gems/actors/basic -I/home/amatti/welter/exp/lang/cpp/src/tools/graph -I/home/amatti/welter/exp/lang/cpp/src/tools/runtime -I/home/amatti/welter/lang/cpp/src/gems/actors/common -I/home/amatti/welter/lang/cpp/src/tools/graph -isystem /usr/local/include/opencv4    -std=gnu++14 -o CMakeFiles/driver.exe.dir/home/amatti/spatio-temporal_matching/merge/src/actors/object_detection_tiling/object_detection.cpp.o -c /home/amatti/spatio-temporal_matching/merge/src/actors/object_detection_tiling/object_detection.cpp",
+  "file": "/home/amatti/spatio-temporal_matching/merge/src/actors/object_detection_tiling/object_detection.cpp"
+}
+]

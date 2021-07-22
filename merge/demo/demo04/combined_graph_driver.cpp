@@ -26,7 +26,7 @@ using namespace std;
 using namespace cv;
 
 #define DRV_BUFFER_CAPACITY 6000
-#define NUM_IMAGES 25
+#define NUM_IMAGES 50
 #define ITERATIONS 500
 #define NUM_DETECTION_ACTORS 10
 #define STRIDE 5
@@ -35,7 +35,7 @@ using namespace cv;
 #define NUM_MATCHING_ACTORS 2
 #define PARTITION_BUFFER_SIZE 5
 #define EPS 0.3
-#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0019/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
+#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0020/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
 
 int main(int argc, char ** argv) {
     int iterations = ITERATIONS;
@@ -106,8 +106,6 @@ int main(int argc, char ** argv) {
 
     frame_time_ms = (int) (wall_time * 1000 / NUM_IMAGES);
 
-    cout << "frame time of " << frame_time_ms << " ms (" << NUM_IMAGES/wall_time << "fps)" << endl;
-
     combined_graph_terminate(graph);
 
     /* Write results to stdout */
@@ -150,13 +148,16 @@ int main(int argc, char ** argv) {
         for (int i = 0; i < STRIDE; i++) {
             cv::line(input_images[frame_id], cv::Point(256 * i,0), cv::Point(256 * i, 50), cv::Scalar(255,0,0), 1);
         }
-
-        /* Display image */
-        cv::imshow("output", input_images[frame_id]);
-        cv::waitKey(frame_time_ms);
-        
         
         frame_id++;
+    }
+
+    cout << "frame time of " << frame_time_ms << " ms (" << NUM_IMAGES/wall_time << "fps)" << endl;
+
+    /* Display images */
+    for (int i = 0; i < frame_id; i++) {
+        cv::imshow("output", input_images[i]);
+        cv::waitKey(frame_time_ms);
     }
 
     welt_c_fifo_free(data_in_fifo);
