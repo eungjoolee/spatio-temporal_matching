@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+valgrind --tool=memcheck --leak-check=yes ./driver.exe > diagnostics.txt 2>&1
+diff result.txt expected-result.txt
+
+grep -o "definitely lost: [0-9,]* bytes in [0-9,]* blocks" diagnostics.txt
+grep -o "indirectly lost: [0-9,]* bytes in [0-9,]* blocks" diagnostics.txt
+# ignoring still reachable since opencv utils logging and dnn causes "still reachable" bytes in valgrind

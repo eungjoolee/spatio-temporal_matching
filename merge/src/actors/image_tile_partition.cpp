@@ -235,6 +235,13 @@ void image_tile_partition_terminate(image_tile_partition * actor) {
 }
 
 image_tile_partition::~image_tile_partition() {
+    while (this->population() > 0) {
+        clear_frame(cleared_index);
+        cleared_index++;
+    }
+
+    delete[] this->frames;
+
     cout << "delete image tile partition actor" << endl;
 }
 

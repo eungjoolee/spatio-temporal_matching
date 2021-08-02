@@ -135,7 +135,7 @@ void dist_graph::set_iters(int iters) {
 void dist_graph::scheduler() {
     int i;
     int iter;
-    auto thr = new pthread_t[actor_count];
+    pthread_t thr[actor_count];
     struct timespec begin, end;
     double wall_time;
 
@@ -158,8 +158,6 @@ void dist_graph::scheduler() {
     wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
 
     cout << "dist graph scheduler ran " << this->iterations << " iterations in " << wall_time << " sec" << endl;
-
-    delete thr;
 }
 
 void dist_graph::single_thread_scheduler() {

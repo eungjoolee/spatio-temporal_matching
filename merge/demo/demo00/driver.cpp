@@ -46,8 +46,8 @@ int main(int argc, char ** argv) {
         input_images.push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
     }
 
-    std::string config = "../cfg/yolov3-tiny.cfg";
-    std::string model = "../cfg/yolov3-tiny.weights";
+    std::string config = "../../cfg/yolov3-tiny.cfg";
+    std::string model = "../../cfg/yolov3-tiny.weights";
 
     cv::dnn::Net network = cv::dnn::readNet(model, config, "Darknet");
 

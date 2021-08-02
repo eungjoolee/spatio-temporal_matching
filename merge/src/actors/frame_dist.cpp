@@ -284,5 +284,8 @@ void frame_dist_terminate(frame_dist *context) {
 }
 
 frame_dist::~frame_dist() {
+    delete[] this->frames;
+    delete[] this->bounding_box_pair_vecs;
+
     cout << "delete frame dist actor" << endl;
 }

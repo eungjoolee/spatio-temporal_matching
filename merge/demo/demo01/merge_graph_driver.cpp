@@ -48,7 +48,7 @@ using namespace std;
 #define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0015/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
 #define NUM_DETECTION_ACTORS 10
 #define STRIDE 5
-#define NUM_IMAGES 40
+#define NUM_IMAGES 15
 
 
 int main(int argc, char ** argv) {

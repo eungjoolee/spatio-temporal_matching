@@ -45,7 +45,6 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
-#include <opencv2/dnn.hpp>
 #include <pthread.h>
 
 using namespace std;
@@ -73,8 +72,8 @@ image_tile_det::image_tile_det (
     y_stride = tile_y;
     frame_index = 0;
 
-    std::string config = "../cfg/yolov3-tiny.cfg";
-    std::string model = "../cfg/yolov3-tiny.weights";
+    std::string config = "../../cfg/yolov3-tiny.cfg";
+    std::string model = "../../cfg/yolov3-tiny.weights";
 
     network = cv::dnn::readNet(model, config, "Darknet"); 
 }
@@ -110,6 +109,8 @@ void image_tile_det::invoke() {
             /* read img fifo and store in in_image*/
             welt_c_fifo_read(in_image, &img_color);
             Mat tile = (*img_color);
+
+            
             
             //imread("/Users/jushen/Documents/yolo-tiling/val2017
             // /000000173091.jpg", IMREAD_COLOR); //000000574520.jpg

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+valgrind --tool=memcheck ./driver.exe 150 10 > diagnostics.txt 2>&1
+diff result.txt expected-result.txt
+
+# optional memory checker
+grep -o "in use at exit: [0-9,]* bytes in [0-9,]* blocks" diagnostics.txt
