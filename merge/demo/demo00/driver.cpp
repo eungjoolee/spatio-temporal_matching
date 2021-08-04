@@ -34,7 +34,7 @@ using namespace cv;
 #define TILE_X_SIZE 256
 #define TILE_Y_SIZE 256
 #define EPS 0.3
-#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0020/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
+#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0013/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
 
 int main(int argc, char ** argv) {
     /* Get input images */

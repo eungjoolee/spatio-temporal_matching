@@ -148,6 +148,31 @@ void combined_graph::scheduler() {
     delete thr;
 }
 
+void combined_graph::frame_scheduler(int frames) {
+    /* Create a thread for each graph */
+    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
+    int iter, i;
+
+    /* Run scheduler until target number of threads is complete */
+    while (welt_c_fifo_population(this->count_out) < frames) {
+        for (i = 0; i < this->merge->actor_count; i++) {
+            pthread_create(&thr[i], nullptr, combined_multithread_scheduler, (void *)this->merge->actors[i]);
+        }
+
+        for (i = 0; i < this->dist->actor_count; i++) {
+            pthread_create(&thr[i + this->merge->actor_count], nullptr, combined_multithread_scheduler, (void *)this->dist->actors[i]);
+        }
+        
+        for (i = 0 /* this->merge->actor_count*/; i < this->merge->actor_count + this->dist->actor_count; i++) {
+            pthread_join(thr[i], NULL);
+        }
+    }
+
+    this->dist->flush_dist_buffer();
+
+    delete thr;
+}
+
 void combined_graph::set_iters(int iters) {
     this->iterations = iters;
 }

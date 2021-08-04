@@ -74,7 +74,7 @@ image_tile_det::image_tile_det (
 
     std::string config = "../../cfg/yolov3-tiny.cfg";
     std::string model = "../../cfg/yolov3-tiny.weights";
-
+    
     network = cv::dnn::readNet(model, config, "Darknet"); 
 }
 
