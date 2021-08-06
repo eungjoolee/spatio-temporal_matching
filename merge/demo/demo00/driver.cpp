@@ -27,27 +27,61 @@ extern "C" {
 using namespace std;
 using namespace cv;
 
-#define NUM_IMAGES 50
-#define ITERATIONS 500
-#define STRIDE 5
-#define NUM_DETECTION_ACTORS 10
-#define TILE_X_SIZE 256
-#define TILE_Y_SIZE 256
 #define EPS 0.3
-#define IMAGE_ROOT_DIRECTORY "/mnt/d/Users/amatti/Documents/School/2021-2022/Research/testing/image_02/0013/" // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php
+
+int div_round_up(int numerator, int denominator) {
+    return (numerator + denominator - 1) / denominator;
+}
 
 int main(int argc, char ** argv) {
+    /* Default settings */
+    int tile_x_size = 256;
+    int tile_y_size = 256;
+    bool partition = false;
+    int num_images = 50;
+    char *image_root_directory;
+
+    /* determined based on input data */
+    int frame_x_size;
+    int frame_y_size;
+    int stride;
+    int num_detection_actors;
+
+    /* TODO use an arg parser */
+    if (argc > 1) {
+        image_root_directory = argv[1];
+
+        if (argc > 2) {
+            partition = (bool)atoi(argv[2]);
+
+            if (argc > 3) {
+                num_images = atoi(argv[3]);
+            }
+        }
+    }
+
+
     /* Get input images */
     vector<cv::Mat> input_images;
 
-    for (int i = 0; i < NUM_IMAGES; i++) {
+    for (int i = 0; i < num_images; i++) {
         std::stringstream next_img;
-        next_img << IMAGE_ROOT_DIRECTORY << std::setfill('0') << std::setw(6) << i << ".png";
+        next_img << image_root_directory << std::setfill('0') << std::setw(6) << i << ".png";
         input_images.push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
     }
 
-    std::string config = "../../cfg/yolov3-tiny.cfg";
-    std::string model = "../../cfg/yolov3-tiny.weights";
+    if (partition == false) {
+        tile_x_size = input_images[0].cols;
+        tile_y_size = input_images[0].rows;
+    }
+
+    frame_x_size = input_images[0].cols;
+    frame_y_size = input_images[0].rows;
+    stride = div_round_up(frame_x_size, tile_x_size);
+    num_detection_actors = stride * div_round_up(frame_y_size, tile_y_size);
+
+    std::string config = "../../cfg/yolov3.cfg";
+    std::string model = "../../cfg/yolov3.weights";
 
     cv::dnn::Net network = cv::dnn::readNet(model, config, "Darknet");
 
@@ -60,29 +94,30 @@ int main(int argc, char ** argv) {
     clock_gettime(CLOCK_MONOTONIC, &begin);
 
     /* Process images */
-    for (int frame_idx = 0; frame_idx < NUM_IMAGES; frame_idx++) {
+    for (int frame_idx = 0; frame_idx < num_images; frame_idx++) {
         //cout << "processing frame " << frame_idx << endl;
         /* Partition */
         vector<cv::Mat> frame;
+
         cv::Mat img = input_images[frame_idx];
         int num_tiles = 0;
-        for(int i = 0; i < img.rows; i += TILE_Y_SIZE)
+        for(int i = 0; i < img.rows; i += tile_y_size)
         {
-            for (int j = 0; j < img.cols; j += TILE_X_SIZE)
+            for (int j = 0; j < img.cols; j += tile_x_size)
             {
                 //cout << "Processing Tile (" << i << ", " << j << ")" << endl;
                 cv::Mat tile;
-                if (i + TILE_Y_SIZE < img.rows && j + TILE_X_SIZE < img.cols)
+                if (i + tile_y_size < img.rows && j + tile_x_size < img.cols)
                 {
-                    tile = img(Rect(j,i,TILE_X_SIZE-1,TILE_Y_SIZE-1));
+                    tile = img(Rect(j,i,tile_x_size-1,tile_y_size-1));
                 }
-                else if (i + TILE_Y_SIZE < img.rows)
+                else if (i + tile_y_size < img.rows)
                 {
-                    tile = img(Rect(j,i,img.cols-j-1,TILE_Y_SIZE-1));
+                    tile = img(Rect(j,i,img.cols-j-1,tile_y_size-1));
                 }
-                else if (j + TILE_X_SIZE < img.cols)
+                else if (j + tile_x_size < img.cols)
                 {
-                    tile = img(Rect(j,i,TILE_X_SIZE-1,img.rows-i-1));
+                    tile = img(Rect(j,i,tile_x_size-1,img.rows-i-1));
                 }
                 else
                 {
@@ -118,8 +153,8 @@ int main(int argc, char ** argv) {
             groupRectangles(merged_result, 1, EPS);
 
             for (int j = 0; j < merged_result.size(); j++) {
-                int x_offset = TILE_X_SIZE * (i % STRIDE);
-                int y_offset = TILE_Y_SIZE * (i / STRIDE);
+                int x_offset = tile_x_size * (i % stride);
+                int y_offset = tile_y_size * (i / stride);
                 objData data = objData(box_id, merged_result[j].x + x_offset, merged_result[j].y + y_offset, merged_result[j].width, merged_result[j].height);
                 merged_frame.push_back(data);
                 box_id++;
@@ -173,10 +208,10 @@ int main(int argc, char ** argv) {
     wall_time = end.tv_sec - begin.tv_sec;
     wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
 
-    frame_time_ms = (int) (wall_time * 1000 / NUM_IMAGES);
+    frame_time_ms = (int) (wall_time * 1000 / num_images);
 
     /* Output results */
-    for (int frame_idx = 0; frame_idx < NUM_IMAGES; frame_idx++) {
+    for (int frame_idx = 0; frame_idx < num_images; frame_idx++) {
         vector<objData> frame = frames[frame_idx];
         int count = frame.size();
         cout << "frameid: " << frame_idx << " found " << count << endl;
@@ -202,19 +237,19 @@ int main(int argc, char ** argv) {
         cout << endl;
 
         /* Draw tile bounding boxes on image */
-        for (int i = 0; i < NUM_DETECTION_ACTORS / STRIDE; i++) {
-            cv::line(input_images[frame_idx], cv::Point(0,256 * i), cv::Point(50, 256 * i), cv::Scalar(255,0,0), 1);
+        for (int i = 0; i < num_detection_actors / stride; i++) {
+            cv::line(input_images[frame_idx], cv::Point(0,tile_x_size * i), cv::Point(50, tile_x_size * i), cv::Scalar(255,0,0), 1);
         }
 
-        for (int i = 0; i < STRIDE; i++) {
-            cv::line(input_images[frame_idx], cv::Point(256 * i,0), cv::Point(256 * i, 50), cv::Scalar(255,0,0), 1);
+        for (int i = 0; i < stride; i++) {
+            cv::line(input_images[frame_idx], cv::Point(tile_y_size * i,0), cv::Point(tile_y_size * i, 50), cv::Scalar(255,0,0), 1);
         }
     }    
 
-    cout << "frame time of " << frame_time_ms << " ms (" << NUM_IMAGES/wall_time << "fps)" << endl;
+    cout << "frame time of " << frame_time_ms << " ms (" << num_images/wall_time << "fps)" << endl;
 
     /* Display images */
-    for (int i = 0; i < NUM_IMAGES; i++) {
+    for (int i = 0; i < num_images; i++) {
         cv::imshow("output", input_images[i]);
         cv::waitKey(frame_time_ms);
     }

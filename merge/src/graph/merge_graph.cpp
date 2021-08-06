@@ -164,7 +164,6 @@ merge_graph::merge_graph(
     }
 
     /* Merge actor */
-    // create list of detection actors
     actors.push_back(new detection_merge(
         &fifos[detection_merge_data_idx],
         &fifos[detection_merge_count_idx],

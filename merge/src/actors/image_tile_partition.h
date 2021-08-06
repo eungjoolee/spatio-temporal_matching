@@ -28,6 +28,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 
 @ddblock_end copyright
 *******************************************************************************/
+
 /*******************************************************************************
 This actor reads values of an image and a threshold value. 
 It counts the number of

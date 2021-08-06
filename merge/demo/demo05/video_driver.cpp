@@ -82,7 +82,7 @@ int main(int argc, char ** argv) {
             20,                                                                /* num_matching_actors */
             tile_x_size,                                                       /* tile_x_size */
             tile_y_size,                                                       /* tile_y_size */
-            10,                                                                /* partition_buffer_size */
+            20,                                                                /* partition_buffer_size */
             0.3F                                                               /* eps */
         );
     } else {
@@ -95,7 +95,7 @@ int main(int argc, char ** argv) {
             20,                      /* num_matching_actors */
             frame_x_size,            /* tile_x_size */
             frame_y_size,            /* tile_y_size */
-            10,                      /* partition_buffer_size */
+            35,                      /* partition_buffer_size */
             0.3F                     /* eps */
         );
     }

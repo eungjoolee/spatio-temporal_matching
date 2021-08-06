@@ -91,7 +91,7 @@ void detection_merge::invoke() {
             }
             break;
         case DETECTION_MERGE_MODE_WRITE: {
-                /* Push rectangles as a 5-int vector to bounding box matching */
+                /* Push rectangles as a 4-int vector to bounding box matching */
                 int size = to_write.size();
                 for (int i = 0; i < size; i++) {
                     Rect bbox = to_write[i];

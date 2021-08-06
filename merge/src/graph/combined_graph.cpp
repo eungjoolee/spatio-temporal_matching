@@ -32,16 +32,17 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include "merge_graph.h"
 
 combined_graph::combined_graph(
-    welt_c_fifo_pointer data_in,
-    welt_c_fifo_pointer data_out,
-    welt_c_fifo_pointer count_out,
+    welt_c_fifo_pointer data_in, 
+    welt_c_fifo_pointer data_out, 
+    welt_c_fifo_pointer count_out, 
     int num_detection_actors,
     int tile_stride,
     int num_matching_actors,
-    int tile_x_size,
-    int tile_y_size,
+    bool use_no_partition_graph,
+    double eps,
     int partition_buffer_size,
-    double eps
+    int tile_x_size,
+    int tile_y_size
     ) {
     
     this->data_in = data_in;
@@ -54,6 +55,7 @@ combined_graph::combined_graph(
     this->eps = eps;
     this->partition_buffer_size = partition_buffer_size;
     this->num_matching_actors = num_matching_actors;
+    this->use_no_partition_graph = use_no_partition_graph;
     
     /*************************************************************************
      * Reserve fifos
@@ -83,17 +85,32 @@ combined_graph::combined_graph(
      * 
      *************************************************************************/
 
-    merge = new merge_graph(
-        data_in,
-        fifos[merge_dist_data_idx],
-        fifos[merge_dist_count_idx],
-        num_detection_actors,
-        tile_stride,
-        tile_x_size,
-        tile_y_size,
-        partition_buffer_size,
-        eps
-    );
+    if (use_no_partition_graph == true)
+    {
+        merge = new merge_graph_no_partition(
+            data_in,
+            fifos[merge_dist_data_idx],
+            fifos[merge_dist_count_idx],
+            num_detection_actors,
+            partition_buffer_size,
+            eps
+        );
+    } 
+    else 
+    {
+        merge = new merge_graph(
+            data_in,
+            fifos[merge_dist_data_idx],
+            fifos[merge_dist_count_idx],
+            num_detection_actors,
+            tile_stride,
+            tile_x_size,
+            tile_y_size,
+            partition_buffer_size,
+            eps
+        );
+    }
+    
 
     dist = new dist_graph(
         fifos[merge_dist_data_idx],
@@ -177,6 +194,11 @@ void combined_graph::set_iters(int iters) {
     this->iterations = iters;
 }
 
+bool combined_graph::get_use_no_partition_graph()
+{
+    return this->use_no_partition_graph;
+}
+
 void * combined_multithread_scheduler(void * arg) {
     welt_cpp_actor *actor = (welt_cpp_actor *) arg;
 
@@ -187,8 +209,17 @@ void * combined_multithread_scheduler(void * arg) {
 }
 
 void combined_graph_terminate(combined_graph *context) {
+
+    
     dist_graph_terminate(context->dist);
-    merge_graph_terminate(context->merge);
+    if (context->get_use_no_partition_graph() == true)
+    {
+        merge_graph_no_partition_terminate((merge_graph_no_partition *)context->merge);
+    } 
+    else
+    {
+        merge_graph_terminate((merge_graph *)context->merge);
+    }
 
     for (int i = 0; i < context->fifo_count; i++) {
         welt_c_fifo_free((welt_c_fifo_pointer) context->fifos[i]);

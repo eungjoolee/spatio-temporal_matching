@@ -20,8 +20,10 @@ extern "C" {
 using namespace std;
 using namespace cv;
 
+/* TODO turn some of these into command line arguments */
 #define DRV_BUFFER_CAPACITY 6000
 #define PARTITION_BUFFER_SIZE 5
+#define NUM_DETECTION_ACTORS_NO_PARTITION 5
 #define EPS 0.3F
 
 int div_round_up(int numerator, int denominator) {
@@ -106,23 +108,23 @@ int main(int argc, char ** argv) {
             num_detection_actors,
             stride,
             num_matching_actors,
-            tile_x_size,
-            tile_y_size,
+            false,
+            EPS,
             PARTITION_BUFFER_SIZE,
-            EPS
+            tile_x_size,
+            tile_y_size
         );
     } else {
         graph = new combined_graph(
             data_in_fifo,
             data_out_fifo,
             count_out_fifo,
-            1,
-            1,
+            NUM_DETECTION_ACTORS_NO_PARTITION,
+            stride,            
             num_matching_actors,
-            frame_x_size,
-            frame_y_size,
-            PARTITION_BUFFER_SIZE,
-            EPS
+            true,
+            EPS,
+            PARTITION_BUFFER_SIZE
         );
     }
 
