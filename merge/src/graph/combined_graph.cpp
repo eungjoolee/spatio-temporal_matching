@@ -31,10 +31,12 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include "dist_graph.h"
 #include "merge_graph.h"
 
+#include <pthread.h>
+
 combined_graph::combined_graph(
-    welt_c_fifo_pointer data_in, 
-    welt_c_fifo_pointer data_out, 
-    welt_c_fifo_pointer count_out, 
+    welt_c_fifo_pointer data_in,
+    welt_c_fifo_pointer data_out,
+    welt_c_fifo_pointer count_out,
     int num_detection_actors,
     int tile_stride,
     int num_matching_actors,
@@ -42,9 +44,9 @@ combined_graph::combined_graph(
     double eps,
     int partition_buffer_size,
     int tile_x_size,
-    int tile_y_size
-    ) {
-    
+    int tile_y_size)
+{
+
     this->data_in = data_in;
     this->data_out = data_out;
     this->count_out = count_out;
@@ -56,7 +58,7 @@ combined_graph::combined_graph(
     this->partition_buffer_size = partition_buffer_size;
     this->num_matching_actors = num_matching_actors;
     this->use_no_partition_graph = use_no_partition_graph;
-    
+
     /*************************************************************************
      * Reserve fifos
      * 
@@ -72,11 +74,11 @@ combined_graph::combined_graph(
 
     /* Count output from merge_graph to dist_graph */
     merge_dist_count_idx = fifo_num;
-    fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(COMBINED_BUFFER_CAPACITY, merge_dist_count_token_size, ++fifo_num));
+    fifos.push_back((welt_c_fifo_pointer)welt_c_fifo_new(COMBINED_BUFFER_CAPACITY, merge_dist_count_token_size, ++fifo_num));
 
     /* Data output from merge_graph to dist_graph */
     merge_dist_data_idx = fifo_num;
-    fifos.push_back((welt_c_fifo_pointer) welt_c_fifo_new(COMBINED_BUFFER_CAPACITY, merge_dist_data_token_size, ++fifo_num));
+    fifos.push_back((welt_c_fifo_pointer)welt_c_fifo_new(COMBINED_BUFFER_CAPACITY, merge_dist_data_token_size, ++fifo_num));
 
     fifo_count = fifo_num;
 
@@ -93,10 +95,9 @@ combined_graph::combined_graph(
             fifos[merge_dist_count_idx],
             num_detection_actors,
             partition_buffer_size,
-            eps
-        );
-    } 
-    else 
+            eps);
+    }
+    else
     {
         merge = new merge_graph(
             data_in,
@@ -107,57 +108,102 @@ combined_graph::combined_graph(
             tile_x_size,
             tile_y_size,
             partition_buffer_size,
-            eps
-        );
+            eps);
     }
-    
 
     dist = new dist_graph(
         fifos[merge_dist_data_idx],
         fifos[merge_dist_count_idx],
         data_out,
         count_out,
-        num_matching_actors
-    );
+        num_matching_actors);
 
     actor_count = 0;
 }
 
-void combined_graph::single_thread_scheduler() {
-    for (int iter = 0; iter < this->iterations; iter++) {
-        for (int i = 0; i < this->merge->actor_count; i++) {
-            while (this->merge->actors[i]->enable()) {
-               this->merge->actors[i]->invoke();
+void combined_graph::set_iters(int iters)
+{
+    this->iterations = iters;
+}
+
+void combined_graph::single_thread_scheduler()
+{
+    for (int iter = 0; iter < this->iterations; iter++)
+    {
+        for (int i = 0; i < this->merge->actor_count; i++)
+        {
+            while (this->merge->actors[i]->enable())
+            {
+                this->merge->actors[i]->invoke();
             }
         }
-        
-        for (int i = 0; i < this->dist->actor_count; i++) {
-            while (this->dist->actors[i]->enable()) {
+
+        for (int i = 0; i < this->dist->actor_count; i++)
+        {
+            while (this->dist->actors[i]->enable())
+            {
                 this->dist->actors[i]->invoke();
             }
         }
     }
 }
 
-void combined_graph::scheduler() {
+/* Scheduler spawns one thread per actor, which invokes whenever enabled and sleeps when enable is false until signalled by another actor thread.
+ *   The scheduler continues until the graph reaches a locked state where no actors are enabled before returning.
+ */
+void combined_graph::scheduler()
+{
     /* Create a thread for each graph */
-    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
-    int iter, i;
+    int num_threads = this->merge->actor_count + this->dist->actor_count;
+    pthread_t *thr = new pthread_t[num_threads];
 
-    /* Simple scheduler */
-    for (iter = 0; iter < this->iterations; iter++) {
-        for (i = 0; i < this->merge->actor_count; i++) {
-            pthread_create(&thr[i], nullptr, combined_multithread_scheduler, (void *)this->merge->actors[i]);
-        }
+    /* Synchronization */
+    unsigned int num_running = num_threads;
+    pthread_mutex_t cond_running_lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t cond_running = PTHREAD_COND_INITIALIZER;
 
-        for (i = 0; i < this->dist->actor_count; i++) {
-            pthread_create(&thr[i + this->merge->actor_count], nullptr, combined_multithread_scheduler, (void *)this->dist->actors[i]);
-        }
-        
-        for (i = 0 /* this->merge->actor_count*/; i < this->merge->actor_count + this->dist->actor_count; i++) {
-            pthread_join(thr[i], NULL);
-        }
+    /* Generate args for threads */
+    combined_multithread_scheduler_arg_t args[num_threads];
+    int idx = 0;
 
+    for (int i = 0; i < this->merge->actor_count; i++)
+    {
+        args[idx].actor = this->merge->actors[i];
+        args[idx].num_running = &num_running;
+        args[idx].cond_running_lock = &cond_running_lock;
+        args[idx].cond_running = &cond_running; 
+        idx++;
+    }
+
+    for (int i = 0; i < this->dist->actor_count; i++)
+    {
+        args[idx].actor = this->dist->actors[i];
+        args[idx].num_running = &num_running;
+        args[idx].cond_running_lock = &cond_running_lock;
+        args[idx].cond_running = &cond_running; 
+        idx++;
+    }
+
+    /* Spawn threads */
+    for (int i = 0; i < num_threads; i++)
+    {
+        pthread_create(
+            &thr[i],
+            nullptr,
+            combined_multithread_scheduler,
+            (void *)&args[i]
+            );
+    }
+
+    /* Threads terminate when they are signalled while num_running is 0; sleep main thread until this happens */
+    pthread_mutex_lock(&cond_running_lock);
+    while (num_running > 0)
+        pthread_cond_wait(&cond_running, &cond_running_lock);
+    pthread_mutex_unlock(&cond_running_lock);
+
+    for (int i = 0; i < num_threads; i++)
+    {
+        pthread_join(thr[i], NULL);
     }
 
     this->dist->flush_dist_buffer();
@@ -165,33 +211,55 @@ void combined_graph::scheduler() {
     delete thr;
 }
 
-void combined_graph::frame_scheduler(int frames) {
-    /* Create a thread for each graph */
-    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
-    int iter, i;
+void *combined_multithread_scheduler(void *arg)
+{
+    combined_multithread_scheduler_arg_t *args = (combined_multithread_scheduler_arg_t *)arg;
+    bool done = false;
+    bool modified;
 
-    /* Run scheduler until target number of threads is complete */
-    while (welt_c_fifo_population(this->count_out) < frames) {
-        for (i = 0; i < this->merge->actor_count; i++) {
-            pthread_create(&thr[i], nullptr, combined_multithread_scheduler, (void *)this->merge->actors[i]);
+    while (!done) 
+    {
+        /* check if this iteration has the possibility of modifying the graph */
+        modified = args->actor->enable();
+        while (args->actor->enable())
+            args->actor->invoke();
+
+        if (modified)
+        {
+            /* if the actor may have modified the graph then signal other waiting threads */
+            //pthread_mutex_lock(args->cond_running_lock);
+            pthread_cond_broadcast(args->cond_running);
+            //pthread_mutex_unlock(args->cond_running_lock);
         }
 
-        for (i = 0; i < this->dist->actor_count; i++) {
-            pthread_create(&thr[i + this->merge->actor_count], nullptr, combined_multithread_scheduler, (void *)this->dist->actors[i]);
+        /* put the thread to sleep until another thread signals that the graph is modified (or in a steady state) */
+        pthread_mutex_lock(args->cond_running_lock);
+        *args->num_running -= 1;
+        if (*args->num_running == 0)
+        {
+            /* the graph is in a steady state since this is the last thread to sleep */
+            pthread_cond_broadcast(args->cond_running);
+            done = true;
         }
-        
-        for (i = 0 /* this->merge->actor_count*/; i < this->merge->actor_count + this->dist->actor_count; i++) {
-            pthread_join(thr[i], NULL);
+        else 
+        {
+            /* the graph is not in a steady state yet and the thread needs to wait for other threads to complete */
+            pthread_cond_wait(args->cond_running, args->cond_running_lock);
+            
+            /* here the thread has been signalled either beacause there are no more running threads or the graph was modified */
+            if (*args->num_running == 0)
+            {
+                done = true;
+            }
+            else
+            {
+                *args->num_running += 1;
+            }
         }
+        pthread_mutex_unlock(args->cond_running_lock);
     }
 
-    this->dist->flush_dist_buffer();
-
-    delete thr;
-}
-
-void combined_graph::set_iters(int iters) {
-    this->iterations = iters;
+    return nullptr;
 }
 
 bool combined_graph::get_use_no_partition_graph()
@@ -199,35 +267,28 @@ bool combined_graph::get_use_no_partition_graph()
     return this->use_no_partition_graph;
 }
 
-void * combined_multithread_scheduler(void * arg) {
-    welt_cpp_actor *actor = (welt_cpp_actor *) arg;
+void combined_graph_terminate(combined_graph *context)
+{
 
-    while (actor->enable())
-        actor->invoke();
-
-    return nullptr;
-}
-
-void combined_graph_terminate(combined_graph *context) {
-
-    
     dist_graph_terminate(context->dist);
     if (context->get_use_no_partition_graph() == true)
     {
         merge_graph_no_partition_terminate((merge_graph_no_partition *)context->merge);
-    } 
+    }
     else
     {
         merge_graph_terminate((merge_graph *)context->merge);
     }
 
-    for (int i = 0; i < context->fifo_count; i++) {
-        welt_c_fifo_free((welt_c_fifo_pointer) context->fifos[i]);
+    for (int i = 0; i < context->fifo_count; i++)
+    {
+        welt_c_fifo_free((welt_c_fifo_pointer)context->fifos[i]);
     }
 
     delete context;
 }
 
-combined_graph::~combined_graph() {
+combined_graph::~combined_graph()
+{
     cout << "delete combined graph" << endl;
 }

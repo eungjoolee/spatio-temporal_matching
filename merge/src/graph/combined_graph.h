@@ -69,7 +69,6 @@ class combined_graph : public welt_cpp_graph {
 
         bool get_use_no_partition_graph();
         void single_thread_scheduler();
-        void frame_scheduler(int frames);
         void set_iters(int iters);
         void scheduler() override;
 
@@ -90,6 +89,13 @@ class combined_graph : public welt_cpp_graph {
         int iterations;
         bool use_no_partition_graph;
 };
+
+typedef struct _combined_multithread_scheduler_arg_t {
+    welt_cpp_actor * actor;
+    unsigned int * num_running;
+    pthread_mutex_t * cond_running_lock;
+    pthread_cond_t * cond_running;
+} combined_multithread_scheduler_arg_t;
 
 void *combined_multithread_scheduler(void * arg);
 void combined_graph_terminate(combined_graph * context);
