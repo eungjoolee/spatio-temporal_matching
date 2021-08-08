@@ -157,8 +157,9 @@ void combined_graph::scheduler()
     int num_threads = this->merge->actor_count + this->dist->actor_count;
     pthread_t *thr = new pthread_t[num_threads];
 
-    /* Synchronization */
+    /* Synchronization (both num_running and scheduler_finished are guarded by cond_running_lock */
     unsigned int num_running = num_threads;
+    bool scheduler_finished = false;
     pthread_mutex_t cond_running_lock = PTHREAD_MUTEX_INITIALIZER;
     pthread_cond_t cond_running = PTHREAD_COND_INITIALIZER;
 
@@ -170,6 +171,7 @@ void combined_graph::scheduler()
     {
         args[idx].actor = this->merge->actors[i];
         args[idx].num_running = &num_running;
+        args[idx].scheduler_finished = &scheduler_finished;
         args[idx].cond_running_lock = &cond_running_lock;
         args[idx].cond_running = &cond_running; 
         idx++;
@@ -179,6 +181,7 @@ void combined_graph::scheduler()
     {
         args[idx].actor = this->dist->actors[i];
         args[idx].num_running = &num_running;
+        args[idx].scheduler_finished = &scheduler_finished;
         args[idx].cond_running_lock = &cond_running_lock;
         args[idx].cond_running = &cond_running; 
         idx++;
@@ -195,9 +198,9 @@ void combined_graph::scheduler()
             );
     }
 
-    /* Threads terminate when they are signalled while num_running is 0; sleep main thread until this happens */
+    /* Threads terminate when they are signalled while scheduler_finished is true; sleep main thread until this happens */
     pthread_mutex_lock(&cond_running_lock);
-    while (num_running > 0)
+    while (scheduler_finished == false)
         pthread_cond_wait(&cond_running, &cond_running_lock);
     pthread_mutex_unlock(&cond_running_lock);
 
@@ -224,40 +227,54 @@ void *combined_multithread_scheduler(void *arg)
         while (args->actor->enable())
             args->actor->invoke();
 
-        if (modified)
-        {
-            /* if the actor may have modified the graph then signal other waiting threads */
-            //pthread_mutex_lock(args->cond_running_lock);
-            pthread_cond_broadcast(args->cond_running);
-            //pthread_mutex_unlock(args->cond_running_lock);
-        }
-
-        /* put the thread to sleep until another thread signals that the graph is modified (or in a steady state) */
+        /* put the thread to sleep until another thread signals that the graph is modified or in a steady state */
         pthread_mutex_lock(args->cond_running_lock);
         *args->num_running -= 1;
-        if (*args->num_running == 0)
+        if (modified == true)
         {
-            /* the graph is in a steady state since this is the last thread to sleep */
             pthread_cond_broadcast(args->cond_running);
-            done = true;
+            pthread_cond_wait(args->cond_running, args->cond_running_lock);
         }
         else 
         {
-            /* the graph is not in a steady state yet and the thread needs to wait for other threads to complete */
-            pthread_cond_wait(args->cond_running, args->cond_running_lock);
-            
-            /* here the thread has been signalled either beacause there are no more running threads or the graph was modified */
             if (*args->num_running == 0)
-            {
-                done = true;
+            {   
+                *args->scheduler_finished = true;
+                pthread_cond_broadcast(args->cond_running);
             }
             else
             {
-                *args->num_running += 1;
+                pthread_cond_wait(args->cond_running, args->cond_running_lock);
             }
         }
+        
+        *args->num_running += 1;
+        done = *args->scheduler_finished;
+
+        // if (*args->num_running == 0 && modified == false)
+        // {
+        //     /* the graph is in a steady state since this is the last thread to sleep and the actor could not modify the graph */
+        //     pthread_cond_broadcast(args->cond_running);
+        //     *args->scheduler_finished = true;
+        // }
+        // else 
+        // {
+        //     if (modified == true) 
+        //     {
+        //         /* wake other threads */
+        //         pthread_cond_broadcast(args->cond_running);
+        //     } 
+
+        //     /* the graph may not be in a steady state yet and the thread needs to wait for other threads to complete */
+        //     pthread_cond_wait(args->cond_running, args->cond_running_lock);
+
+        //     /* if the thread is woken, either scheduler finished or additional firings are possible */
+        //     *args->num_running += 1;
+        // }
+        // done = *args->scheduler_finished;
         pthread_mutex_unlock(args->cond_running_lock);
     }
+
 
     return nullptr;
 }
@@ -269,7 +286,6 @@ bool combined_graph::get_use_no_partition_graph()
 
 void combined_graph_terminate(combined_graph *context)
 {
-
     dist_graph_terminate(context->dist);
     if (context->get_use_no_partition_graph() == true)
     {

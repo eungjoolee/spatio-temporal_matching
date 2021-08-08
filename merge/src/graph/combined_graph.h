@@ -93,6 +93,7 @@ class combined_graph : public welt_cpp_graph {
 typedef struct _combined_multithread_scheduler_arg_t {
     welt_cpp_actor * actor;
     unsigned int * num_running;
+    bool * scheduler_finished;
     pthread_mutex_t * cond_running_lock;
     pthread_cond_t * cond_running;
 } combined_multithread_scheduler_arg_t;

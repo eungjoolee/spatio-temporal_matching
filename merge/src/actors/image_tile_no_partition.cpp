@@ -121,21 +121,23 @@ void image_tile_no_partition::invoke()
                 welt_c_fifo_read(in_image_fifo, &img_ptr);
 
                 /* save frame locally */
-                frames[frame_index % frame_buffer_size] = *img_ptr;
+                // frames[frame_index % frame_buffer_size] = *img_ptr;
 
                 /* forward frame to detector */
-                cv::Mat * tile_send = &frames[frame_index % frame_buffer_size];
-                welt_c_fifo_write(out_fifo_list[t], &tile_send);
+                // cv::Mat * tile_send = &frames[frame_index % frame_buffer_size];
+                welt_c_fifo_write(out_fifo_list[t], &img_ptr);
 
                 frame_index++;
 
-                if (capacity() == 0)
-                {
-                    mode = IMG_TILE_MODE_CLEANUP;
-                } else 
-                {
-                    mode = IMG_TILE_MODE_PROCESS;
-                }
+                mode = IMG_TILE_MODE_PROCESS;
+                // if (capacity() == 0)
+                // {
+                //     mode = IMG_TILE_MODE_CLEANUP;
+                // } 
+                // else 
+                // {
+                //     mode = IMG_TILE_MODE_PROCESS;
+                // }
             }
             break;
         case IMG_TILE_MODE_CLEANUP: 

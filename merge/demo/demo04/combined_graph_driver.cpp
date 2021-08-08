@@ -22,7 +22,7 @@ using namespace cv;
 
 /* TODO turn some of these into command line arguments */
 #define DRV_BUFFER_CAPACITY 6000
-#define PARTITION_BUFFER_SIZE 5
+#define PARTITION_BUFFER_SIZE 30
 #define NUM_DETECTION_ACTORS_NO_PARTITION 5
 #define EPS 0.3F
 
@@ -126,6 +126,19 @@ int main(int argc, char ** argv) {
             EPS,
             PARTITION_BUFFER_SIZE
         );
+        // graph = new combined_graph(
+        //     data_in_fifo,
+        //     data_out_fifo,
+        //     count_out_fifo,
+        //     1,
+        //     1,
+        //     num_matching_actors,
+        //     false,
+        //     EPS,
+        //     PARTITION_BUFFER_SIZE,
+        //     frame_x_size,
+        //     frame_y_size
+        // );
     }
 
     /* Run the graph to completion (track time to simulate framerate) */
