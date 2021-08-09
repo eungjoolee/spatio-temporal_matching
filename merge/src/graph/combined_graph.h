@@ -47,7 +47,7 @@ extern "C" {
 #include "merge_graph.h"
 #include "merge_graph_no_partition.h"
 
-#define COMBINED_BUFFER_CAPACITY 20
+#define COMBINED_BUFFER_CAPACITY 50
 
 class combined_graph : public welt_cpp_graph {
     public:
@@ -96,6 +96,7 @@ typedef struct _combined_multithread_scheduler_arg_t {
     bool * scheduler_finished;
     pthread_mutex_t * cond_running_lock;
     pthread_cond_t * cond_running;
+    unsigned int num_threads;
 } combined_multithread_scheduler_arg_t;
 
 void *combined_multithread_scheduler(void * arg);

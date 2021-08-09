@@ -61,18 +61,15 @@ extern "C" {
 
 /* Actor modes */
 #define IMG_TILE_MODE_PROCESS (1)
-#define IMG_TILE_MODE_CLEANUP (2)
-#define IMG_TILE_MODE_ERROR (3)
+#define IMG_TILE_MODE_ERROR (2)
 
 class image_tile_no_partition : public welt_cpp_actor 
 {
     public:
         image_tile_no_partition(
             welt_c_fifo_pointer in_image_fifo,
-            welt_c_fifo_pointer * in_confirm_fifo_list,
             welt_c_fifo_pointer * out_fifo_list,
-            int n,
-            int buffer_size_per_detector = 1
+            int n
         );
 
         ~image_tile_no_partition() override;
@@ -86,20 +83,11 @@ class image_tile_no_partition : public welt_cpp_actor
         void connect(welt_cpp_graph * graph) override;
 
     private:
-        cv::Mat * get_frame(unsigned int index);
-
-        unsigned int capacity();
-        unsigned int population();
 
         welt_c_fifo_pointer in_image_fifo;
-        welt_c_fifo_pointer * in_confirm_fifo_list;
         welt_c_fifo_pointer * out_fifo_list;
 
-        cv::Mat * frames;
-
-        int frame_buffer_size;
         unsigned int frame_index;
-        unsigned int cleared_index;
 
         int num_detectors;
 };

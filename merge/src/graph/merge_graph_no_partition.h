@@ -16,7 +16,7 @@ extern "C" {
 #include "../actors/image_tile_no_partition.h"
 
 /* Capacity of FIFOs in the graph */
-#define MERGE_FIFO_CAPACITY 50
+#define MERGE_FIFO_CAPACITY 150
 
 class merge_graph_no_partition : public welt_cpp_graph 
 {

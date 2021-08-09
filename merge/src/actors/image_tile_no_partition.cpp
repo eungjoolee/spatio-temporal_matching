@@ -46,39 +46,16 @@ ENHANCEMENTS, OR MODIFICATIONS.
 
 image_tile_no_partition::image_tile_no_partition(
     welt_c_fifo_pointer in_image_fifo,
-    welt_c_fifo_pointer *in_confirm_fifo_list,
     welt_c_fifo_pointer *out_fifo_list,
-    int n,
-    int buffer_size_per_detector
+    int n
 )
 {
     mode = IMG_TILE_MODE_PROCESS;
     this->in_image_fifo = in_image_fifo;
-    this->in_confirm_fifo_list = in_confirm_fifo_list;
     this->out_fifo_list = out_fifo_list;
     this->num_detectors = n;
 
     frame_index = 0;
-    cleared_index = 0;
-
-    frame_buffer_size = num_detectors * buffer_size_per_detector;
-
-    frames = new cv::Mat[frame_buffer_size];
-}
-
-cv::Mat *image_tile_no_partition::get_frame(unsigned int index)
-{
-    return &frames[index % frame_buffer_size];
-}
-
-unsigned int image_tile_no_partition::capacity()
-{
-    return frame_buffer_size - frame_index + cleared_index;
-}
-
-unsigned int image_tile_no_partition::population()
-{
-    return frame_index - cleared_index;
 }
 
 bool image_tile_no_partition::enable()
@@ -92,13 +69,6 @@ bool image_tile_no_partition::enable()
             result = 
                 (welt_c_fifo_population(in_image_fifo) >= 1) &&
                 (welt_c_fifo_capacity(out_fifo_list[t]) - welt_c_fifo_population(out_fifo_list[t]) > 0);
-            break;
-        case IMG_TILE_MODE_CLEANUP:
-            result = TRUE;
-            for (int i = 0; i < num_detectors; i++) 
-            {
-                result = result & (welt_c_fifo_population(in_confirm_fifo_list[i]) > 0);
-            }
             break;
         case IMG_TILE_MODE_ERROR:
             result = TRUE;
@@ -120,43 +90,12 @@ void image_tile_no_partition::invoke()
                 cv::Mat * img_ptr = nullptr;
                 welt_c_fifo_read(in_image_fifo, &img_ptr);
 
-                /* save frame locally */
-                // frames[frame_index % frame_buffer_size] = *img_ptr;
-
                 /* forward frame to detector */
-                // cv::Mat * tile_send = &frames[frame_index % frame_buffer_size];
                 welt_c_fifo_write(out_fifo_list[t], &img_ptr);
 
                 frame_index++;
 
                 mode = IMG_TILE_MODE_PROCESS;
-                // if (capacity() == 0)
-                // {
-                //     mode = IMG_TILE_MODE_CLEANUP;
-                // } 
-                // else 
-                // {
-                //     mode = IMG_TILE_MODE_PROCESS;
-                // }
-            }
-            break;
-        case IMG_TILE_MODE_CLEANUP: 
-            {
-                /* discard confirmation tokens and move cleared index up */
-                for (int i = 0; i < num_detectors; i++) {
-                    int discard;
-                    welt_c_fifo_read(in_confirm_fifo_list[i], &discard);
-                    cleared_index++;
-                }
-
-                if (population() == 0) 
-                {
-                    mode = IMG_TILE_MODE_PROCESS;
-                } 
-                else 
-                {
-                    mode = IMG_TILE_MODE_CLEANUP;
-                }
             }
             break;
         default:
@@ -181,7 +120,5 @@ void image_tile_no_partition_terminate(image_tile_no_partition * actor)
 
 image_tile_no_partition::~image_tile_no_partition() 
 {
-    delete[] frames;
-
     cout << "delete image tile actor" << endl;
 }

@@ -74,7 +74,6 @@ merge_graph_no_partition::merge_graph_no_partition (
 
     int fifo_num = 0;
     int partition_detection_idx;
-    int detection_partition_idx;
     int detection_merge_data_idx;
     int detection_merge_count_idx;
 
@@ -84,15 +83,6 @@ merge_graph_no_partition::merge_graph_no_partition (
     {
         fifos.push_back(
             (welt_c_fifo_pointer) welt_c_fifo_new(MERGE_FIFO_CAPACITY, partition_detection_token_size, fifo_num++)
-        );
-    }
-
-    /* detection to partition actors (confirmation tokens) */
-    detection_partition_idx = fifo_num;
-    for (int i = 0; i < num_detection_actors; i++) 
-    {
-        fifos.push_back(
-            (welt_c_fifo_pointer) welt_c_fifo_new(MERGE_FIFO_CAPACITY, detection_partition_token_size, fifo_num++)
         );
     }
 
@@ -126,10 +116,8 @@ merge_graph_no_partition::merge_graph_no_partition (
     /* tile distributor actor */
     actors.push_back(new image_tile_no_partition(
         img_in_fifo,
-        &fifos[detection_partition_idx],
         &fifos[partition_detection_idx],
-        num_detection_actors,
-        partition_buffer_size_per_detector
+        num_detection_actors
     ));
     descriptors.push_back((char *) "tile distributor actor");
     actor_num++;
@@ -141,11 +129,12 @@ merge_graph_no_partition::merge_graph_no_partition (
             fifos[partition_detection_idx + i],
             fifos[detection_merge_data_idx + i],
             fifos[detection_merge_count_idx + i],
-            fifos[detection_partition_idx + i],
+            nullptr,
             0,
             0,
             0,
-            0
+            0,
+            false
         ));
         descriptors.push_back((char *)"detection actor");
         actor_num++;

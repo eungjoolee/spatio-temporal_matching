@@ -82,7 +82,8 @@ public:
         int tile_i, 
         int tile_j,
         int tile_x_size = 256,
-        int tile_y_size = 256
+        int tile_y_size = 256,
+        bool send_confirmation_tokens = true
         );
 
     ~image_tile_det() override;
@@ -109,6 +110,7 @@ private:
     int j;
     int x_stride;
     int y_stride;
+    bool send_confirmations;
     cv::dnn::Net network;
 };
 

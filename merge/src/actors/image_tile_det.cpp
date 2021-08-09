@@ -57,7 +57,8 @@ image_tile_det::image_tile_det (
     int tile_i, 
     int tile_j,
     int tile_x,
-    int tile_y
+    int tile_y,
+    bool send_confirmation_tokens
     ) {
 
     mode = DET_MODE_PROCESS;
@@ -71,6 +72,7 @@ image_tile_det::image_tile_det (
     x_stride = tile_x;
     y_stride = tile_y;
     frame_index = 0;
+    send_confirmations = send_confirmation_tokens;
 
     std::string config = "../../cfg/yolov3.cfg";
     std::string model = "../../cfg/yolov3.weights";
@@ -85,10 +87,11 @@ bool image_tile_det::enable() {
             result = (welt_c_fifo_population(in_image) >= 1);
             break;
         case DET_MODE_WRITE:
-            result = (
-                (welt_c_fifo_capacity(out) - welt_c_fifo_population(out) >= rects.size()) &&
-                (welt_c_fifo_capacity(out_confirm) - welt_c_fifo_population(out_confirm) > 0)
-                );
+            result = (welt_c_fifo_capacity(out) - welt_c_fifo_population(out) >= rects.size());
+
+            if (send_confirmations)
+                result &= (welt_c_fifo_capacity(out_confirm) - welt_c_fifo_population(out_confirm) > 0);
+
             break;
         case DET_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
@@ -137,7 +140,8 @@ void image_tile_det::invoke() {
             }
             
             /* Processing frame is complete, send confirmation back to partition actor */
-            welt_c_fifo_write(out_confirm, &frame_index);
+            if (send_confirmations)
+                welt_c_fifo_write(out_confirm, &frame_index);
         
             //stringstream stream;
             //stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
