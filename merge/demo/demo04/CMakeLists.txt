@@ -50,6 +50,7 @@ ADD_EXECUTABLE(
     ../../src/actors/file_sink.cpp
     ../../src/actors/object_detection_tiling/object_detection.cpp
     ../../src/graph/combined_graph.cpp
+    ../../src/graph/graph_settings_common.h
 )
 
 TARGET_LINK_LIBRARIES(

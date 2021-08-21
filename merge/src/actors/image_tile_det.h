@@ -66,6 +66,8 @@ extern "C" {
 #define DET_MODE_WRITE (2)
 #define DET_MODE_ERROR (3)
 
+typedef stack<cv::Rect> (*analysis_callback_t)(cv::dnn::Net, cv::Mat);
+
 /* count_bright_pixels actor class, it inherits actor class  */
 class image_tile_det : public welt_cpp_actor {
 public:
@@ -97,6 +99,9 @@ public:
 
     void connect(welt_cpp_graph *graph) override;
 
+    void set_network(cv::dnn::Net net);
+    void set_analysis_callback(analysis_callback_t callback);
+
 private:
     welt_c_fifo_pointer in_image;
 //    welt_c_fifo_pointer in_config;
@@ -112,6 +117,7 @@ private:
     int y_stride;
     bool send_confirmations;
     cv::dnn::Net network;
+    analysis_callback_t analysis_callback;
 };
 
 void image_tile_det_terminate(image_tile_det * actor);

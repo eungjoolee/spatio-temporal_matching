@@ -42,6 +42,17 @@ public:
             Point l2, Point r2);
 
     /**
+     * Method computing the GIoU value of two bounding boxes in a pair
+     * @param l1 is the bottom left point
+     * @param r1 is the bottom right point
+     * @param l2 is the upper left point
+     * @param r2 is the upper right point
+     * @return The value of GIoU
+     */
+    double gioU(Point l1, Point r1,
+            Point l2, Point r2)
+
+    /**
      * Check if the two bounding boxes has overlapping area.
      * @param l1 is the bottom left point
      * @param r1 is the bottom right point

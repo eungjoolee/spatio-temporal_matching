@@ -33,6 +33,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <pthread.h>
 
+
 combined_graph::combined_graph(
     welt_c_fifo_pointer data_in,
     welt_c_fifo_pointer data_out,
@@ -40,7 +41,7 @@ combined_graph::combined_graph(
     int num_detection_actors,
     int tile_stride,
     int num_matching_actors,
-    bool use_no_partition_graph,
+    detection_mode mode,
     double eps,
     int partition_buffer_size,
     int tile_x_size,
@@ -57,7 +58,7 @@ combined_graph::combined_graph(
     this->eps = eps;
     this->partition_buffer_size = partition_buffer_size;
     this->num_matching_actors = num_matching_actors;
-    this->use_no_partition_graph = use_no_partition_graph;
+    this->mode = mode;
 
     /*************************************************************************
      * Reserve fifos
@@ -87,7 +88,7 @@ combined_graph::combined_graph(
      * 
      *************************************************************************/
 
-    if (use_no_partition_graph == true)
+    if (mode == detection_mode::no_partition)
     {
         merge = new merge_graph_no_partition(
             data_in,
@@ -97,7 +98,7 @@ combined_graph::combined_graph(
             partition_buffer_size,
             eps);
     }
-    else
+    else if (mode == detection_mode::partition)
     {
         merge = new merge_graph(
             data_in,
@@ -109,6 +110,10 @@ combined_graph::combined_graph(
             tile_y_size,
             partition_buffer_size,
             eps);
+    }
+    else if (mode == detection_mode::multiple_detector)
+    {
+        
     }
 
     dist = new dist_graph(
@@ -132,7 +137,7 @@ void combined_graph::single_thread_scheduler()
     {
         for (int i = 0; i < this->merge->actor_count; i++)
         {
-            while (this->merge->actors[i]->enable())
+            if (this->merge->actors[i]->enable())
             {
                 this->merge->actors[i]->invoke();
             }
@@ -140,7 +145,7 @@ void combined_graph::single_thread_scheduler()
 
         for (int i = 0; i < this->dist->actor_count; i++)
         {
-            while (this->dist->actors[i]->enable())
+            if (this->dist->actors[i]->enable())
             {
                 this->dist->actors[i]->invoke();
             }
@@ -237,11 +242,13 @@ void *combined_multithread_scheduler(void *arg)
             *args->num_running -= 1;
             if (*args->num_running == 0)
             {
+                /* this thread is the last to sleep and it has not modified the graph, so set scheduler finished */
                 *args->scheduler_finished = true;
                 pthread_cond_broadcast(args->cond_running);
             }
             else
             {
+                /* sleep thread until signalled by either the graph being modified or the scheduler finishing */
                 pthread_cond_wait(args->cond_running, args->cond_running_lock);
             }
         }
@@ -253,19 +260,19 @@ void *combined_multithread_scheduler(void *arg)
     return nullptr;
 }
 
-bool combined_graph::get_use_no_partition_graph()
+detection_mode combined_graph::get_mode()
 {
-    return this->use_no_partition_graph;
+    return this->mode;
 }
 
 void combined_graph_terminate(combined_graph *context)
 {
     dist_graph_terminate(context->dist);
-    if (context->get_use_no_partition_graph() == true)
+    if (context->get_mode() == detection_mode::no_partition)
     {
         merge_graph_no_partition_terminate((merge_graph_no_partition *)context->merge);
     }
-    else
+    else if (context->get_mode() == detection_mode::partition)
     {
         merge_graph_terminate((merge_graph *)context->merge);
     }

@@ -86,13 +86,57 @@ double Bounding_box_pair::ioU(Point l1, Point r1,
     }
 }
 
+inline int min4(int n1, int n2, int n3, int n4)
+{
+    return min(n1, min(n2, min(n3, n4)));
+}
+
+inline int max4(int n1, int n2, int n3, int n4)
+{
+    return max(n1, max(n2, max(n3, n4)));
+}
+
+double Bounding_box_pair::gioU(Point l1, Point r1,
+                               Point l2, Point r2)
+{
+    double iou = Bounding_box_pair::ioU(l1, r1, l2, r2);
+
+    int h_1 = abs(l1.x - r1.x);
+    int w_1 = abs(l1.y - r1.y);
+    int h_2 = abs(l2.x - r2.x);
+    int w_2 = abs(l2.y - r2.y);
+
+    int area_1 = h_1 * w_1; // area of first rectangle
+    int area_2 = h_2 * w_2; // area of second rectangle
+
+    int min_x = min4(l1.x, r1.x, l2.x, r2.x);
+    int max_x = max4(l1.x, r1.x, l2.x, r2.x);
+    int min_y = min4(l1.y, r1.y, l2.y, r2.y);
+    int max_y = max4(l1.y, r1.y, l2.y, r2.y);
+
+    int area_c = (max_x - min_x) * (max_y - min_y);
+
+    int sum_area = area_1 + area_2;
+
+    int w = min_x + w_1 + w_2 - max_x;
+    int h = min_y + h_1 + h_2 - max_y;
+    int area = w * h; // area of intersection of rectangles
+
+    int add_area = sum_area + area;
+    
+    double end_area = (double)(area_c - add_area) / (double)(area_c);
+    double giou = iou - end_area;
+
+    return giou;
+}
+
 bool Bounding_box_pair::compute() {
     if (dataVec.size() != 2) {
         cout << "compute size error" << endl;
         return false;
     } else {
 //        auto it = dataVec.begin();
-        result = ioU(dataVec[0]->getL(), dataVec[0]->getR(), dataVec[1]->getL
+        result = gioU(dataVec[0]->getL(), dataVec[0]->getR(), dataVec[1]->getL
         (), dataVec[1]->getR());
 //        cout << "results in comp: " << match01 << match02
 //        << match12 << endl;

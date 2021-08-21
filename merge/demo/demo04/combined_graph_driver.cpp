@@ -1,5 +1,6 @@
 #include "../../src/graph/combined_graph.h"
 #include "../../src/actors/objData.h"
+#include "../../src/graph/graph_settings_common.h"
 
 extern "C" {
 #include "welt_c_basic.h"
@@ -33,9 +34,9 @@ int div_round_up(int numerator, int denominator) {
 int main(int argc, char ** argv) {
     /* default settings */
     int iterations = 500;
-    int num_matching_actors = 12;
+    int num_matching_actors = 6;
     bool multi_thread = true;
-    bool partition = false;
+    detection_mode mode = detection_mode::no_partition;
     char *image_root_directory; // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php;
     int num_images = 50;
     int tile_x_size = 256;
@@ -55,7 +56,7 @@ int main(int argc, char ** argv) {
             multi_thread = (bool)atoi(argv[2]);
 
             if (argc > 3) {
-                partition = (bool)atoi(argv[3]);
+                mode = (detection_mode)atoi(argv[3]);
 
                 if (argc > 4) {
                     num_images = atoi(argv[4]);
@@ -100,7 +101,8 @@ int main(int argc, char ** argv) {
 
     /* Initialize graph */
     combined_graph *graph;
-    if (partition == true) {
+    if (mode == detection_mode::partition) {
+        cout << "instantiating partitioning graph" << endl;
         graph = new combined_graph(
             data_in_fifo, 
             data_out_fifo, 
@@ -108,13 +110,14 @@ int main(int argc, char ** argv) {
             num_detection_actors,
             stride,
             num_matching_actors,
-            false,
+            mode,
             EPS,
             PARTITION_BUFFER_SIZE,
             tile_x_size,
             tile_y_size
         );
-    } else {
+    } else if (mode == detection_mode::no_partition) {
+        cout << "instantiating non-partitioning graph" << endl;
         graph = new combined_graph(
             data_in_fifo,
             data_out_fifo,
@@ -122,23 +125,10 @@ int main(int argc, char ** argv) {
             NUM_DETECTION_ACTORS_NO_PARTITION,
             stride,            
             num_matching_actors,
-            true,
+            mode,
             EPS,
             PARTITION_BUFFER_SIZE
         );
-        // graph = new combined_graph(
-        //     data_in_fifo,
-        //     data_out_fifo,
-        //     count_out_fifo,
-        //     1,
-        //     1,
-        //     num_matching_actors,
-        //     false,
-        //     EPS,
-        //     PARTITION_BUFFER_SIZE,
-        //     frame_x_size,
-        //     frame_y_size
-        // );
     }
 
     /* Run the graph to completion (track time to simulate framerate) */
@@ -198,7 +188,7 @@ int main(int argc, char ** argv) {
         cout << endl;
         
         /* Draw tile bounding boxes on image */
-        if (partition == true) {
+        if (mode == detection_mode::partition) {
             for (int i = 0; i < num_detection_actors / stride; i++) {
                 cv::line(input_images[frame_id], cv::Point(0,tile_x_size * i), cv::Point(50, tile_x_size * i), cv::Scalar(255,0,0), 1);
             }

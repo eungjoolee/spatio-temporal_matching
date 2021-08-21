@@ -48,7 +48,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
         // The coluns looks like this, The first is region center x, center y, width
         // height, The class 1 - N is the column entries, which gives you a number,
         // where the biggist one corrsponding to most probable class.
-        // [x ; y ; w; h; class 1 ; class 2 ; class 3 ;  ; ;....]
+        // [x ; y ; w; h; class 1 ; class 2 ; class 3 ; ; ;....]
         //
         int colsCoordinatesPlusClassScore = outMat.cols;
         // Loop over number of detected object.
@@ -100,6 +100,45 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
         imshow("Display window", img);
         waitKey(25);
     }
+}
+
+stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
+{
+    cv::Mat blob_from_image;
+
+    cv::dnn::blobFromImage(img, blob_from_image, 1, cv::Size(400, 400), cv::Scalar(), true, false);
+    network.setInput(blob_from_image);
+
+    cv::Mat output = network.forward();
+    cv::Mat detection_mat(output.size[2], output.size[3], CV_32F, output.ptr<float>());
+
+    float conf_threshold = 0.01F;
+
+    std::stack<cv::Rect> res;
+    std::vector<cv::Rect> res_dbg;
+
+    for (int i = 0; i < detection_mat.rows; i++) 
+    {
+        float confidence = detection_mat.at<float>(i,2);
+
+        if (confidence > conf_threshold)
+        {
+            int width_inc = 10;
+            int height_inc = 10;
+
+            int x_left_bottom = static_cast<int>(detection_mat.at<float>(i, 3) * img.cols - width_inc / 2);
+			int y_left_bottom = static_cast<int>(detection_mat.at<float>(i, 4) * img.rows - height_inc / 2);
+			int x_right_top = static_cast<int>(detection_mat.at<float>(i, 5) * img.cols + width_inc / 2);
+			int y_right_top = static_cast<int>(detection_mat.at<float>(i, 6) * img.rows + height_inc / 2);
+
+            cv::Rect rectangle(x_left_bottom, y_left_bottom, x_right_top - x_left_bottom, y_right_top - y_left_bottom);
+            res_dbg.push_back(rectangle);
+            res.push(rectangle);
+        }
+    }
+
+    return res;
+
 }
 
 stack<Rect> analyze_image(Net network, Mat img) {

@@ -26,7 +26,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 @ddblock_end copyright
 *******************************************************************************/
 
-#include "merge_graph_no_partition.h"
+#include "merge_graph_multi_detector.h"
 #include <iostream>
 #include <stack>
 
@@ -42,11 +42,10 @@ extern "C" {
 #include "../actors/image_tile_no_partition.h"
 #include "../actors/object_detection_tiling/object_detection.h"
 
-merge_graph_no_partition::merge_graph_no_partition (
+merge_graph_multi_detector::merge_graph_multi_detector (
     welt_c_fifo_pointer img_in_fifo,
     welt_c_fifo_pointer box_out_fifo,
     welt_c_fifo_pointer count_out_fifo,
-    int num_detection_actors,
     int partition_buffer_size_per_detector,
     double eps
 )
@@ -54,11 +53,30 @@ merge_graph_no_partition::merge_graph_no_partition (
     this->img_in_fifo = img_in_fifo;
     this->box_out_fifo = box_out_fifo;
     this->count_out_fifo = count_out_fifo;
-    this->num_detection_actors = num_detection_actors;
+    this->num_detection_actors = 3;
     this->partition_buffer_size_per_detector = partition_buffer_size_per_detector;
     this->eps = eps;
 
     iterations = 0;
+
+    /*************************************************************************
+     * Load Networks
+     * 
+     *************************************************************************/
+
+    cv::dnn:Net networks[3];
+    analysis_callback_t callbacks[3];
+
+    networks[0] = cv::dnn::readNet("../../cfg/yolov3.cfg", "../../cfg/yolov3.weights", "Darknet");
+    networks[1] = cv::dnn::readNet("../../cfg/yolov3-tiny.cfg", "../../cfg/yolov3-tiny.weights", "Darknet");
+    networks[2] = cv::dnn::readNetFromTensorflow(
+        "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pb",
+        "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pbtxt"
+    );
+
+    callbacks[0] = &analyze_image;
+    callbacks[1] = &analyze_image;
+    callbacks[2] = &analyze_image_faster_rcnn;
 
     /*************************************************************************
      * Reserve FIFOS
@@ -139,33 +157,18 @@ merge_graph_no_partition::merge_graph_no_partition (
                 0,
                 false
             );
+
+            det->set_network(networks[i]);
+            det->set_analysis_callback(callbacks[i]);
+
             actors.push_back(det);
             descriptors.push_back((char *)"detection actor");
             actor_num++;
         }
     }
-    else 
-    {
-        /* only one detector which gets images directly from input */
-        image_tile_det * det = new image_tile_det( 
-            fifos[partition_detection_idx],
-            fifos[detection_merge_data_idx],
-            fifos[detection_merge_count_idx],
-            nullptr,
-            0,
-            0,
-            0,
-            0,
-            false
-        );
-
-        actors.push_back(det);
-        descriptors.push_back((char *)"detection actor");
-        actor_num++;
-    }
 
     /* merge actor */
-    actors.push_back(new detection_merge_single (
+    actors.push_back(new detection_merge (
         &fifos[detection_merge_data_idx],
         &fifos[detection_merge_count_idx],
         num_detection_actors,
@@ -179,12 +182,12 @@ merge_graph_no_partition::merge_graph_no_partition (
     actor_count = actor_num;
 }
 
-void merge_graph_no_partition::set_iters(int iters) 
+void merge_graph_multi_detector::set_iters(int iters) 
 {
     this->iterations = iters;
 }
 
-void merge_graph_no_partition::scheduler() 
+void merge_graph_multi_detector::scheduler() 
 {
     /* simple scheduler */
     for (int iters = 0; iters < this->iterations; iters++)
@@ -197,26 +200,22 @@ void merge_graph_no_partition::scheduler()
     }
 }
 
-int merge_graph_no_partition::get_num_detection_actors() {
+int merge_graph_multi_detector::get_num_detection_actors() {
     return num_detection_actors;
 }
 
-void merge_graph_no_partition_terminate(merge_graph_no_partition *graph) 
+void merge_graph_multi_detector_terminate(merge_graph_multi_detector *graph) 
 {
     int idx = 0;
 
-    if (graph->get_num_detection_actors() > 1)
-    {  
-        image_tile_no_partition_terminate((image_tile_no_partition *)graph->actors[idx]);
-        idx++;
-    }
+    image_tile_multi_detector_terminate((image_tile_multi_detector *)graph->actors[idx]);
 
     for (int i = 0; i < graph->get_num_detection_actors(); i++) {
         image_tile_det_terminate((image_tile_det *)graph->actors[idx]);
         idx++;
     }
     
-    detection_merge_single_terminate((detection_merge_single *) graph->actors[idx]);
+    detection_merge_terminate((detection_merge *) graph->actors[idx]);
     idx++;
 
     for (int i = 0; i < graph->fifo_count; i++) 
@@ -227,7 +226,7 @@ void merge_graph_no_partition_terminate(merge_graph_no_partition *graph)
     delete graph;
 }
 
-merge_graph_no_partition::~merge_graph_no_partition() 
+merge_graph_multi_detector::~merge_graph_multi_detector() 
 {
     cout << "delete merge graph" << endl;
 }

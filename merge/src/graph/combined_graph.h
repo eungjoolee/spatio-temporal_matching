@@ -46,6 +46,7 @@ extern "C" {
 #include "dist_graph.h"
 #include "merge_graph.h"
 #include "merge_graph_no_partition.h"
+#include "graph_settings_common.h"
 
 #define COMBINED_BUFFER_CAPACITY 50
 
@@ -58,7 +59,7 @@ class combined_graph : public welt_cpp_graph {
             int num_detection_actors,
             int tile_stride,
             int num_matching_actors,
-            bool use_no_partition_graph = false,
+            detection_mode mode = detection_mode::no_partition,
             double eps = 0.5,
             int partition_buffer_size = 5,
             int tile_x_size = 256,
@@ -67,7 +68,7 @@ class combined_graph : public welt_cpp_graph {
         
         ~combined_graph();
 
-        bool get_use_no_partition_graph();
+        detection_mode get_mode();
         void single_thread_scheduler();
         void set_iters(int iters);
         void scheduler() override;
@@ -87,7 +88,7 @@ class combined_graph : public welt_cpp_graph {
         int partition_buffer_size;
         double eps;
         int iterations;
-        bool use_no_partition_graph;
+        detection_mode mode;
 };
 
 typedef struct _combined_multithread_scheduler_arg_t {

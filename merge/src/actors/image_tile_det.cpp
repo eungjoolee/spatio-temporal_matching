@@ -74,10 +74,10 @@ image_tile_det::image_tile_det (
     frame_index = 0;
     send_confirmations = send_confirmation_tokens;
 
-    std::string config = "../../cfg/yolov3.cfg";
-    std::string model = "../../cfg/yolov3.weights";
     
-    network = cv::dnn::readNet(model, config, "Darknet"); 
+    // load default network and callback
+    network = cv::dnn::readNet("../../cfg/yolov3.cfg", "../../cfg/yolov3.weights", "Darknet");
+    analysis_callback = &analyze_image;
 }
 
 bool image_tile_det::enable() {
@@ -102,6 +102,7 @@ bool image_tile_det::enable() {
             result = TRUE;
             break;
     }
+
     return result;
 }
 
@@ -127,7 +128,7 @@ void image_tile_det::invoke() {
 
             //cout << "Processing Tile " << i * y_stride + j << endl;
             
-            stack<Rect> result = analyze_image(this->network, tile);
+            stack<Rect> result = analysis_callback(this->network, tile);
 
             while (!result.empty())
             {
@@ -184,6 +185,16 @@ void image_tile_det::invoke() {
             mode = DET_MODE_ERROR;
             break;
     }
+}
+
+void image_tile_det::set_network(cv::dnn::Net net)
+{
+    this->network = net;
+}
+
+void image_tile_det::set_analysis_callback(analysis_callback_t callback)
+{
+    this->analysis_callback = callback;
 }
 
 void image_tile_det::reset() {

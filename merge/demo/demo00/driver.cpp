@@ -60,7 +60,6 @@ int main(int argc, char ** argv) {
         }
     }
 
-
     /* Get input images */
     vector<cv::Mat> input_images;
 

@@ -50,6 +50,7 @@ extern "C" {
 #include "../actors/detection_merge.h"
 #include "../actors/image_tile_det.h"
 #include "../actors/image_tile_partition.h"
+#include "../actors/object_detection_tiling/object_detection.h"
 
 using namespace std;
 using namespace cv;
@@ -149,7 +150,7 @@ merge_graph::merge_graph(
 
     /* Detection actors */
     for (int i = 0; i < num_detection_actors; i++) {
-        actors.push_back(new image_tile_det( 
+        image_tile_det * det = new image_tile_det( 
             fifos[partition_detection_idx + i],
             fifos[detection_merge_data_idx + i],
             fifos[detection_merge_count_idx + i],
@@ -158,7 +159,9 @@ merge_graph::merge_graph(
             i % stride,
             tile_x_size,
             tile_y_size
-        ));
+        );
+
+        actors.push_back(det);
         descriptors.push_back((char *)"Detection Actor");
         actor_num++;
     }
