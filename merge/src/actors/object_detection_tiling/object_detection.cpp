@@ -102,6 +102,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
     }
 }
 
+// adapted from https://github.com/stq054188/OpenCV-DNN-and-Tensorflow-With-Faster-RCNN/blob/master/opencv_dnn_demo.py
 stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
 {
     cv::Mat blob_from_image;
@@ -115,7 +116,6 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
     float conf_threshold = 0.01F;
 
     std::stack<cv::Rect> res;
-    std::vector<cv::Rect> res_dbg;
 
     for (int i = 0; i < detection_mat.rows; i++) 
     {
@@ -132,7 +132,6 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
 			int y_right_top = static_cast<int>(detection_mat.at<float>(i, 6) * img.rows + height_inc / 2);
 
             cv::Rect rectangle(x_left_bottom, y_left_bottom, x_right_top - x_left_bottom, y_right_top - y_left_bottom);
-            res_dbg.push_back(rectangle);
             res.push(rectangle);
         }
     }
@@ -184,12 +183,14 @@ stack<Rect> analyze_image(Net network, Mat img) {
     
         if (confidence > 0.0001)
         {
+            int width_inc = 10;
+            int height_inc = 10;
             // thease four lines are
             // [x ; y ; w; h;
             int centerX = (int)(outMat.at<float>(j, 0) * img.cols);
             int centerY = (int)(outMat.at<float>(j, 1) * img.rows);
-            int width =  (int)(outMat.at<float>(j, 2) * img.cols+20);
-            int height =  (int)(outMat.at<float>(j, 3) * img.rows+100);
+            int width =  (int)(outMat.at<float>(j, 2) * img.cols + width_inc);
+            int height =  (int)(outMat.at<float>(j, 3) * img.rows + height_inc);
 
             int left = centerX - width / 2;
             int top = centerY - height / 2;

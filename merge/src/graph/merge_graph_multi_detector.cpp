@@ -39,7 +39,7 @@ extern "C" {
 
 #include "../actors/detection_merge_single.h"
 #include "../actors/image_tile_det.h"
-#include "../actors/image_tile_no_partition.h"
+#include "../actors/image_tile_multi_detector.h"
 #include "../actors/object_detection_tiling/object_detection.h"
 
 merge_graph_multi_detector::merge_graph_multi_detector (
@@ -64,14 +64,14 @@ merge_graph_multi_detector::merge_graph_multi_detector (
      * 
      *************************************************************************/
 
-    cv::dnn:Net networks[3];
+    cv::dnn::Net networks[3];
     analysis_callback_t callbacks[3];
 
     networks[0] = cv::dnn::readNet("../../cfg/yolov3.cfg", "../../cfg/yolov3.weights", "Darknet");
     networks[1] = cv::dnn::readNet("../../cfg/yolov3-tiny.cfg", "../../cfg/yolov3-tiny.weights", "Darknet");
     networks[2] = cv::dnn::readNetFromTensorflow(
         "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pb",
-        "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pbtxt"
+        "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco_2018_01_28.pbtxt"
     );
 
     callbacks[0] = &analyze_image;
@@ -135,7 +135,7 @@ merge_graph_multi_detector::merge_graph_multi_detector (
     /* tile distributor actor */
     if (num_detection_actors > 1)
     {
-        actors.push_back(new image_tile_no_partition(
+        actors.push_back(new image_tile_multi_detector(
             img_in_fifo,
             &fifos[partition_detection_idx],
             num_detection_actors
@@ -168,7 +168,7 @@ merge_graph_multi_detector::merge_graph_multi_detector (
     }
 
     /* merge actor */
-    actors.push_back(new detection_merge (
+    actors.push_back(new detection_merge(
         &fifos[detection_merge_data_idx],
         &fifos[detection_merge_count_idx],
         num_detection_actors,

@@ -12,7 +12,7 @@ enum detection_mode
 {
     partition = 0,
     no_partition = 1,
-    multiple_detector = 2
+    multi_detector = 2
 };
 
 typedef struct _graph_settings_t

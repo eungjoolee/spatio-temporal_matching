@@ -46,8 +46,8 @@ ADD_EXECUTABLE(
     ../../src/graph/merge_graph_no_partition.cpp
     ../../src/actors/detection_merge_single.cpp
     ../../src/actors/image_tile_no_partition.cpp
-    ../../src/actors/file_source.cpp
-    ../../src/actors/file_sink.cpp
+    ../../src/graph/merge_graph_multi_detector.cpp
+    ../../src/actors/image_tile_multi_detector.cpp
     ../../src/actors/object_detection_tiling/object_detection.cpp
     ../../src/graph/combined_graph.cpp
     ../../src/graph/graph_settings_common.h

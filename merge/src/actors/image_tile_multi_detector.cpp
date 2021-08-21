@@ -61,7 +61,7 @@ image_tile_multi_detector::image_tile_multi_detector(
 bool image_tile_multi_detector::enable()
 {
     boolean result = FALSE;
-
+    
     switch (mode)
     {
         case IMG_TILE_MODE_PROCESS: 

@@ -30,6 +30,8 @@ ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "dist_graph.h"
 #include "merge_graph.h"
+#include "merge_graph_no_partition.h"
+#include "merge_graph_multi_detector.h"
 
 #include <pthread.h>
 
@@ -47,7 +49,6 @@ combined_graph::combined_graph(
     int tile_x_size,
     int tile_y_size)
 {
-
     this->data_in = data_in;
     this->data_out = data_out;
     this->count_out = count_out;
@@ -111,9 +112,15 @@ combined_graph::combined_graph(
             partition_buffer_size,
             eps);
     }
-    else if (mode == detection_mode::multiple_detector)
+    else if (mode == detection_mode::multi_detector)
     {
-        
+        merge = new merge_graph_multi_detector(
+            data_in,
+            fifos[merge_dist_data_idx],
+            fifos[merge_dist_count_idx],
+            partition_buffer_size,
+            eps
+        );
     }
 
     dist = new dist_graph(
@@ -151,6 +158,8 @@ void combined_graph::single_thread_scheduler()
             }
         }
     }
+
+    this->dist->flush_dist_buffer();
 }
 
 /* Scheduler spawns one thread per actor, which invokes whenever enabled and sleeps when enable is false until signalled by another actor thread.

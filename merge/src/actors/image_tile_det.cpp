@@ -30,7 +30,6 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include <sstream>
 
 #include "image_tile_det.h"
-//#include "./object_detection_tiling/common.hpp"
 #include "./object_detection_tiling/object_detection.h"
 
 #include <iostream>
@@ -74,7 +73,6 @@ image_tile_det::image_tile_det (
     frame_index = 0;
     send_confirmations = send_confirmation_tokens;
 
-    
     // load default network and callback
     network = cv::dnn::readNet("../../cfg/yolov3.cfg", "../../cfg/yolov3.weights", "Darknet");
     analysis_callback = &analyze_image;
@@ -113,20 +111,6 @@ void image_tile_det::invoke() {
             /* read img fifo and store in in_image*/
             welt_c_fifo_read(in_image, &img_color);
             Mat tile = (*img_color);
-
-            
-            
-            //imread("/Users/jushen/Documents/yolo-tiling/val2017
-            // /000000173091.jpg", IMREAD_COLOR); //000000574520.jpg
-//                    imread(parser.get<String>("image"), IMREAD_COLOR);
-//                    parser.get<String>("model");
-
-//                    parser.get<String>("config");
-
-            //int x_stride = 256;
-            //int y_stride = 256;
-
-            //cout << "Processing Tile " << i * y_stride + j << endl;
             
             stack<Rect> result = analysis_callback(this->network, tile);
 
@@ -136,27 +120,11 @@ void image_tile_det::invoke() {
                 result.pop();
                 Rect global_loc = Rect(local_loc.x + j * x_stride, local_loc.y + i * y_stride, local_loc.width, local_loc.height);
                 this->rects.push(global_loc);
-                //draw result
-                //rectangle(tile, global_loc, Scalar(255, 0, 0), 2, 8, 0);
             }
             
             /* Processing frame is complete, send confirmation back to partition actor */
             if (send_confirmations)
                 welt_c_fifo_write(out_confirm, &frame_index);
-        
-            //stringstream stream;
-            //stream << "image_tile_det at " << i << ", " << j << " found " << this->rects.size() << " in image " << (long)img_color << endl;
-            //cout << stream.str();
-
-            //stringstream stream3; 
-            //stream3 << "tile analyzed by " << i * y_stride << ", " << j * x_stride << endl;
-            //imshow(stream3.str(), tile);
-            //moveWindow(stream3.str(), j * (x_stride + 40) + 1200, i * (y_stride + 40) + 800);
-            //waitKey(10);
-
-            //imshow(stream.str(), tile);
-            //waitKey(0);
-            //destroyWindow(stream.str());
 
             mode = DET_MODE_WRITE;
         }

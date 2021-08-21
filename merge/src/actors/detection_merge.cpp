@@ -78,14 +78,14 @@ void detection_merge::invoke() {
                         merged_result.push_back(next);
                     }
                     
-                    /* Merge rectangles */
-                    groupRectangles(merged_result, 1, eps);
-                    
                     for (int i = 0; i < merged_result.size(); i++) {
                         to_write.push_back(merged_result[i]);
                     }
                     merged_result.clear();
                 }
+                
+                /* Merge rectangles */
+                groupRectangles(to_write, 1, eps);
 
                 mode = DETECTION_MERGE_MODE_WRITE;
             }
