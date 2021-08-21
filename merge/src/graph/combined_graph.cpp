@@ -162,6 +162,42 @@ void combined_graph::single_thread_scheduler()
     this->dist->flush_dist_buffer();
 }
 
+void combined_graph::simple_multithread_scheduler()
+{
+    /* Create a thread for each graph */
+    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
+    int iter, i;
+
+    /* Simple scheduler */
+    for (iter = 0; iter < this->iterations; iter++) {
+        for (i = 0; i < this->merge->actor_count; i++) {
+            pthread_create(&thr[i], nullptr, simple_multithread_scheduler_task, (void *)this->merge->actors[i]);
+        }
+
+        for (i = 0; i < this->dist->actor_count; i++) {
+            pthread_create(&thr[i + this->merge->actor_count], nullptr, simple_multithread_scheduler_task, (void *)this->dist->actors[i]);
+        }
+        
+        for (i = 0; i < this->merge->actor_count + this->dist->actor_count; i++) {
+            pthread_join(thr[i], NULL);
+        }
+    }
+
+    this->dist->flush_dist_buffer();
+
+    delete thr;
+}
+
+void * simple_multithread_scheduler_task(void *arg)
+{
+    welt_cpp_actor *actor = (welt_cpp_actor *) arg;
+
+    while (actor->enable())
+        actor->invoke();
+
+    return nullptr;
+}
+
 /* Scheduler spawns one thread per actor, which invokes whenever enabled and sleeps when enable is false until signalled by another actor thread.
  *   The scheduler continues until the graph reaches a locked state where no actors are enabled before returning.
  */
@@ -209,7 +245,7 @@ void combined_graph::scheduler()
         pthread_create(
             &thr[i],
             nullptr,
-            combined_multithread_scheduler,
+            combined_multithread_scheduler_task,
             (void *)&args[i]
             );
     }
@@ -224,7 +260,7 @@ void combined_graph::scheduler()
     delete thr;
 }
 
-void *combined_multithread_scheduler(void *arg)
+void *combined_multithread_scheduler_task(void *arg)
 {
     combined_multithread_scheduler_arg_t *args = (combined_multithread_scheduler_arg_t *)arg;
     bool done = false;

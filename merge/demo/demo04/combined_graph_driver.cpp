@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     /* default settings */
     int iterations = 500;
     int num_matching_actors = 6;
-    bool multi_thread = true;
+    int scheduler_type = 0;
     detection_mode mode = detection_mode::no_partition;
     char *image_root_directory; // points to the training data set from http://www.cvlibs.net/datasets/kitti/eval_tracking.php;
     int num_images = 50;
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 
         if (argc > 2)
         {
-            multi_thread = (bool)atoi(argv[2]);
+            scheduler_type = atoi(argv[2]);
 
             if (argc > 3)
             {
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        std::cerr << "expected usage ./combined_path_driver <path_to_image_dir> <multi_thread? [0:1]> <partition? [0:1]> <num_images> <num_iterations>" << std::endl;
+        std::cerr << "expected usage ./combined_path_driver <path_to_image_dir> <scheduler_type? [0:2]> <partition? [0:1]> <num_images> <num_iterations>" << std::endl;
     }
 
     int data_in_token_size = sizeof(cv::Mat *);
@@ -171,15 +171,24 @@ int main(int argc, char **argv)
 
     graph->set_iters(iterations);
 
-    if (multi_thread)
+    switch (scheduler_type)
     {
-        cout << "starting multithreaded scheduler" << endl;
-        graph->scheduler();
-    }
-    else
-    {
-        cout << "starting single threaded scheduler" << endl;
-        graph->single_thread_scheduler();
+        case 0:
+            cout << "starting single thread scheduler" << endl;
+            graph->single_thread_scheduler();
+            break;
+        case 1:
+            cout << "starting multi-thread scheduler" << endl;
+            graph->scheduler();
+            break;
+        case 2:
+            cout << "starting simple multi-thread scheduler" << endl;
+            graph->simple_multithread_scheduler();
+            break;
+        default:
+            cerr << "unknown scheduler type" << endl;
+            return 1;
+            break;
     }
 
     clock_gettime(CLOCK_MONOTONIC, &end);

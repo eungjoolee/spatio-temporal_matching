@@ -70,6 +70,7 @@ class combined_graph : public welt_cpp_graph {
 
         detection_mode get_mode();
         void single_thread_scheduler();
+        void simple_multithread_scheduler();
         void set_iters(int iters);
         void scheduler() override;
 
@@ -100,7 +101,8 @@ typedef struct _combined_multithread_scheduler_arg_t {
     unsigned int num_threads;
 } combined_multithread_scheduler_arg_t;
 
-void *combined_multithread_scheduler(void * arg);
+void *simple_multithread_scheduler_task(void *arg);
+void *combined_multithread_scheduler_task(void * arg);
 void combined_graph_terminate(combined_graph * context);
 
 #endif
