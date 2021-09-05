@@ -165,20 +165,36 @@ void combined_graph::single_thread_scheduler()
 void combined_graph::simple_multithread_scheduler()
 {
     /* Create a thread for each graph */
-    auto thr = new pthread_t[this->merge->actor_count + this->dist->actor_count];
+    int threads = this->merge->actor_count + this->dist->actor_count;
+    auto thr = new pthread_t[threads];
+    simple_multithread_scheduler_arg_t *args = new simple_multithread_scheduler_arg_t[threads];
     int iter, i;
+
+    /* Initialize args */
+    for (i = 0; i < this->merge->actor_count; i++)
+    {
+        args[i].actor = this->merge->actors[i];
+        args[i].iterations = 1;
+    }
+
+    for (i = 0; i < this->dist->actor_count; i++)
+    {
+        args[i + this->merge->actor_count].actor = this->dist->actors[i];
+        args[i + this->merge->actor_count].iterations = 1;
+    }
 
     /* Simple scheduler */
     for (iter = 0; iter < this->iterations; iter++) {
-        for (i = 0; i < this->merge->actor_count; i++) {
-            pthread_create(&thr[i], nullptr, simple_multithread_scheduler_task, (void *)this->merge->actors[i]);
-        }
-
-        for (i = 0; i < this->dist->actor_count; i++) {
-            pthread_create(&thr[i + this->merge->actor_count], nullptr, simple_multithread_scheduler_task, (void *)this->dist->actors[i]);
+        for (i = 0; i < threads; i++) {
+            pthread_create(
+                &thr[i], 
+                nullptr, 
+                simple_multithread_scheduler_task, 
+                (void *) &args[i]
+                );
         }
         
-        for (i = 0; i < this->merge->actor_count + this->dist->actor_count; i++) {
+        for (i = 0; i < threads; i++) {
             pthread_join(thr[i], NULL);
         }
     }
@@ -186,14 +202,112 @@ void combined_graph::simple_multithread_scheduler()
     this->dist->flush_dist_buffer();
 
     delete thr;
+    delete args;
+}
+
+/* Scheduler runs only the multi-detection graph statically in this order:
+ * 
+ *  1. image_tile 
+ *  2. 2x detection (3 different threads using simple_multithread_scheduler_task)
+ *  3. 2x merge
+ *  4. 2x frame_dist
+ *  5. matching_compute (multiple threads using simple_multithread_scheduler_task)
+ *  6. frame_dist
+ * 
+ * This order will result in the results of one frame being placed on the output fifo
+ */
+void combined_graph::static_multithread_scheduler()
+{
+    /* Fail if not using multi-detection graph */
+    if (this->mode != detection_mode::multi_detector)
+    {
+        cerr << "can not run static multithread scheduler with graph not in multi-detector mode" << endl;
+        return;
+    }
+
+
+    /* Init threads and args for each step */
+    auto detection_threads = new pthread_t[3];
+    auto matching_threads = new pthread_t[this->num_matching_actors];
+
+    auto detection_args = new simple_multithread_scheduler_arg_t[3];
+    auto matching_args = new simple_multithread_scheduler_arg_t[this->num_matching_actors];
+
+    for (int i = 0; i < 3; i++) 
+    {
+        detection_args[i].actor = this->merge->actors[i + 1];
+        detection_args[i].iterations = 2;
+    }
+
+    for (int i = 0; i < this->num_matching_actors; i++)
+    {
+        matching_args[i].actor = this->dist->actors[i + 1];
+        matching_args[i].iterations = 1;
+    }
+
+    /* Run until the input fifo has no frames left */
+    while (welt_c_fifo_population(this->data_in) > 0)
+    {
+        /* 1. image_tile */
+        if (this->merge->actors[0]->enable())
+            this->merge->actors[0]->invoke();
+
+        /* 2. 2x detection */
+        for (int j = 0; j < 3; j++)
+            pthread_create(
+                &detection_threads[j],
+                nullptr,
+                simple_multithread_scheduler_task,
+                (void *) &detection_args[j]
+            );
+
+        for (int j = 0; j < 3; j++)
+            pthread_join(detection_threads[j], NULL);
+
+        /* 3. 2x merge */
+        if (this->merge->actors[4]->enable())
+            this->merge->actors[4]->invoke();
+
+        if (this->merge->actors[4]->enable())
+            this->merge->actors[4]->invoke();
+        
+        // /* 4. 2x frame_dist */
+        // if (this->dist->actors[0]->enable())
+        //     this->dist->actors[0]->invoke();
+
+        // if (this->dist->actors[0]->enable())
+        //     this->dist->actors[0]->invoke();
+
+        /* 5. matching_compute */
+        for (int j = 0; j < this->num_matching_actors; j++)
+            pthread_create(
+                &matching_threads[j],
+                nullptr,
+                simple_multithread_scheduler_task,
+                (void *) &matching_args[j]
+            );
+
+        for (int j = 0; j < this->num_matching_actors; j++)
+            pthread_join(matching_threads[j], NULL);
+
+        /* 6. frame dist */
+        while (this->dist->actors[0]->enable())
+            this->dist->actors[0]->invoke();
+    }
+
+    this->dist->flush_dist_buffer();
 }
 
 void * simple_multithread_scheduler_task(void *arg)
 {
-    welt_cpp_actor *actor = (welt_cpp_actor *) arg;
+    simple_multithread_scheduler_arg_t * args = (simple_multithread_scheduler_arg_t *)arg;
+    welt_cpp_actor *actor = args->actor;
 
-    while (actor->enable())
-        actor->invoke();
+    for (int i = 0; i < args->iterations; i++)
+    {
+        if (actor->enable())
+            actor->invoke();
+    }
 
     return nullptr;
 }

@@ -185,6 +185,10 @@ int main(int argc, char **argv)
             cout << "starting simple multi-thread scheduler" << endl;
             graph->simple_multithread_scheduler();
             break;
+        case 3:
+            cout << "starting static multi-thread scheduler" << endl;
+            graph->static_multithread_scheduler();
+            break;
         default:
             cerr << "unknown scheduler type" << endl;
             return 1;

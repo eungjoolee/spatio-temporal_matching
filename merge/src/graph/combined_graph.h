@@ -71,6 +71,7 @@ class combined_graph : public welt_cpp_graph {
         detection_mode get_mode();
         void single_thread_scheduler();
         void simple_multithread_scheduler();
+        void static_multithread_scheduler();
         void set_iters(int iters);
         void scheduler() override;
 
@@ -100,6 +101,11 @@ typedef struct _combined_multithread_scheduler_arg_t {
     pthread_cond_t * cond_running;
     unsigned int num_threads;
 } combined_multithread_scheduler_arg_t;
+
+typedef struct _simple_multithread_scheduler_arg_t {
+    welt_cpp_actor * actor;
+    int iterations;
+} simple_multithread_scheduler_arg_t;
 
 void *simple_multithread_scheduler_task(void *arg);
 void *combined_multithread_scheduler_task(void * arg);

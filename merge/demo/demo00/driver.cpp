@@ -150,7 +150,7 @@ int main(int argc, char **argv)
             int box_id = 1;
             for (int i = 0; i < num_tiles; i++)
             {
-                stack<Rect> result = analyze_image(yolov3, frame[i]);
+                stack<Rect> result = analyze_image(yolov3_tiny, frame[i]);
                 vector<Rect> merged_result;
 
                 while (!result.empty())

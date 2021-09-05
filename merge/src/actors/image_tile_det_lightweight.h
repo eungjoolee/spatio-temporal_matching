@@ -1,5 +1,5 @@
-#ifndef _image_tile_det_h
-#define _image_tile_det_h
+#ifndef _image_tile_det_lightweight_h
+#define  _image_tile_det_lightweight_h
 
 /*******************************************************************************
 @ddblock_begin copyright
@@ -63,32 +63,24 @@ extern "C" {
 
 /* Actor modes */
 #define DET_MODE_PROCESS (1)
-#define DET_MODE_WRITE (2)
-#define DET_MODE_ERROR (3)
+#define DET_MODE_ERROR (2)
 
 typedef stack<cv::Rect> (*analysis_callback_t)(cv::dnn::Net, cv::Mat);
 
 /* count_bright_pixels actor class, it inherits actor class  */
-class image_tile_det : public welt_cpp_actor {
+class image_tile_det_lightweight : public welt_cpp_actor {
 public:
     /*************************************************************************
     Construct a count_bright_pixels actor
     with the specified input FIFO connections, and the specified
     output FIFO connection.
     *************************************************************************/
-    image_tile_det(
+    image_tile_det_lightweight(
         welt_c_fifo_pointer in_image_fifo,
-        welt_c_fifo_pointer out_data_fifo, 
-        welt_c_fifo_pointer out_count_fifo, 
-        welt_c_fifo_pointer out_confirm_fifo,
-        int tile_i, 
-        int tile_j,
-        int tile_x_size = 256,
-        int tile_y_size = 256,
-        bool send_confirmation_tokens = true
+        welt_c_fifo_pointer out_stack_fifo
         );
 
-    ~image_tile_det() override;
+    ~image_tile_det_lightweight() override;
 
     bool enable() override;
 
@@ -104,23 +96,15 @@ public:
 
 private:
     welt_c_fifo_pointer in_image;
-//    welt_c_fifo_pointer in_config;
-    welt_c_fifo_pointer out;
-    welt_c_fifo_pointer out_count;
-    welt_c_fifo_pointer out_confirm;
+    welt_c_fifo_pointer out_stack;
+
     /* tile id */
-    stack<cv::Rect> rects;
+    deque<stack<cv::Rect>> rects;
     unsigned int frame_index;
-    int i;
-    int j;
-    int x_stride;
-    int y_stride;
-    bool send_confirmations;
     cv::dnn::Net network;
     analysis_callback_t analysis_callback;
-    bool at_origin;
 };
 
-void image_tile_det_terminate(image_tile_det * actor);
+void image_tile_det_lightweight_terminate(image_tile_det_lightweight * actor);
 
 #endif
