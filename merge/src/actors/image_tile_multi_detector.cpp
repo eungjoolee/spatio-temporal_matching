@@ -60,7 +60,7 @@ image_tile_multi_detector::image_tile_multi_detector(
 
 bool image_tile_multi_detector::enable()
 {
-    boolean result = FALSE;
+    bool result = false;
     
     switch (mode)
     {
@@ -73,7 +73,7 @@ bool image_tile_multi_detector::enable()
             }
             break;
         case IMG_TILE_MODE_ERROR:
-            result = TRUE;
+            result = true;
             break;
     }
 
@@ -86,6 +86,7 @@ void image_tile_multi_detector::invoke()
     {
         case IMG_TILE_MODE_PROCESS:
             {
+                //std::cout << "DEBUG: firing image tile multi detector" << std::endl;    
                 /* get frame from input edge */
                 cv::Mat * img_ptr = nullptr;
                 welt_c_fifo_read(in_image_fifo, &img_ptr);

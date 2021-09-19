@@ -88,7 +88,7 @@ image_tile_det::image_tile_det (
 }
 
 bool image_tile_det::enable() {
-    boolean result = FALSE;
+    bool result = false;
     switch (mode) {
         case DET_MODE_PROCESS:
             result = (welt_c_fifo_population(in_image) >= 1);
@@ -102,11 +102,11 @@ bool image_tile_det::enable() {
             break;
         case DET_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
         default:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
     }
 

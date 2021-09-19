@@ -1,15 +1,13 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8 FATAL_ERROR)
 
-PROJECT(dist)
+PROJECT(faster-bbox-matching)
 
 SET(CMAKE_CXX_STANDARD 14)
-
-SET(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 SET(THREADS_PREFER_PTHREAD_FLAG on)
 
 find_package(Threads REQUIRED)
-find_package(OpenCV REQUIRED) 
+find_package(OpenCV REQUIRED)
 
 INCLUDE_DIRECTORIES(
     $ENV{UXWELTERC}/src/gems/actors/common
@@ -31,18 +29,21 @@ LINK_DIRECTORIES(
 )
 
 ADD_EXECUTABLE(
-    pipeline_driver.exe
-    pipeline_driver.cpp
-    ../../src/graph/simple_pipeline_graph.cpp
-    ../../src/actors/image_tile_det_lightweight.cpp
+    combined_graph_driver.exe
+    combined_graph_driver.cpp
     ../../src/actors/object_detection_tiling/object_detection.cpp
-    ../../src/actors/image_preprocess.cpp
-    ../../src/graph/graph_settings_common.h
     ../../src/util/util.cpp
+    ../../src/actors/detection_merge_lightweight.cpp
+    ../../src/actors/image_tile_det_lightweight.cpp
+    ../../src/actors/image_tile_multi_detector.cpp
+    ../../src/actors/frame_dist_lightweight.cpp
+    ../../src/graph/combined_graph_lightweight.cpp
+    ../../src/actors/objData.cpp
+    ../../src/actors/Bounding_box_pair.cpp
 )
 
 TARGET_LINK_LIBRARIES(
-    pipeline_driver.exe
+    combined_graph_driver.exe
     $ENV{WELTERGEN}/libwelt_cpp_graph_basic.a
     $ENV{WELTERGEN}/libwelt_cpp_actors_basic.a
     $ENV{WELTERGEN}/libwelt_cpp_actors_image.a
@@ -58,4 +59,4 @@ TARGET_LINK_LIBRARIES(
     pthread
 )
 
-INSTALL(TARGETS pipeline_driver.exe DESTINATION ${PROJECT_SOURCE_DIR})
+INSTALL(TARGETS combined_graph_driver.exe DESTINATION ${PROJECT_SOURCE_DIR})

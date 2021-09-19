@@ -80,6 +80,7 @@ int main(int argc, char ** argv) {
             num_detection_actors,                                              /* num_detection_actors */
             stride,                                                            /* tile_stride */
             20,                                                                /* num_matching_actors */
+            detection_mode::partition,
             tile_x_size,                                                       /* tile_x_size */
             tile_y_size,                                                       /* tile_y_size */
             20,                                                                /* partition_buffer_size */
@@ -93,6 +94,7 @@ int main(int argc, char ** argv) {
             1,                       /* num_detection_actors */
             1,                       /* tile_stride */
             20,                      /* num_matching_actors */
+            detection_mode::no_partition,
             frame_x_size,            /* tile_x_size */
             frame_y_size,            /* tile_y_size */
             35,                      /* partition_buffer_size */
@@ -122,7 +124,7 @@ int main(int argc, char ** argv) {
     clock_gettime(CLOCK_MONOTONIC, &begin);
 
     std::cout << "starting multithreaded scheduler" << std::endl;
-    graph->frame_scheduler(frame_count);
+    graph->scheduler();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
     wall_time = end.tv_sec - begin.tv_sec;

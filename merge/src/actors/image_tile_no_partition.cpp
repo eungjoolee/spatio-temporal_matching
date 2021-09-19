@@ -60,7 +60,7 @@ image_tile_no_partition::image_tile_no_partition(
 
 bool image_tile_no_partition::enable()
 {
-    boolean result = FALSE;
+    bool result = false;
     int t = frame_index % num_detectors;
 
     switch (mode)
@@ -71,7 +71,7 @@ bool image_tile_no_partition::enable()
                 (welt_c_fifo_capacity(out_fifo_list[t]) - welt_c_fifo_population(out_fifo_list[t]) > 0);
             break;
         case IMG_TILE_MODE_ERROR:
-            result = TRUE;
+            result = true;
             break;
     }
 

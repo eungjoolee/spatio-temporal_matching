@@ -11,8 +11,7 @@ find_package(OpenCV REQUIRED)
 INCLUDE_DIRECTORIES(
 #        $ENV{UXWELTERC}/src/gems/actors/basic
         $ENV{UXWELTERC}/src/gems/actors/common
-        $ENV{UXWELTERC}/src/gems/edges/basic
-        $ENV{UXWELTERC}/src/gems/edges/common
+        $ENV{UXWELTERC}/src/gems/edges
         $ENV{UXWELTERC}/src/tools/runtime
         $ENV{UXWELTERC}/src/tools/graph
 

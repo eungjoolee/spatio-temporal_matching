@@ -92,30 +92,30 @@ unsigned int image_tile_partition::population() {
 }
 
 bool image_tile_partition::enable() {
-    boolean result = FALSE;
+    bool result = false;
     switch (mode) {
         case CBP_MODE_PROCESS:
             result = (welt_c_fifo_population(in_image) >= 1);
             break;
         case CBP_MODE_WRITE:
-            result = TRUE;
+            result = true;
             for (int i = 0; i < num; i++) {
                 result = result & (welt_c_fifo_capacity(out_tiles[i]) - welt_c_fifo_population(out_tiles[i]) > 0);
             }
             break;
         case CBP_MODE_CLEANUP: 
-            result = TRUE;
+            result = true;
             for (int i = 0; i < num; i++) {
                 result = result & (welt_c_fifo_population(in_confirm[i]) > 0);
             }
             break;
         case CBP_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
         default:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
     }
     return result;

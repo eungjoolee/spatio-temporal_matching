@@ -34,11 +34,11 @@ detection_merge::detection_merge(
 }
 
 bool detection_merge::enable() {
-    boolean result = FALSE;
+    bool result = false;
 
     switch (mode) {
         case DETECTION_MERGE_MODE_COMPUTE:
-            result = TRUE;
+            result = true;
             for (int i = 0; i < n; i++) {
                 /* Assume that if there is a token on the count fifo there is enough data on data fifo */
                 result = result && (welt_c_fifo_population(in_count[i]) > 0);
@@ -52,10 +52,10 @@ bool detection_merge::enable() {
             break;
         case DETECTION_MERGE_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled */
-            result = TRUE;
+            result = true;
             break;
         default:
-            result = FALSE;
+            result = false;
             break;
     }
     

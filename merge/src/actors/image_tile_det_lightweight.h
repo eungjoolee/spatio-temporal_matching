@@ -67,6 +67,8 @@ extern "C" {
 
 typedef stack<cv::Rect> (*analysis_callback_t)(cv::dnn::Net, cv::Mat);
 
+#define ITDL_BUFFER_SIZE 100
+
 /* count_bright_pixels actor class, it inherits actor class  */
 class image_tile_det_lightweight : public welt_cpp_actor {
 public:
@@ -77,7 +79,11 @@ public:
     *************************************************************************/
     image_tile_det_lightweight(
         welt_c_fifo_pointer in_image_fifo,
-        welt_c_fifo_pointer out_stack_fifo
+        welt_c_fifo_pointer out_stack_fifo,
+        int tile_x = 0,
+        int tile_y = 0,
+        int stride_x = 0,
+        int stride_y = 0
         );
 
     ~image_tile_det_lightweight() override;
@@ -97,8 +103,11 @@ public:
 private:
     welt_c_fifo_pointer in_image;
     welt_c_fifo_pointer out_stack;
-
-    /* tile id */
+    int tile_x;
+    int tile_y;
+    int stride_x;
+    int stride_y;
+    bool at_origin;
     deque<stack<cv::Rect>> rects;
     unsigned int frame_index;
     cv::dnn::Net network;

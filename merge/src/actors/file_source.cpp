@@ -41,21 +41,21 @@ bool file_source::enable() {
     /* The enble method should check whether the actor is ready
     * to be fired by examining the input/output fifos.
     */
-    boolean result = FALSE;
+    bool result = false;
     switch (mode) {
         case FILE_SOURCE_MODE_PROCESS:
             result =(welt_c_fifo_population(out) < welt_c_fifo_capacity(out));
             break;
         case FILE_SOURCE_MODE_COMPLETE:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
         case FILE_SOURCE_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
         default:
-            result = FALSE;
+            result = false;
             break;
     }
     return result;

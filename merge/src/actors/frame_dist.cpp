@@ -54,7 +54,7 @@ frame_dist::frame_dist(
 }
 
 bool frame_dist::enable() {
-    boolean result = FALSE;
+    bool result = false;
 
     switch(mode) {
         case FRAME_DIST_MODE_READ_FRAME:
@@ -62,7 +62,7 @@ bool frame_dist::enable() {
             break;
         case FRAME_DIST_MODE_DISTRIBUTE: {
                 /* Capacity needed is rounded up */
-                result = TRUE;
+                result = true;
                 int cap_required = (get_bounding_box_pair_vec(bounding_box_idx)->size() + num_matching_actors - 1) / num_matching_actors;
                 for (int i = 0; i < num_matching_actors; i++) {
                     result = result && (welt_c_fifo_capacity(match_out_list[i]) - welt_c_fifo_population(match_out_list[i]) >= cap_required);

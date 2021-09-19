@@ -27,7 +27,7 @@ detection_merge_single::detection_merge_single (
 
 bool detection_merge_single::enable()
 {
-    boolean result = FALSE;
+    bool result = false;
     int target = frame_index % num_detectors;
 
     switch (mode) 
@@ -42,7 +42,7 @@ bool detection_merge_single::enable()
             break;
         case DETECTION_MERGE_SINGLE_MODE_ERROR:
         default:
-            result = TRUE;
+            result = true;
             break;
     }
 

@@ -13,8 +13,7 @@ find_package(OpenCV REQUIRED)
 
 INCLUDE_DIRECTORIES(
     $ENV{UXWELTERC}/src/gems/actors/common
-    $ENV{UXWELTERC}/src/gems/edges/basic
-    $ENV{UXWELTERC}/src/gems/edges/common
+    $ENV{UXWELTERC}/src/gems/edges
     $ENV{UXWELTERC}/src/tools/runtime
     $ENV{UXWELTERC}/src/tools/graph
 
@@ -47,6 +46,11 @@ ADD_EXECUTABLE(
     ../../src/actors/file_sink.cpp
     ../../src/actors/object_detection_tiling/object_detection.cpp
     ../../src/graph/combined_graph.cpp
+    ../../src/graph/merge_graph_no_partition.cpp
+    ../../src/actors/image_tile_multi_detector.cpp    
+    ../../src/graph/merge_graph_multi_detector.cpp  
+    ../../src/actors/detection_merge_single.cpp
+    ../../src/actors/image_tile_no_partition.cpp
 )
 
 TARGET_LINK_LIBRARIES(

@@ -36,13 +36,13 @@ matching_compute::matching_compute(welt_c_fifo_pointer in, welt_c_fifo_pointer c
 }
 
 bool matching_compute::enable() {
-    boolean result = FALSE;
+    bool result = false;
     switch(mode) {
         case MATCHING_COMPUTE:
             result = (welt_c_fifo_population(count_in) >= 1);
             break;
         default:
-            result = FALSE;
+            result = false;
             break;
     }
 

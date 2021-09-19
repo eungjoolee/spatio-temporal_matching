@@ -39,17 +39,17 @@ file_sink::file_sink (welt_c_fifo_pointer in_fifo, char* output_file_name) {
 }
 
 bool file_sink::enable() {
-    boolean result = FALSE;
+    bool result = false;
     switch (mode) {
         case FILE_SINK_MODE_PROCESS:
             result =(welt_c_fifo_population(in) > 0);
             break;
         case FILE_SINK_MODE_ERROR:
             /* Modes that don't produce or consume data are always enabled. */
-            result = TRUE;
+            result = true;
             break;
         default:
-            result = FALSE;
+            result = false;
             break;
     }
     return result;
