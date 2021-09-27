@@ -68,7 +68,7 @@ extern "C" {
 #define DETECTION_MERGE_LIGHTWEIGHT_MODE_COMPUTE 1
 #define DETECTION_MERGE_LIGHTWEIGHT_MODE_ERROR 2
 
-#define DML_BUFFER_SIZE 100
+#define DML_BUFFER_SIZE 150
 
 class detection_merge_lightweight : public welt_cpp_actor {
 public:

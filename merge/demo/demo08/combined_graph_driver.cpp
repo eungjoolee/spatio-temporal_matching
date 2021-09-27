@@ -58,6 +58,7 @@ int main(int argc, char **argv)
             case 's':
                 scheduler = atoi(optarg);
                 std::cout << "using scheduler " << scheduler << std::endl;
+                break;
             case '?':
                 std::cout << "unknown argument " << optopt << std::endl;
                 break;

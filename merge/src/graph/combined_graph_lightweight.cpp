@@ -46,6 +46,20 @@ combined_graph_lightweight::combined_graph_lightweight(
     this->scheduler_mode = CGL_SCHEDULER_MULTITHREAD;
 
     /*************************************************************************
+     * Default scheduler pattern
+     * 
+     *************************************************************************/
+
+    this->scheduler_pattern = new scheduler_step_t[3];
+    this->scheduler_pattern[0].step_num_actors = 2;
+    this->scheduler_pattern[0].step_actor_indexes = new int[2] {1, 2};
+    this->scheduler_pattern[1].step_num_actors = 1;
+    this->scheduler_pattern[1].step_actor_indexes = new int[1] {3};
+    this->scheduler_pattern[2].step_num_actors = 3;
+    this->scheduler_pattern[2].step_actor_indexes = new int[3] {0, 4, 5};
+    this->scheduler_pattern_num_steps = 3;
+
+    /*************************************************************************
      * Load Networks
      * 
      *************************************************************************/
@@ -59,6 +73,12 @@ combined_graph_lightweight::combined_graph_lightweight(
         "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pb",
         "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco_2018_01_28.pbtxt"
     );
+
+    for (int i = 0; i < 3; i++)
+    {
+        networks[i].setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+        networks[i].setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+    }
 
     callbacks[0] = &analyze_image;
     callbacks[1] = &analyze_image;
@@ -236,6 +256,23 @@ void combined_graph_lightweight::multithread_scheduler_2()
     while (welt_c_fifo_population(vector_out) != num_images)
     {
         /* fire detectors sequentially */
+        // pthread_create(
+        //     &thr[0],
+        //     nullptr,
+        //     guarded_simple_multithread_scheduler_task,
+        //     (void *) &args[1]
+        // );
+
+        // pthread_create(
+        //     &thr[1],
+        //     nullptr,
+        //     guarded_simple_multithread_scheduler_task,
+        //     (void *) &args[2]
+        //     );
+
+        // pthread_join(thr[1], NULL);
+        // pthread_join(thr[2], NULL);
+
         if (actors[1]->enable())
             actors[1]->invoke();
 
@@ -291,7 +328,7 @@ void combined_graph_lightweight::scheduler()
             single_threaded_scheduler();
             break;
         case CGL_SCHEDULER_MULTITHREAD_2:
-            std::cout << "running multithreaded scheduler 2" << std::endl;
+            std::cout << "running patterned multithreaded scheduler" << std::endl;
             multithread_scheduler_2();
             break;
         default:

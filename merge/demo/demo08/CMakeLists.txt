@@ -49,7 +49,7 @@ TARGET_LINK_LIBRARIES(
     $ENV{WELTERGEN}/libwelt_cpp_actors_image.a
     $ENV{WELTERGEN}/libwelt_cpp_runtime.a
     $ENV{WELTERGEN}/libwelt_cpp_graph.a
-    
+
     $ENV{WELTERGEN}/libwelt_c_actors_basic.a
     $ENV{WELTERGEN}/libwelt_c_edges.a
     $ENV{WELTERGEN}/libwelt_c_graph_common.a

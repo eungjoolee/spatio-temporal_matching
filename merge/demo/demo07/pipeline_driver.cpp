@@ -65,6 +65,9 @@ int main(int argc, char ** argv)
 
     cv::dnn::Net network = cv::dnn::readNet("../../cfg/yolov3-tiny.cfg", "../../cfg/yolov3-tiny.weights", "Darknet");
 
+    network.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+    network.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+
     /* Run pipeline */
     struct timespec begin, end;
     double wall_time;

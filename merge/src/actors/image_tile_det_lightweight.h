@@ -67,7 +67,7 @@ extern "C" {
 
 typedef stack<cv::Rect> (*analysis_callback_t)(cv::dnn::Net, cv::Mat);
 
-#define ITDL_BUFFER_SIZE 100
+#define ITDL_BUFFER_SIZE 150
 
 /* count_bright_pixels actor class, it inherits actor class  */
 class image_tile_det_lightweight : public welt_cpp_actor {

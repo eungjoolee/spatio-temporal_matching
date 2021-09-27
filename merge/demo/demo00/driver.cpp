@@ -44,6 +44,7 @@ int main(int argc, char **argv)
     detection_mode mode = detection_mode::no_partition;
     int num_images = 50;
     char *image_root_directory;
+    bool show_images = false;
 
     /* determined based on input data */
     int frame_x_size;
@@ -63,6 +64,10 @@ int main(int argc, char **argv)
             if (argc > 3)
             {
                 num_images = atoi(argv[3]);
+
+                if (argc > 4) {
+                    show_images = true;
+                }
             }
         }
     }
@@ -104,6 +109,14 @@ int main(int argc, char **argv)
         "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco_2018_01_28.pbtxt"
     );
 
+    yolov3.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+    yolov3_tiny.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+    frcnn.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+
+    yolov3.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+    yolov3_tiny.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+    frcnn.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+
     /* Process images */
     for (int frame_idx = 0; frame_idx < num_images; frame_idx++)
     {
@@ -125,15 +138,15 @@ int main(int argc, char **argv)
                 }
                 else if (i + tile_y_size < img.rows)
                 {
-                    tile = img(Rect(j, i, img.cols - j - 1, tile_y_size - 1));
+                    tile = img(Rect(j, i, img.cols - j, tile_y_size - 1));
                 }
                 else if (j + tile_x_size < img.cols)
                 {
-                    tile = img(Rect(j, i, tile_x_size - 1, img.rows - i - 1));
+                    tile = img(Rect(j, i, tile_x_size - 1, img.rows - i));
                 }
                 else
                 {
-                    tile = img(Rect(j, i, img.cols - j - 1, img.rows - i - 1));
+                    tile = img(Rect(j, i, img.cols - j, img.rows - i));
                 }
                 frame.push_back(tile);
                 num_tiles++;
@@ -309,10 +322,13 @@ int main(int argc, char **argv)
     cout << "frame time of " << frame_time_ms << " ms (" << num_images / wall_time << "fps)" << endl;
 
     /* Display images */
-    for (int i = 0; i < num_images; i++)
+    if (show_images)
     {
-        cv::imshow("output", input_images[i]);
-        cv::waitKey(frame_time_ms);
+        for (int i = 0; i < num_images; i++)
+        {
+            cv::imshow("output", input_images[i]);
+            cv::waitKey(frame_time_ms);
+        }
     }
 
     return 0;

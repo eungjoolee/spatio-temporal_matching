@@ -54,7 +54,17 @@ extern "C" {
 #define CGL_SCHEDULER_SINGLETHREAD 1
 #define CGL_SCHEDULER_MULTITHREAD_2 2
 
-#define CGL_BUFFER_CAPACITY 100
+#define CGL_BUFFER_CAPACITY 150
+
+typedef struct _scheduler_step_t {
+    short step_num_actors;
+    int *step_actor_indexes;
+} scheduler_step_t;
+
+typedef struct _simple_multithread_scheduler_arg_t {
+    welt_cpp_actor * actor;
+    int iterations;
+} simple_multithread_scheduler_arg_t;
 
 class combined_graph_lightweight : public welt_cpp_graph {
     public:
@@ -71,6 +81,7 @@ class combined_graph_lightweight : public welt_cpp_graph {
         void multithread_scheduler_2();
         void set_num_images(int images);
         void set_scheduler_type(int type);
+        void set_scheduler_pattern(scheduler_step_t *pattern, int num_steps);
         void scheduler() override;
 
     private:
@@ -79,12 +90,9 @@ class combined_graph_lightweight : public welt_cpp_graph {
         graph_settings_t graph_settings;
         int num_images;
         int scheduler_mode;
+        scheduler_step_t *scheduler_pattern;
+        int scheduler_pattern_num_steps;
 };
-
-typedef struct _simple_multithread_scheduler_arg_t {
-    welt_cpp_actor * actor;
-    int iterations;
-} simple_multithread_scheduler_arg_t;
 
 void *guarded_simple_multithread_scheduler_task(void *arg);
 

@@ -82,6 +82,9 @@ image_tile_det_lightweight::image_tile_det_lightweight(
     // load default network and callback
     network = cv::dnn::readNet("../../cfg/yolov3-tiny.cfg", "../../cfg/yolov3-tiny.weights", "Darknet");
     analysis_callback = &analyze_image;
+
+    network.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+    network.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
 }
 
 bool image_tile_det_lightweight::enable()

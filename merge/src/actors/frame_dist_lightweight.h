@@ -32,7 +32,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
  * TODO Descriptions
  * 
  *************************************************************************/
-#define FDL_BUFFER_SIZE 100
+#define FDL_BUFFER_SIZE 150
 
 #include <string>
 extern "C" {
