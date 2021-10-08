@@ -3,6 +3,7 @@
 //
 
 #include "Bounding_box_pair.h"
+#include "objData.h"
 #include <iostream>
 
 Bounding_box_pair::Bounding_box_pair(objData *dataA, objData *dataB) {
@@ -10,6 +11,7 @@ Bounding_box_pair::Bounding_box_pair(objData *dataA, objData *dataB) {
     dataVec.push_back(dataB);
 
     result = 0;
+    used = false;
 }
 
 //Bounding_box_triple::Bounding_box_triple() {
@@ -154,4 +156,45 @@ void Bounding_box_pair::output() {
     cout << "result: " << result << endl;
 }
 
+/* Matches second into first */
+void match_bounding_boxes(vector<objData> * first, vector<objData> * second) 
+{
+    vector<Bounding_box_pair> bounding_box_pair_vec;
 
+    /* Initialize bounding box pair vector */
+    for (int i = 0; i < second->size(); ++i)
+    {
+        for (int j = 0; j < first->size(); ++j)
+        {
+            Bounding_box_pair pair = Bounding_box_pair(
+                &(*second)[i],
+                &(*first)[j]
+            );
+            bounding_box_pair_vec.push_back(pair);
+        }
+    }
+
+    /* Calculate bounding box GIoU values */
+    for (int i = 0; i < bounding_box_pair_vec.size(); i++)
+    {
+        bounding_box_pair_vec[i].compute();
+    }
+
+    /* Update bounding box indexes */ 
+    if (!bounding_box_pair_vec.empty()) {
+        int batch_size = second->size();
+        int batch_num = first->size();
+        auto max_pair = bounding_box_pair_vec.begin();
+        for (int j = 0; j < batch_num; j++) {
+            double max_val = 0; 
+            for (auto i = bounding_box_pair_vec.begin() + j * batch_size; i < bounding_box_pair_vec.begin() + (j + 1) * batch_size; i++) {
+                if (max_val < i->result && i->used == false) {
+                    max_val = i->result;
+                    max_pair = i;
+                }
+            }  
+            max_pair->dataVec[1]->setId(max_pair->dataVec[0]->getId());
+            max_pair->used = true;
+        }
+    }
+}

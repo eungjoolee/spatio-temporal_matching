@@ -139,7 +139,7 @@ int main(int argc, char ** argv)
     for (int i = 0; i < frame_id; i++)
     {
         cv::imshow("output", input_images[i]);
-        cv::waitKey(frame_time_ms);
+        while(cv::waitKey(-1) != 'n') {};
     }
     
     simple_pipeline_graph_terminate(graph);

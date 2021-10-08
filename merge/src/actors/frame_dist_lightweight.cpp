@@ -28,8 +28,10 @@ frame_dist_lightweight::frame_dist_lightweight(
     this->frames.clear();
     std::vector<objData> empty_frame;
     this->frames.push_back(empty_frame);
+    this->frames.push_back(empty_frame);
 
-    this->frame_index = 0;
+    this->frame_index = 1;
+    this->bbox_max_index = 1;
 
     this->mode = FRAME_DIST_LIGHTWEIGHT_MODE_READ_FRAME;
 }
@@ -52,8 +54,6 @@ bool frame_dist_lightweight::enable() {
 void frame_dist_lightweight::invoke() {
     switch (mode) {
         case FRAME_DIST_LIGHTWEIGHT_MODE_READ_FRAME: {
-            //std::cout << "DEBUG: firing frame dist" << std::endl;
-
             /*************************************************************************
              * Read in a new frame
              * 
@@ -63,78 +63,44 @@ void frame_dist_lightweight::invoke() {
             std::vector<objData> empty_frame;
             frames.push_back(empty_frame);
 
-            vector<objData> * new_frame = &frames[frame_index + 1];
-            vector<objData> * last_frame = &frames[frame_index];
+            vector<objData> * next_frame = &frames[frame_index + 1];
+            vector<objData> * current_frame = &frames[frame_index];
+            vector<objData> * last_frame = &frames[frame_index - 1];
             
             /* Read in data to frame */
             vector<cv::Rect> *data;
             welt_c_fifo_read(vector_in, &data);
 
-            new_frame->clear();
+            next_frame->clear();
             for (int i = 0; i < data->size(); i++) {
                 objData new_box = objData(
-                    i + 1, 
+                    bbox_max_index, 
                     (*data)[i].x, 
                     (*data)[i].y, 
                     (*data)[i].width, 
                     (*data)[i].height
                 );
-                new_frame->push_back(new_box);
-            }
-
-            /*************************************************************************
-             * Update the bounding box pair vectors
-             * 
-             *************************************************************************/           
-
-            vector<Bounding_box_pair> bounding_box_pair_vec;
-            for (int i = 0; i < last_frame->size(); ++i) {
-                for (int j = 0; j < new_frame->size(); ++j) {
-                    Bounding_box_pair pair = Bounding_box_pair(
-                        &(*last_frame)[i],
-                        &(*new_frame)[j]
-                    );
-                    bounding_box_pair_vec.push_back(pair);
-                }
-            }
-
-            /*************************************************************************
-             * Calculate the bounding GIOU values
-             * 
-             *************************************************************************/ 
-
-            for (int i = 0; i < bounding_box_pair_vec.size(); i++)
-            {
-                bounding_box_pair_vec[i].compute();
+                bbox_max_index++;
+                next_frame->push_back(new_box);
             }
 
             /*************************************************************************
              * Update bounding box indexes
              * 
              *************************************************************************/
-            
-            if (!bounding_box_pair_vec.empty()) {
-                int batch_size = last_frame->size();
-                int batch_num = new_frame->size();
-                auto max_pair = bounding_box_pair_vec.begin();
-                for (int j = 0; j < batch_num; j++) {
-                    double max_val = 0; 
-                    for (auto i = bounding_box_pair_vec.begin() + j * batch_size; i < bounding_box_pair_vec.begin() + (j + 1) * batch_size; i++) {
-                        if (max_val < i->result) {
-                            max_val = i->result;
-                            max_pair = i;
-                        }
-                    }  
-                    max_pair->dataVec[1]->setId(max_pair->dataVec[0]->getId());
-                }
-            }
+
+            match_bounding_boxes(current_frame, last_frame);
+            match_bounding_boxes(next_frame, current_frame);
+            match_bounding_boxes(next_frame, last_frame);
+
+            match_bounding_boxes(current_frame, current_frame);
 
             /*************************************************************************
              * Write frame to output fifo
              * 
              *************************************************************************/
 
-            welt_c_fifo_write(vector_out, &new_frame);
+            welt_c_fifo_write(vector_out, &current_frame);
             
             frame_index++;
         }

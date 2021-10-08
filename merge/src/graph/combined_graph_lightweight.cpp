@@ -46,7 +46,7 @@ combined_graph_lightweight::combined_graph_lightweight(
     this->scheduler_mode = CGL_SCHEDULER_MULTITHREAD;
 
     /*************************************************************************
-     * Default scheduler pattern
+     * Default scheduler pattern (Currently Unused)
      * 
      *************************************************************************/
 

@@ -21,6 +21,7 @@ public:
     deque<objData*> dataVec;
 public:
     double result;
+    bool used;
 public:
     Bounding_box_pair(objData *dataA, objData *dataB);
     Bounding_box_pair();
@@ -63,5 +64,7 @@ public:
     bool doOverlap(Point l1, Point r1, Point l2, Point r2);
     void output();
 };
+
+void match_bounding_boxes(vector<objData> * first, vector<objData> * second);
 
 #endif //POINTER_ADD_GRAPH_BOUNDING_BOX_TRIPLE_H

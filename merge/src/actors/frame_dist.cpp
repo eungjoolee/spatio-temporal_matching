@@ -40,6 +40,7 @@ frame_dist::frame_dist(
     this->frame_tail = 0;
     this->bounding_box_idx = 0;
     this->bounding_box_tail = 0;
+    this->bbox_max_index = 1;
     this->buffer_size = buffer_size;
 
     if (this->buffer_size < 3) {
@@ -99,7 +100,6 @@ void frame_dist::invoke() {
              *************************************************************************/
             int count;
             int data[4];
-            int bounding_box_id = 1;
             
             /* Push previous frame data down one */
             //vector<objData> frame;
@@ -113,8 +113,8 @@ void frame_dist::invoke() {
             new_frame->clear();
             for (int i = 0; i < count; i++) {
                 welt_c_fifo_read(boxes_in, &data);
-                auto new_box = objData(bounding_box_id, data[0], data[1], data[2], data[3]);
-                bounding_box_id++;
+                auto new_box = objData(bbox_max_index, data[0], data[1], data[2], data[3]);
+                bbox_max_index++;
                 new_frame->push_back(new_box);
             }
 

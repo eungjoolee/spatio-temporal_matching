@@ -23,7 +23,7 @@ extern "C"
 #include <opencv2/core/types.hpp>
 
 #define CGD_BUFFER_CAPACITY 100
-#define EPS 0.3F
+#define EPS 0.5F
 
 int main(int argc, char **argv)
 {
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
         for (int i = 0; i < frame_id; i++)
         {
             cv::imshow("output", input_images[i]);
-            cv::waitKey(frame_time_ms);
+            while (cv::waitKey(-1) != 'n') {}
         }
     }
 

@@ -29,7 +29,9 @@ extern "C"
 using namespace std;
 using namespace cv;
 
-#define EPS 0.3
+#define EPS 0.5F
+
+static int max_num = 0;
 
 int div_round_up(int numerator, int denominator)
 {
@@ -213,12 +215,13 @@ int main(int argc, char **argv)
                 frcnn_result.pop();
             }
 
-            groupRectangles(merged_result, 1, EPS);
+            groupRectangles(merged_result, 3, EPS);
 
             for (int j = 0; j < merged_result.size(); j++)
             {
-                objData data = objData(j, merged_result[j].x, merged_result[j].y, merged_result[j].width, merged_result[j].height);
+                objData data = objData(max_num, merged_result[j].x, merged_result[j].y, merged_result[j].width, merged_result[j].height);
                 merged_frame.push_back(data);
+                max_num++;
             }
 
             frames.push_back(merged_frame);

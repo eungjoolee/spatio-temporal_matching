@@ -92,6 +92,7 @@ class frame_dist : public welt_cpp_actor {
         int bounding_box_idx;
         int bounding_box_tail;
         int buffer_size;
+        int bbox_max_index;
 };
 
 void frame_dist_terminate(frame_dist *context);

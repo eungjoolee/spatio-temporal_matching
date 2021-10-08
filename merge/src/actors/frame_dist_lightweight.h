@@ -70,7 +70,8 @@ class frame_dist_lightweight : public welt_cpp_actor {
         welt_c_fifo_pointer vector_in;
         welt_c_fifo_pointer vector_out;
         deque<vector<objData>> frames;
-        int frame_index;
+        int frame_index;    
+	int bbox_max_index;
 };
 
 void frame_dist_lightweight_terminate(frame_dist_lightweight *context);

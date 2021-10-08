@@ -76,7 +76,7 @@ void detection_merge_lightweight::invoke()
             }
         }
 
-        cv::groupRectangles(merged_result, 1, eps);
+        cv::groupRectangles(merged_result, 3, eps);
 
         
         frames.push_back(merged_result);
