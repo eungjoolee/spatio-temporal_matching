@@ -1,1 +1,1 @@
-./combined_graph_driver.exe -d ../../cfg/images/0013/ -n 10
+./combined_graph_driver.exe -d ../../cfg/images/0013/ -n 10 -s 2
