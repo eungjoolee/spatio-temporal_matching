@@ -57,7 +57,6 @@ TARGET_LINK_LIBRARIES(
     video_driver.exe
     $ENV{WELTERGEN}/libwelt_cpp_graph_basic.a
     $ENV{WELTERGEN}/libwelt_cpp_actors_basic.a
-    $ENV{WELTERGEN}/libwelt_cpp_actors_image.a
     $ENV{WELTERGEN}/libwelt_cpp_runtime.a
     $ENV{WELTERGEN}/libwelt_cpp_graph.a
     
