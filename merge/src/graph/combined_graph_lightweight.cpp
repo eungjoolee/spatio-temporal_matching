@@ -46,6 +46,14 @@ combined_graph_lightweight::combined_graph_lightweight(
     this->scheduler_mode = CGL_SCHEDULER_MULTITHREAD;
 
     /*************************************************************************
+     * Adjust Graph Settings 
+     * 
+     *************************************************************************/
+
+    this->graph_settings.num_detection_actors = 3;
+    
+
+    /*************************************************************************
      * Default scheduler pattern (Currently Unused)
      * 
      *************************************************************************/
@@ -175,9 +183,8 @@ combined_graph_lightweight::combined_graph_lightweight(
     actors.push_back(
         new detection_merge_lightweight(
             &fifos[detector_merge_stack_idx],
-            3,
             fifos[merge_dist_vector_idx],
-            graph_settings.eps
+            this->graph_settings
         )
     );
     descriptors.push_back((char *) "merge actor");

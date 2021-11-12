@@ -30,6 +30,12 @@ int main(int argc, char **argv)
     /* default settings */
     graph_settings_t graph_settings;
     graph_settings.eps = EPS;
+    graph_settings.merge_mode = detection_merge_mode::merge_iou_individual;
+    graph_settings.iou_threshold = 0.24F;
+    graph_settings.iou_weights.clear();
+    graph_settings.iou_weights.push_back(0.6F); // yolov3
+    graph_settings.iou_weights.push_back(0.2F); // yolov3-tiny
+    graph_settings.iou_weights.push_back(1.4F); // faster-rcnn
     
     char *image_root_directory;
     int num_images = 50;

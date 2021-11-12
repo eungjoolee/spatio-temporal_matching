@@ -5,23 +5,23 @@
 #include <opencv2/core/types.hpp>
 
 #include "detection_merge_lightweight.h"
-
-using namespace cv;
-using namespace std;
-using namespace dnn;
+#include "object_detection_tiling/bounding_box_merge.h"
 
 detection_merge_lightweight::detection_merge_lightweight(
-    welt_c_fifo_pointer *in_stack_fifos,
-    int n,
-    welt_c_fifo_pointer out_stack_fifo,
-    double eps)
+        welt_c_fifo_pointer *in_stack_fifos,
+        welt_c_fifo_pointer out_stack_fifo,
+        graph_settings_t settings
+        )
 {
 
     this->in_stack_fifos = in_stack_fifos;
-    this->n = n;
+    this->n = settings.num_detection_actors;
     this->out_stack_fifo = out_stack_fifo;
     this->frame_index = 0;
-    this->eps = eps;
+    this->eps = settings.eps;
+    this->merge_mode = settings.merge_mode;
+    this->iou_threshold = settings.iou_threshold;
+    this->iou_weights = settings.iou_weights;
 
     this->mode = DETECTION_MERGE_LIGHTWEIGHT_MODE_COMPUTE;
 
@@ -61,29 +61,83 @@ void detection_merge_lightweight::invoke()
     {
     case DETECTION_MERGE_LIGHTWEIGHT_MODE_COMPUTE:
     {
-        vector<cv::Rect> merged_result;
-        merged_result.clear();
-        
-        for (int i = 0; i < n; i++)
+        if (merge_mode == detection_merge_mode::merge_opencv)
         {
-            std::stack<Rect> *frame_in;
-            welt_c_fifo_read(in_stack_fifos[i], &frame_in);
-
-            while (!frame_in->empty())
+            vector<cv::Rect> merged_result;
+            merged_result.clear();
+                    
+            for (int i = 0; i < n; i++)
             {
-                merged_result.push_back(frame_in->top());
-                frame_in->pop();
+                std::stack<cv::Rect> *frame_in;
+                welt_c_fifo_read(in_stack_fifos[i], &frame_in);
+
+                while (!frame_in->empty())
+                {
+                    merged_result.push_back(frame_in->top());
+                    frame_in->pop();
+                }
             }
+
+            cv::groupRectangles(merged_result, 3, eps);
+
+            frames.push_back(merged_result);
+            vector<cv::Rect> *to_send = &frames.back();
+
+            welt_c_fifo_write(out_stack_fifo, &to_send);
         }
+        else if (merge_mode == detection_merge_mode::merge_iou_weighted)
+        {
+            vector<vector<cv::Rect>> detections;
+            detections.clear();
+                    
+            for (int i = 0; i < n; i++)
+            {
+                std::stack<cv::Rect> *frame_in;
+                detections.push_back(vector<cv::Rect>());
+                welt_c_fifo_read(in_stack_fifos[i], &frame_in);
 
-        cv::groupRectangles(merged_result, 3, eps);
+                while (!frame_in->empty())
+                {
+                    detections[i].push_back(frame_in->top());
+                    frame_in->pop();
+                }
+            }
 
-        
-        frames.push_back(merged_result);
-        vector<cv::Rect> *to_send = &frames.back();
+            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_threshold, iou_weights);
 
-        welt_c_fifo_write(out_stack_fifo, &to_send);
+            frames.push_back(output);
+            vector<cv::Rect> *to_send = &frames.back();
 
+            welt_c_fifo_write(out_stack_fifo, &to_send);
+        }
+        else if (merge_mode == detection_merge_mode::merge_iou_individual)
+        {
+            vector<vector<cv::Rect>> detections;
+            detections.clear();
+                    
+            for (int i = 0; i < n; i++)
+            {
+                std::stack<cv::Rect> *frame_in;
+                detections.push_back(vector<cv::Rect>());
+                welt_c_fifo_read(in_stack_fifos[i], &frame_in);
+
+                while (!frame_in->empty())
+                {
+                    detections[i].push_back(frame_in->top());
+                    frame_in->pop();
+                }
+
+                detections[i] = iou_merge(detections[i], iou_threshold);
+            }
+
+            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_threshold, iou_weights);
+
+            frames.push_back(output);
+            vector<cv::Rect> *to_send = &frames.back();
+
+            welt_c_fifo_write(out_stack_fifo, &to_send);
+        }
+       
         frame_index++; 
         mode = DETECTION_MERGE_LIGHTWEIGHT_MODE_COMPUTE;
     }

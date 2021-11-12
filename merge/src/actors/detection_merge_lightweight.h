@@ -52,6 +52,8 @@ extern "C" {
 }
 #include "welt_cpp_actor.h"
 
+#include "../graph/graph_settings_common.h"
+
 #include <stack>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -77,10 +79,9 @@ public:
  * array, the size of the array, and a pointer to the output fifo 
  *************************************************************************/
     detection_merge_lightweight(
-        welt_c_fifo_pointer  * in_stack_fifos, 
-        int n, 
+        welt_c_fifo_pointer  * in_stack_fifos,
         welt_c_fifo_pointer out_stack_fifo,
-        double eps = 0.5
+        graph_settings_t settings
         );
 
     /* Destructor */
@@ -100,7 +101,11 @@ private:
     int n;
     int frame_index;
     deque<vector<cv::Rect>> frames;
-    double eps;
+    graph_settings_t settings;
+    float eps;
+    detection_merge_mode merge_mode;
+    float iou_threshold;
+    vector<float> iou_weights;
 };
 
 void detection_merge_lightweight_terminate(detection_merge_lightweight * actor);

@@ -15,10 +15,20 @@ enum detection_mode
     multi_detector = 2
 };
 
+enum detection_merge_mode 
+{
+    merge_opencv = 0,
+    merge_iou_weighted = 1,
+    merge_iou_individual = 2
+};
+
 typedef struct _graph_settings_t
 {
     detection_mode mode;     // all modes; determines mode
     float eps;               // all modes; eps setting for mergeRectangles
+    float iou_threshold;     // all modes; max iou to consider for a merge
+    std::vector<float> iou_weights; // all modes; weights for detection merging
+    detection_merge_mode merge_mode; // all modes; merging mode for image_tile_merge
     int num_matching_actors; // all modes; number of matching actors
     int fifo_size;           // all modes; size of all fifos
     int num_detection_actors;  // partioning/non-partitioning mode only; number of detection actors
