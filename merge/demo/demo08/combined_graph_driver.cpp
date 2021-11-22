@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     graph_settings_t graph_settings;
     graph_settings.eps = EPS;
     graph_settings.merge_mode = detection_merge_mode::merge_iou_individual;
-    graph_settings.iou_threshold = 0.24F;
+    graph_settings.iou_threshold = 0.01F;
     graph_settings.iou_weights.clear();
     graph_settings.iou_weights.push_back(0.6F); // yolov3
     graph_settings.iou_weights.push_back(0.2F); // yolov3-tiny
@@ -41,11 +41,14 @@ int main(int argc, char **argv)
     int num_images = 50;
     bool show_images = false;
     int scheduler = CGL_SCHEDULER_MULTITHREAD;
+    bool write_to_file;
+    char * file_name;
+    int merge_strategy;
 
     /* parse command line arguments */
     int opt;
 
-    while ((opt = getopt(argc, argv, "d:n:s:i")) != -1)
+    while ((opt = getopt(argc, argv, "d:n:s:if:m:")) != -1)
     {
         switch (opt)
         {
@@ -65,6 +68,15 @@ int main(int argc, char **argv)
                 scheduler = atoi(optarg);
                 std::cout << "using scheduler " << scheduler << std::endl;
                 break;
+            case 'f':
+                write_to_file = true;
+                file_name = optarg;
+                std::cout << "writing to file " << file_name << std::endl;
+                break;
+            case 'm':
+                merge_strategy = atoi(optarg);
+                std::cout << "using merging strategy " << merge_strategy << std::endl;
+                graph_settings.merge_mode = (detection_merge_mode) merge_strategy;
             case '?':
                 std::cout << "unknown argument " << optopt << std::endl;
                 break;
@@ -119,49 +131,17 @@ int main(int argc, char **argv)
     frame_time_ms = (int)(wall_time * 1000 / num_images);
 
     /* write results to stdout */
-    int frame_id = 0;
+    std::vector<std::vector<objData>> boxes;
 
     while (welt_c_fifo_population(vector_out_fifo) > 0)
     {
         std::vector<objData> *dataptr;
-        std::vector<objData> data;
         welt_c_fifo_read(vector_out_fifo, &dataptr);
-        data = *dataptr;
-        std::cout << "frameid: " << frame_id << " found " << data.size() << std::endl;
-
-        for (int i = 0; i < data.size(); i++)
-        {
-            data[i].output();
-
-            cv::Rect newRect = cv::Rect(
-                data[i].getX(),
-                data[i].getY(),
-                data[i].getW(),
-                data[i].getH()
-            );
-
-            cv::rectangle(
-                input_images[frame_id], 
-                newRect, 
-                cv::Scalar(0, 255, 0)
-            );
-
-            std::stringstream stream;
-            stream << data[i].getId();
-            cv::putText(
-                input_images[frame_id],
-                stream.str(),
-                cv::Point(data[i].getX(), data[i].getY()),
-                cv::FONT_HERSHEY_DUPLEX,
-                1,
-                cv::Scalar(0, 255, 0),
-                1
-            );
-        }
-
-        frame_id++;
-        std::cout << std::endl;
+        
+        boxes.push_back(std::vector<objData>(*dataptr));
     }
+
+    annotate_image(&input_images, boxes);
 
     std::cout << "frame time of " << frame_time_ms << " ms (" << num_images / wall_time << "fps)" << std::endl;
 
@@ -169,11 +149,17 @@ int main(int argc, char **argv)
     if (show_images)
     {
         cv::namedWindow("output");
-        for (int i = 0; i < frame_id; i++)
+        for (int i = 0; i < num_images; i++)
         {
             cv::imshow("output", input_images[i]);
             while (cv::waitKey(-1) != 'n') {}
         }
+    }
+
+    /* write to file */
+    if (write_to_file)
+    {
+        export_detections_to_file(boxes, file_name);
     }
 
     welt_c_fifo_free(mat_in_fifo);

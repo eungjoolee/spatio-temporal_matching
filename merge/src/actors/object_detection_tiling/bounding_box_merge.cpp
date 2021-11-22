@@ -19,7 +19,8 @@ float intersection_over_union(cv::Rect r1, cv::Rect r2)
     return ((float) intersection) / ((float) unin);
 }
 
-std::vector<cv::Rect> iou_merge(std::vector<cv::Rect> rects, float iou_threshold)
+
+std::vector<cv::Rect> iou_merge(std::vector<cv::Rect> rects, float iou_threshold, int count_threshold)
 {
     std::vector<cv::Rect> results;
     std::vector<int> counts;
@@ -63,11 +64,18 @@ std::vector<cv::Rect> iou_merge(std::vector<cv::Rect> rects, float iou_threshold
     return results;
 }
 
-std::vector<cv::Rect> iou_merge_weighted(std::vector<std::vector<cv::Rect>> rects, float iou_threshold, std::vector<float> weights)
+
+std::vector<cv::Rect> iou_merge_weighted(
+    std::vector<std::vector<cv::Rect>> rects, 
+    std::vector<float> weights, 
+    float iou_threshold, 
+    float weight_threshold,
+    int voting_threshold)
 {
     std::vector<cv::Rect> results;
     std::vector<float> counts;
     std::vector<std::vector<bool>> contributions;
+    std::vector<int> contribution_sums;
 
     // weights must correspond with the detectors by index
     if (rects.size() != weights.size())
@@ -100,7 +108,11 @@ std::vector<cv::Rect> iou_merge_weighted(std::vector<std::vector<cv::Rect>> rect
                     results[k].y = y;
 
                     found = true;
-                    contributions[k][i] = true;
+                    if (contributions[k][i] == false)
+                    {
+                        contributions[k][i] = true;
+                        contribution_sums[k]++;
+                    }
                 }
 
                 k++;
@@ -113,8 +125,21 @@ std::vector<cv::Rect> iou_merge_weighted(std::vector<std::vector<cv::Rect>> rect
                 counts.push_back(weights[i]);
                 contributions.push_back(std::vector<bool>(rects.size()));
                 contributions[contributions.size() - 1][i] = true;
+                contribution_sums.push_back(1);
             }
         }   
+    }
+
+    // remove detections that are below either threshold
+    for (int i = results.size() - 1; i >= 0; i--)
+    {
+        if (counts[i] < weight_threshold || contribution_sums[i] < voting_threshold)
+        {
+            results.erase(results.begin() + i);
+            counts.erase(counts.begin() + i);
+            contributions.erase(contributions.begin() + i);
+            contribution_sums.erase(contribution_sums.begin() + i);
+        }
     }
 
     return results;
