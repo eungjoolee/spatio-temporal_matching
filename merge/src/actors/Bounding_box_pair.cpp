@@ -5,10 +5,14 @@
 #include "Bounding_box_pair.h"
 #include "objData.h"
 #include <iostream>
+#include <bits/stdc++.h>
 
-Bounding_box_pair::Bounding_box_pair(objData *dataA, objData *dataB) {
+Bounding_box_pair::Bounding_box_pair(objData *dataA, objData *dataB, int first_index, int second_index) {
     dataVec.push_back(dataA);
     dataVec.push_back(dataB);
+
+    dataIndex.push_back(first_index);
+    dataIndex.push_back(second_index);
 
     result = 0;
     used = false;

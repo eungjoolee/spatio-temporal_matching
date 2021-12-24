@@ -23,6 +23,16 @@ void load_from_kitti(std::vector<cv::Mat> * target, const char * root, const int
     }
 }
 
+void load_from_uav(std::vector<cv::Mat> * target, const char * root, const int num_images)
+{
+    for (int i = 1; i <= num_images; i++)
+    {
+        std::stringstream next_img;
+        next_img << root << "img" << std::setfill('0') << std::setw(6) << i << ".jpg";
+        target->push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
+    }
+}
+
 void annotate_image(std::vector<cv::Mat> *input_images, std::vector<std::vector<objData>> boxes)
 {
     if (boxes.size() != input_images->size())
@@ -126,14 +136,17 @@ void export_detections_to_file(std::vector<std::vector<objData>> boxes, const ch
     return;
 }
         
-void load_from_sdc(std::vector<cv::Mat> * target, const char * root, const char * json, const int num_images, int start_index) 
+void load_from_sdc(std::vector<cv::Mat> * target, const char * root, const int num_images, int start_index) 
 {
     cJSON * parsed = NULL;
     std::stringstream json_file_name;
-    json_file_name << root << json;
+    json_file_name << root << "_annotations.coco.json";
 
-    char * content = read_file(json_file_name.str());
-    parsed = cJSON_Parse(parsed);
+    const std::string temp = json_file_name.str();
+    const char *cstr = temp.c_str();
+
+    char * content = read_file(cstr);
+    parsed = cJSON_Parse(content);
 
     if (parsed == NULL)
     {
@@ -164,6 +177,7 @@ void load_from_sdc(std::vector<cv::Mat> * target, const char * root, const char 
         std::stringstream next_img;
         next_img << root << file_name->valuestring;
         target->push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
+        c_image = c_image->next;
     }
 }
 

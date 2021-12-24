@@ -41,6 +41,7 @@ ADD_EXECUTABLE(
     ../../src/actors/objData.cpp
     ../../src/actors/Bounding_box_pair.cpp
     ../../src/actors/object_detection_tiling/bounding_box_merge.cpp
+    ../../src/util/cJSON/cJSON.c
 )
 
 TARGET_LINK_LIBRARIES(

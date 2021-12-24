@@ -19,11 +19,12 @@ using namespace std;
 class Bounding_box_pair{
 public:
     deque<objData*> dataVec;
+    deque<int> dataIndex;
 public:
     double result;
     bool used;
 public:
-    Bounding_box_pair(objData *dataA, objData *dataB);
+    Bounding_box_pair(objData *dataA, objData *dataB, int first_index = 0, int second_index = 0);
     Bounding_box_pair();
     bool update(objData dataIn);
     /**
