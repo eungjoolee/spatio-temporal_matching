@@ -156,10 +156,21 @@ void Bounding_box_pair::output() {
     cout << "result: " << result << endl;
 }
 
+
+bool compare_bounding_box_pair(Bounding_box_pair b1, Bounding_box_pair b2)
+{
+    return (b1.result > b2.result);
+}
+
 /* Matches second into first */
 void match_bounding_boxes(vector<objData> * first, vector<objData> * second) 
 {
     vector<Bounding_box_pair> bounding_box_pair_vec;
+
+    if (second->size() == 0 || first->size() == 0)
+    {
+        return;
+    }
 
     /* Initialize bounding box pair vector */
     for (int i = 0; i < second->size(); ++i)
@@ -168,7 +179,9 @@ void match_bounding_boxes(vector<objData> * first, vector<objData> * second)
         {
             Bounding_box_pair pair = Bounding_box_pair(
                 &(*second)[i],
-                &(*first)[j]
+                &(*first)[j],
+                i,
+                j
             );
             bounding_box_pair_vec.push_back(pair);
         }
@@ -180,21 +193,27 @@ void match_bounding_boxes(vector<objData> * first, vector<objData> * second)
         bounding_box_pair_vec[i].compute();
     }
 
-    /* Update bounding box indexes */ 
-    if (!bounding_box_pair_vec.empty()) {
-        int batch_size = second->size();
-        int batch_num = first->size();
-        auto max_pair = bounding_box_pair_vec.begin();
-        for (int j = 0; j < batch_num; j++) {
-            double max_val = 0; 
-            for (auto i = bounding_box_pair_vec.begin() + j * batch_size; i < bounding_box_pair_vec.begin() + (j + 1) * batch_size; i++) {
-                if (max_val < i->result && i->used == false) {
-                    max_val = i->result;
-                    max_pair = i;
-                }
-            }  
-            max_pair->dataVec[1]->setId(max_pair->dataVec[0]->getId());
-            max_pair->used = true;
+    /* Sort values by GIOU */
+    sort(bounding_box_pair_vec.begin(), bounding_box_pair_vec.end(), compare_bounding_box_pair);
+
+    /* Update bounding box indexes by matching in ascending order */ 
+    
+    /* Track if that box has already been matched with a higher GIoU box */
+    bool * used_first = new bool[first->size()] ();
+    bool * used_second = new bool[second->size()] ();
+
+    for (vector<Bounding_box_pair>::iterator pair = bounding_box_pair_vec.begin();
+         pair != bounding_box_pair_vec.end(); 
+         pair++)
+    {
+        /* check if a higher GIoU pair has already reached the box */
+        int i = pair->dataIndex[0];
+        int j = pair->dataIndex[1];
+        if (used_first[j] == 0 && used_second[i] == 0)
+        {
+            pair->dataVec[1]->setId(pair->dataVec[0]->getId());
+            used_first[j] = 1;
+            used_second[i] = 1;
         }
     }
 }

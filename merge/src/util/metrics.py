@@ -11,7 +11,7 @@ def load_demo_data(fname):
 
     return data
 
-
+# formats demo data loaded as a json file from load_demo_data
 def format_demo_data(data):
     print("Formatting raw JSON data for py-motmetrics IoU pairwise distances")
 
@@ -28,7 +28,4 @@ def format_demo_data(data):
             c_frame.append([c_detection['x'], c_detection['y'], c_detection['w'], c_detection['h']])
         result.append(np.array(c_frame))
     return np.array(result, dtype=object)
-                
-            
-            
 
