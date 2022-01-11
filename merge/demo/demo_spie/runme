@@ -1,0 +1,1 @@
+./spie_driver.exe -d ../../cfg/images/UAV-benchmark-M/M0101/ -n 100 -s 2 -i -t 1 -m 2 -f ./results/img

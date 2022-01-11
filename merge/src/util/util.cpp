@@ -21,6 +21,8 @@ void load_from_kitti(std::vector<cv::Mat> * target, const char * root, const int
         next_img << root << std::setfill('0') << std::setw(6) << i << ".png";
         target->push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
     }
+
+    std::cout << "loaded " << num_images << " images from KITTI at " << root << std::endl;
 }
 
 void load_from_uav(std::vector<cv::Mat> * target, const char * root, const int num_images)
@@ -31,6 +33,8 @@ void load_from_uav(std::vector<cv::Mat> * target, const char * root, const int n
         next_img << root << "img" << std::setfill('0') << std::setw(6) << i << ".jpg";
         target->push_back(cv::imread(next_img.str(), cv::IMREAD_COLOR));
     }
+
+    std::cout << "loaded " << num_images << " images from UAV at " << root << std::endl;
 }
 
 void annotate_image(std::vector<cv::Mat> *input_images, std::vector<std::vector<objData>> boxes)
@@ -77,6 +81,58 @@ void annotate_image(std::vector<cv::Mat> *input_images, std::vector<std::vector<
     }
 }
 
+void annotate_image_no_ids(std::vector<cv::Mat> *input_images, std::vector<std::vector<cv::Rect>> boxes)
+{
+    if (boxes.size() != input_images->size())
+        return;
+
+    for (int frame_id = 0; frame_id < boxes.size(); frame_id++)
+    {
+        std::vector<cv::Rect> data = boxes.at(frame_id);
+        std::cout << "frameid: " << frame_id << " found " << data.size() << std::endl;
+
+        for (int i = 0; i < data.size(); i++)
+        {
+            std::cout << data[i].x << " " << data[i].y << " " << data[i].width << " " << data[i].height << std::endl;
+
+            cv::rectangle(
+                input_images->at(frame_id), 
+                data[i], 
+                cv::Scalar(0, 255, 0)
+            );
+        }
+
+        std::cout << std::endl;
+    }
+}
+
+void export_boxes_to_map_folder(std::vector<std::vector<cv::Rect>> boxes, const char * root)
+{
+    std::ofstream output_file;
+    
+    for (int frame_id = 0; frame_id < boxes.size(); frame_id++)
+    {
+        std::stringstream ss;
+        ss << root << frame_id << ".txt";
+
+        output_file.open(ss.str());
+
+        std::vector<cv::Rect> data = boxes.at(frame_id);
+
+        for (int i = 0; i < data.size(); i++)
+        {
+            int left = data[i].x;
+            int right = data[i].x + data[i].width;
+            int top = data[i].y;
+            int bottom = data[i].y + data[i].height;
+
+            // TODO confidence
+            output_file << "vehicle " << "1" << " " << left << " " << top << " " << right << " " << bottom << std::endl;
+        }
+
+        output_file.close();
+    }
+}
 // exports in json format for checking metrics with python script
 // {
 //     "frames": [

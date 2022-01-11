@@ -167,7 +167,7 @@ bool compare_bounding_box_pair(Bounding_box_pair b1, Bounding_box_pair b2)
 }
 
 /* Matches second into first */
-void match_bounding_boxes(vector<objData> * first, vector<objData> * second) 
+void match_bounding_boxes(vector<objData> * first, vector<objData> * second, float min_giou) 
 {
     vector<Bounding_box_pair> bounding_box_pair_vec;
 
@@ -213,7 +213,7 @@ void match_bounding_boxes(vector<objData> * first, vector<objData> * second)
         /* check if a higher GIoU pair has already reached the box */
         int i = pair->dataIndex[0];
         int j = pair->dataIndex[1];
-        if (used_first[j] == 0 && used_second[i] == 0)
+        if (used_first[j] == 0 && used_second[i] == 0 && pair->result > min_giou)
         {
             pair->dataVec[1]->setId(pair->dataVec[0]->getId());
             used_first[j] = 1;

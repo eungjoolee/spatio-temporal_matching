@@ -1,4 +1,4 @@
-#include "../../src/graph/combined_graph_lightweight.h"
+#include "../../src/graph/spie_graph.h"
 #include "../../src/actors/objData.h"
 #include "../../src/graph/graph_settings_common.h"
 #include "../../src/util/util.h"
@@ -22,7 +22,7 @@ extern "C"
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
 
-#define CGD_BUFFER_CAPACITY 100
+#define SPIE_BUFFER_CAP 100
 #define EPS 0.5F
 
 int main(int argc, char **argv)
@@ -40,10 +40,9 @@ int main(int argc, char **argv)
     char *image_root_directory;
     int num_images = 50;
     bool show_images = false;
-    int scheduler = CGL_SCHEDULER_MULTITHREAD;
+    int scheduler = SPIE_SCHEDULER_MULTITHREAD;
     bool write_to_file;
     char * file_name;
-    int merge_strategy;
     int dataset_type = 0;
 
     /* parse command line arguments */
@@ -72,12 +71,7 @@ int main(int argc, char **argv)
             case 'f':
                 write_to_file = true;
                 file_name = optarg;
-                std::cout << "writing to file " << file_name << std::endl;
-                break;
-            case 'm':
-                merge_strategy = atoi(optarg);
-                std::cout << "using merging strategy " << merge_strategy << std::endl;
-                graph_settings.merge_mode = (detection_merge_mode) merge_strategy;
+                std::cout << "writing results to root folder " << file_name << std::endl;
                 break;
             case 't':
                 dataset_type = atoi(optarg);
@@ -91,14 +85,14 @@ int main(int argc, char **argv)
 
     /* initialize fifos */ 
     welt_c_fifo_pointer mat_in_fifo = welt_c_fifo_new(
-        CGD_BUFFER_CAPACITY,
+        SPIE_BUFFER_CAP,
         sizeof(cv::Mat *),
         0
     );
 
     welt_c_fifo_pointer vector_out_fifo = welt_c_fifo_new(
-        CGD_BUFFER_CAPACITY,
-        sizeof(std::vector<objData> *),
+        SPIE_BUFFER_CAP,
+        sizeof(std::vector<cv::Rect> *),
         0
     );
 
@@ -116,7 +110,7 @@ int main(int argc, char **argv)
     }
 
     /* intialize graph */
-    combined_graph_lightweight graph = combined_graph_lightweight(
+    spie_graph graph = spie_graph(
         mat_in_fifo,
         vector_out_fifo,
         graph_settings
@@ -140,19 +134,25 @@ int main(int argc, char **argv)
     frame_time_ms = (int)(wall_time * 1000 / num_images);
 
     /* write results to stdout */
-    std::vector<std::vector<objData>> boxes;
+    std::vector<std::vector<cv::Rect>> boxes;
 
     while (welt_c_fifo_population(vector_out_fifo) > 0)
     {
-        std::vector<objData> *dataptr;
+        std::vector<cv::Rect> *dataptr;
         welt_c_fifo_read(vector_out_fifo, &dataptr);
         
-        boxes.push_back(std::vector<objData>(*dataptr));
+        boxes.push_back(std::vector<cv::Rect>(*dataptr));
     }
 
-    annotate_image(&input_images, boxes);
+    annotate_image_no_ids(&input_images, boxes);
 
     std::cout << "frame time of " << frame_time_ms << " ms (" << num_images / wall_time << "fps)" << std::endl;
+    
+    /* write to file */
+    if (write_to_file)
+    {
+        export_boxes_to_map_folder(boxes, file_name);
+    }
 
     /* display images */
     if (show_images)
@@ -165,11 +165,6 @@ int main(int argc, char **argv)
         }
     }
 
-    /* write to file */
-    if (write_to_file)
-    {
-        export_detections_to_file(boxes, file_name);
-    }
 
     welt_c_fifo_free(mat_in_fifo);
     welt_c_fifo_free(vector_out_fifo);

@@ -26,16 +26,15 @@ ENHANCEMENTS, OR MODIFICATIONS.
 @ddblock_end copyright
 *******************************************************************************/
 
-#include "combined_graph_lightweight.h"
+#include "spie_graph.h"
 
 #include "../actors/image_tile_multi_detector.h"
 #include "../actors/image_tile_det_lightweight.h"
 #include "../actors/detection_merge_lightweight.h"
-#include "../actors/frame_dist_lightweight.h"
 #include "../actors/object_detection_tiling/object_detection.h"
 #include "graph_settings_common.h"
 
-combined_graph_lightweight::combined_graph_lightweight(
+spie_graph::spie_graph(
     welt_c_fifo_pointer mat_in,
     welt_c_fifo_pointer vector_out,
     graph_settings_t graph_settings)
@@ -43,7 +42,7 @@ combined_graph_lightweight::combined_graph_lightweight(
     this->mat_in = mat_in;
     this->vector_out = vector_out;
     this->graph_settings = graph_settings;
-    this->scheduler_mode = CGL_SCHEDULER_MULTITHREAD;
+    this->scheduler_mode = SPIE_SCHEDULER_MULTITHREAD;
 
     /*************************************************************************
      * Adjust Graph Settings 
@@ -77,9 +76,7 @@ combined_graph_lightweight::combined_graph_lightweight(
 
     networks[0] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
     networks[1] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
-    networks[2] = cv::dnn::readNetFromTensorflow(
-        "../../cfg/frozen-retinanet-uav.pb"
-    );
+    networks[2] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
     //networks[2] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
 
     for (int i = 0; i < 3; i++)
@@ -90,7 +87,7 @@ combined_graph_lightweight::combined_graph_lightweight(
 
     callbacks[0] = &analyze_image;
     callbacks[1] = &analyze_image;
-    callbacks[2] = &analyze_image_retinanet;
+    callbacks[2] = &analyze_image;
 
     /*************************************************************************
      * Reserve fifos
@@ -105,14 +102,13 @@ combined_graph_lightweight::combined_graph_lightweight(
     /* token sizes */
     const int tile_detector_mat_size = sizeof(cv::Mat *);
     const int detector_merge_stack_size = sizeof(std::stack<cv::Rect> *);
-    const int merge_dist_vector_size = sizeof(std::vector<cv::Rect> *);
 
     tile_detector_mat_idx = fifo_num;
     for (int i = 0; i < 3; i++)
     {
         fifos.push_back(
             welt_c_fifo_new(
-                CGL_BUFFER_CAPACITY,
+                SPIE_BUFFER_CAPACITY,
                 tile_detector_mat_size,
                 fifo_num++
             )
@@ -124,21 +120,12 @@ combined_graph_lightweight::combined_graph_lightweight(
     {
         fifos.push_back(
             welt_c_fifo_new(
-                CGL_BUFFER_CAPACITY,
+                SPIE_BUFFER_CAPACITY,
                 detector_merge_stack_size,
                 fifo_num++
             )
         );
     }
-    
-    merge_dist_vector_idx = fifo_num;
-    fifos.push_back(
-        welt_c_fifo_new(
-            CGL_BUFFER_CAPACITY,
-            merge_dist_vector_size,
-            fifo_num++
-        )
-    );
 
     /*************************************************************************
      * Initialize actors
@@ -183,31 +170,22 @@ combined_graph_lightweight::combined_graph_lightweight(
     actors.push_back(
         new detection_merge_lightweight(
             &fifos[detector_merge_stack_idx],
-            fifos[merge_dist_vector_idx],
+            vector_out,
             this->graph_settings
         )
     );
     descriptors.push_back((char *) "merge actor");
     actor_num++;
 
-    actors.push_back(
-        new frame_dist_lightweight(
-            fifos[merge_dist_vector_idx],
-            vector_out
-        )
-    );
-    descriptors.push_back((char *) "bounding box matching actor");
-    actor_num++;
-
     actor_count = actor_num;    
 }
 
-void combined_graph_lightweight::set_num_images(int images)
+void spie_graph::set_num_images(int images)
 {
     this->num_images = images;
 }
 
-void combined_graph_lightweight::single_threaded_scheduler() 
+void spie_graph::single_threaded_scheduler() 
 {
     for (int i = 0; i < num_images; i++)
     {
@@ -219,7 +197,7 @@ void combined_graph_lightweight::single_threaded_scheduler()
     }
 }
 
-void combined_graph_lightweight::multithread_scheduler()
+void spie_graph::multithread_scheduler()
 {
     pthread_t thr[actor_count];
     simple_multithread_scheduler_arg_t args[actor_count];
@@ -249,7 +227,7 @@ void combined_graph_lightweight::multithread_scheduler()
     }
 }
 
-void combined_graph_lightweight::multithread_scheduler_2()
+void spie_graph::multithread_scheduler_2()
 {
     pthread_t thr[actor_count];
     simple_multithread_scheduler_arg_t args[actor_count];
@@ -263,23 +241,6 @@ void combined_graph_lightweight::multithread_scheduler_2()
     while (welt_c_fifo_population(vector_out) != num_images)
     {
         /* fire detectors sequentially */
-        // pthread_create(
-        //     &thr[0],
-        //     nullptr,
-        //     guarded_simple_multithread_scheduler_task,
-        //     (void *) &args[1]
-        // );
-
-        // pthread_create(
-        //     &thr[1],
-        //     nullptr,
-        //     guarded_simple_multithread_scheduler_task,
-        //     (void *) &args[2]
-        //     );
-
-        // pthread_join(thr[1], NULL);
-        // pthread_join(thr[2], NULL);
-
         if (actors[1]->enable())
             actors[1]->invoke();
 
@@ -304,37 +265,29 @@ void combined_graph_lightweight::multithread_scheduler_2()
                 (void *) &args[4]
             );
 
-        pthread_create(
-                &thr[5],
-                nullptr,
-                guarded_simple_multithread_scheduler_task,
-                (void *) &args[5]
-            );
-
         pthread_join(thr[0], NULL);
         pthread_join(thr[4], NULL);
-        pthread_join(thr[5], NULL);
     }
 }
 
-void combined_graph_lightweight::set_scheduler_type(int type)
+void spie_graph::set_scheduler_type(int type)
 {
     this->scheduler_mode = type;
 }
 
-void combined_graph_lightweight::scheduler()
+void spie_graph::scheduler()
 {
     switch (this->scheduler_mode)
     {
-        case CGL_SCHEDULER_MULTITHREAD:
+        case SPIE_SCHEDULER_MULTITHREAD:
             std::cout << "running multithreaded scheduler" << std::endl;
             multithread_scheduler();
             break;
-        case CGL_SCHEDULER_SINGLETHREAD:
+        case SPIE_SCHEDULER_SINGLETHREAD:
             std::cout << "running single threaded scheduler" << std::endl;
             single_threaded_scheduler();
             break;
-        case CGL_SCHEDULER_MULTITHREAD_2:
+        case SPIE_SCHEDULER_MULTITHREAD_2:
             std::cout << "running patterned multithreaded scheduler" << std::endl;
             multithread_scheduler_2();
             break;
@@ -360,12 +313,12 @@ void * guarded_simple_multithread_scheduler_task(void *arg)
     return nullptr;
 }
 
-combined_graph_lightweight::~combined_graph_lightweight()
+spie_graph::~spie_graph()
 {
     std::cout << "delete combined graph" << std::endl;
 }
 
-void combined_graph_lightweight_terminate(combined_graph_lightweight * context)
+void spie_graph_terminate(spie_graph * context)
 {
     // TODO
     delete context;

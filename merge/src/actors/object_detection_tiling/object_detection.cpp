@@ -140,6 +140,84 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
 
 }
 
+stack<Rect> analyze_image_retinanet(Net network, Mat img) {
+    Mat blobFromImg; // making this static improves performance at the expense of making the method not thread-safe
+    bool swapRB = true;
+    blobFromImage(img, blobFromImg, 1, Size(800, 800), Scalar(), swapRB, false);
+    
+    float scale = 1.0 / 255.0;
+    Scalar mean = 0;
+    network.setInput(blobFromImg, "", scale, mean);
+
+    Mat outMat;
+    outMat = network.forward();
+    // rows represent number of detected object (proposed region)
+    int rowsNoOfDetection = outMat.rows;
+
+    // The coluns looks like this, The first is region center x, center y, width
+    // height, The class 1 - N is the column entries, which gives you a number,
+    // where the biggist one corrsponding to most probable class.
+    // [x ; y ; w; h; class 1 ; class 2 ; class 3 ;  ; ;....]
+    //
+    int colsCoordinatesPlusClassScore = outMat.cols;
+    //stack to store result
+    stack<Rect> res;
+    // Loop over number of detected object.
+    for (int j = 0; j < rowsNoOfDetection; ++j)
+    { 
+        // for each row, the score is from element 5 up
+        // to number of classes index (5 - N columns)
+        Mat scores = outMat.row(j).colRange(5, colsCoordinatesPlusClassScore);
+
+        Point PositionOfMax;
+        double confidence;
+
+        // This function find indexes of min and max confidence and related index of element.
+        // The actual index is match to the concrete class of the object.
+        // First parameter is Mat which is row [5fth - END] scores,
+        // Second parameter will gives you min value of the scores. NOT needed
+        // confidence gives you a max value of the scores. This is needed,
+        // Third parameter is index of minimal element in scores
+        // the last is position of the maximum value.. This is the class!!
+        minMaxLoc(scores, 0, &confidence, 0, &PositionOfMax);
+    
+        if (confidence > 0.0001)
+        {
+            int width_inc = 10;
+            int height_inc = 10;
+            // thease four lines are
+            // [x ; y ; w; h;
+            int centerX = (int)(outMat.at<float>(j, 0) * img.cols);
+            int centerY = (int)(outMat.at<float>(j, 1) * img.rows);
+            int width =  (int)(outMat.at<float>(j, 2) * img.cols + width_inc);
+            int height =  (int)(outMat.at<float>(j, 3) * img.rows + height_inc);
+
+            int left = centerX - width / 2;
+            int top = centerY - height / 2;
+
+
+            //stringstream ss;
+            //ss << PositionOfMax.x;
+            //string clas = ss.str();
+            //int color = PositionOfMax.x * 10;
+            //putText(img, clas, Point(left, top), 1, 2, Scalar(color, 255, 255), 2, false);
+            //stringstream ss2;
+            //ss << confidence;
+            //string conf = ss.str();
+
+            res.push(Rect(left, top, width, height));
+            //rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
+            //cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
+            
+        }
+    }
+    
+    //namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
+    //imshow("Display window", img);
+    //waitKey(250);
+    return res;
+}
+
 stack<Rect> analyze_image(Net network, Mat img) {
     Mat blobFromImg; // making this static improves performance at the expense of making the method not thread-safe
     bool swapRB = true;

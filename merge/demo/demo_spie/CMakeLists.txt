@@ -29,23 +29,22 @@ LINK_DIRECTORIES(
 )
 
 ADD_EXECUTABLE(
-    combined_graph_driver.exe
-    combined_graph_driver.cpp
+    spie_driver.exe
+    spie_driver.cpp
     ../../src/actors/object_detection_tiling/object_detection.cpp
     ../../src/util/util.cpp
     ../../src/actors/detection_merge_lightweight.cpp
     ../../src/actors/image_tile_det_lightweight.cpp
     ../../src/actors/image_tile_multi_detector.cpp
-    ../../src/graph/combined_graph_lightweight.cpp
+    ../../src/graph/spie_graph.cpp
     ../../src/actors/objData.cpp
-    ../../src/actors/frame_dist_lightweight.cpp
     ../../src/actors/Bounding_box_pair.cpp
     ../../src/actors/object_detection_tiling/bounding_box_merge.cpp
     ../../src/util/cJSON/cJSON.c
 )
 
 TARGET_LINK_LIBRARIES(
-    combined_graph_driver.exe
+    spie_driver.exe
     $ENV{WELTERGEN}/libwelt_cpp_graph_basic.a
     $ENV{WELTERGEN}/libwelt_cpp_actors_basic.a
     $ENV{WELTERGEN}/libwelt_cpp_runtime.a
@@ -60,4 +59,4 @@ TARGET_LINK_LIBRARIES(
     pthread
 )
 
-INSTALL(TARGETS combined_graph_driver.exe DESTINATION ${PROJECT_SOURCE_DIR})
+INSTALL(TARGETS spie_driver.exe DESTINATION ${PROJECT_SOURCE_DIR})

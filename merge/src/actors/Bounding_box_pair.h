@@ -66,6 +66,6 @@ public:
     void output();
 };
 
-void match_bounding_boxes(vector<objData> * first, vector<objData> * second);
+void match_bounding_boxes(vector<objData> * first, vector<objData> * second, float min_giou = 0.10F);
 
 #endif //POINTER_ADD_GRAPH_BOUNDING_BOX_TRIPLE_H
