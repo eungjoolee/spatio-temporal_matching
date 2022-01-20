@@ -115,37 +115,41 @@ void image_tile_det_lightweight::invoke()
     case DET_MODE_PROCESS:
     {
         cv::Mat *img_color = nullptr;
+        std::stack<cv::Rect> frame;
 
         /* read img fifo and store in in_image*/
         welt_c_fifo_read(in_image, &img_color);
-        Mat tile = (*img_color);
 
-        std::stack<cv::Rect> frame;
-
-        if (at_origin)
+        if (img_color != nullptr)
         {
-            frame = analysis_callback(network, tile);
-        }
-        else
-        {
-            std::stack<cv::Rect> result = analysis_callback(network, tile);
-            std::stack<cv::Rect> global_loc;
+            Mat tile = (*img_color);
 
-            while (!result.empty())
+
+            if (at_origin)
             {
-                cv::Rect local_loc = result.top();
-                result.pop();
-                global_loc.push(
-                    cv::Rect(
-                        local_loc.x + tile_x * stride_x,
-                        local_loc.y + tile_y * stride_y,
-                        local_loc.width,
-                        local_loc.height
-                    )
-                );
+                frame = analysis_callback(network, tile);
             }
+            else
+            {
+                std::stack<cv::Rect> result = analysis_callback(network, tile);
+                std::stack<cv::Rect> global_loc;
 
-            frame = global_loc;
+                while (!result.empty())
+                {
+                    cv::Rect local_loc = result.top();
+                    result.pop();
+                    global_loc.push(
+                        cv::Rect(
+                            local_loc.x + tile_x * stride_x,
+                            local_loc.y + tile_y * stride_y,
+                            local_loc.width,
+                            local_loc.height
+                        )
+                    );
+                }
+
+                frame = global_loc;
+            }
         }
 
         rects.push_back(frame);

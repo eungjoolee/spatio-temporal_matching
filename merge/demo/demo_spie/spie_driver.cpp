@@ -22,7 +22,7 @@ extern "C"
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/types.hpp>
 
-#define SPIE_BUFFER_CAP 100
+#define SPIE_BUFFER_CAP 1500
 #define EPS 0.5F
 
 int main(int argc, char **argv)
@@ -164,7 +164,6 @@ int main(int argc, char **argv)
             while (cv::waitKey(-1) != 'n') {}
         }
     }
-
 
     welt_c_fifo_free(mat_in_fifo);
     welt_c_fifo_free(vector_out_fifo);

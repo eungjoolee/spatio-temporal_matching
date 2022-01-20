@@ -28,7 +28,7 @@ ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "spie_graph.h"
 
-#include "../actors/image_tile_multi_detector.h"
+#include "../actors/image_fork_enable_spie.h"
 #include "../actors/image_tile_det_lightweight.h"
 #include "../actors/detection_merge_lightweight.h"
 #include "../actors/object_detection_tiling/object_detection.h"
@@ -74,8 +74,8 @@ spie_graph::spie_graph(
     cv::dnn::Net networks[3];
     analysis_callback_t callbacks[3];
 
-    networks[0] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
-    networks[1] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
+    networks[0] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav2.weights", "Darknet");
+    networks[1] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
     networks[2] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
     //networks[2] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
 
@@ -102,6 +102,7 @@ spie_graph::spie_graph(
     /* token sizes */
     const int tile_detector_mat_size = sizeof(cv::Mat *);
     const int detector_merge_stack_size = sizeof(std::stack<cv::Rect> *);
+    const int enable_vector_size = sizeof(std::array<int, 3>);
 
     tile_detector_mat_idx = fifo_num;
     for (int i = 0; i < 3; i++)
@@ -127,6 +128,9 @@ spie_graph::spie_graph(
         );
     }
 
+    enable_fifo = welt_c_fifo_new(SPIE_BUFFER_CAPACITY, enable_vector_size, fifo_num++);
+    fifos.push_back(enable_fifo);
+
     /*************************************************************************
      * Initialize actors
      * 
@@ -135,10 +139,10 @@ spie_graph::spie_graph(
     int actor_num = 0;
 
     actors.push_back(
-        new image_tile_multi_detector(
+        new image_fork_enable_spie(
             mat_in,
-            &fifos[tile_detector_mat_idx],
-            3
+            enable_fifo,
+            &fifos[tile_detector_mat_idx]
         )
     );
     descriptors.push_back((char*) "tile actor");
@@ -231,6 +235,9 @@ void spie_graph::multithread_scheduler_2()
 {
     pthread_t thr[actor_count];
     simple_multithread_scheduler_arg_t args[actor_count];
+    int iter = 0;
+    
+    std::array<int, 3> enable = {1,0,0};
 
     for (int i = 0; i < actor_count; i++)
     {
@@ -240,6 +247,8 @@ void spie_graph::multithread_scheduler_2()
 
     while (welt_c_fifo_population(vector_out) != num_images)
     {
+        welt_c_fifo_write(enable_fifo, &enable);
+
         /* fire detectors sequentially */
         if (actors[1]->enable())
             actors[1]->invoke();
@@ -267,6 +276,12 @@ void spie_graph::multithread_scheduler_2()
 
         pthread_join(thr[0], NULL);
         pthread_join(thr[4], NULL);
+
+        iter++;
+        if (iter % 100 == 0)
+        {
+            std::cout << iter << std::endl;
+        }
     }
 }
 

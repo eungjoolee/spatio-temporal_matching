@@ -113,7 +113,7 @@ void export_boxes_to_map_folder(std::vector<std::vector<cv::Rect>> boxes, const 
     for (int frame_id = 0; frame_id < boxes.size(); frame_id++)
     {
         std::stringstream ss;
-        ss << root << frame_id << ".txt";
+        ss << root << std::setfill('0') << std::setw(6) << frame_id + 1 << ".txt";
 
         output_file.open(ss.str());
 

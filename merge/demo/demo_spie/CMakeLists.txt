@@ -35,7 +35,7 @@ ADD_EXECUTABLE(
     ../../src/util/util.cpp
     ../../src/actors/detection_merge_lightweight.cpp
     ../../src/actors/image_tile_det_lightweight.cpp
-    ../../src/actors/image_tile_multi_detector.cpp
+    ../../src/actors/image_fork_enable_spie.cpp
     ../../src/graph/spie_graph.cpp
     ../../src/actors/objData.cpp
     ../../src/actors/Bounding_box_pair.cpp
