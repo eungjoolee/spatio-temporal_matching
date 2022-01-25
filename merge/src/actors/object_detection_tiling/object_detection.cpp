@@ -102,6 +102,24 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
     }
 }
 
+stack<Rect> analyze_image_efficientdet(Net network, Mat img)
+{
+    cv::Mat blob_from_image;
+    float scale = 1.0 / 255.0;
+    Scalar mean = 0;
+
+    cv::dnn::blobFromImage(img, blob_from_image, scale, cv::Size(512, 512), mean, true, false);
+    network.setInput(blob_from_image, "", scale, mean);
+
+    cv::Mat output = network.forward();
+
+    std::cout << output << std::endl;
+
+    
+    std::stack<cv::Rect> res;
+    return res;
+}
+
 // adapted from https://github.com/stq054188/OpenCV-DNN-and-Tensorflow-With-Faster-RCNN/blob/master/opencv_dnn_demo.py
 stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
 {
@@ -137,7 +155,6 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
     }
 
     return res;
-
 }
 
 stack<Rect> analyze_image_retinanet(Net network, Mat img) {

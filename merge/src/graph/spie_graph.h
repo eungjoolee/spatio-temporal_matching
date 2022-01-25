@@ -69,6 +69,7 @@ class spie_graph : public welt_cpp_graph {
         spie_graph(
             welt_c_fifo_pointer mat_in,
             welt_c_fifo_pointer vector_out,
+            welt_c_fifo_pointer enable_fifo,
             graph_settings_t graph_settings
         );
 

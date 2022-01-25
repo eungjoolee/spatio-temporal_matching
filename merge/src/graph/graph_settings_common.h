@@ -36,6 +36,7 @@ typedef struct _graph_settings_t
     int tile_x_size;           // partitioning mode only; size of tiles
     int tile_y_size;           // partitioning mode only; size of tiles
     int stride;                // partioning mode only; stride of tiles
+    int min_frame_time_ms;     // minimum frame time (caps FPS); used in spie experiment
 } graph_settings_t;
 
 #endif

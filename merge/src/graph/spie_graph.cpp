@@ -34,10 +34,14 @@ ENHANCEMENTS, OR MODIFICATIONS.
 #include "../actors/object_detection_tiling/object_detection.h"
 #include "graph_settings_common.h"
 
+#include <unistd.h>
+
 spie_graph::spie_graph(
     welt_c_fifo_pointer mat_in,
     welt_c_fifo_pointer vector_out,
-    graph_settings_t graph_settings)
+    welt_c_fifo_pointer enable_fifo,
+    graph_settings_t graph_settings
+    )
 {
     this->mat_in = mat_in;
     this->vector_out = vector_out;
@@ -74,10 +78,12 @@ spie_graph::spie_graph(
     cv::dnn::Net networks[3];
     analysis_callback_t callbacks[3];
 
-    networks[0] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav2.weights", "Darknet");
-    networks[1] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
-    networks[2] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
+    networks[0] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
+    networks[1] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav2.weights", "Darknet");
+    //networks[2] = cv::dnn::readNetFromONNX("../../cfg/signatrix_efficientdet_coco.onnx");
     //networks[2] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
+    networks[2] = cv::dnn::readNet("../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pb",
+        "../../cfg/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco_2018_01_28.pbtxt");
 
     for (int i = 0; i < 3; i++)
     {
@@ -87,7 +93,7 @@ spie_graph::spie_graph(
 
     callbacks[0] = &analyze_image;
     callbacks[1] = &analyze_image;
-    callbacks[2] = &analyze_image;
+    callbacks[2] = &analyze_image_faster_rcnn;
 
     /*************************************************************************
      * Reserve fifos
@@ -128,8 +134,8 @@ spie_graph::spie_graph(
         );
     }
 
-    enable_fifo = welt_c_fifo_new(SPIE_BUFFER_CAPACITY, enable_vector_size, fifo_num++);
     fifos.push_back(enable_fifo);
+    this->enable_fifo = enable_fifo;
 
     /*************************************************************************
      * Initialize actors
@@ -236,8 +242,6 @@ void spie_graph::multithread_scheduler_2()
     pthread_t thr[actor_count];
     simple_multithread_scheduler_arg_t args[actor_count];
     int iter = 0;
-    
-    std::array<int, 3> enable = {1,0,0};
 
     for (int i = 0; i < actor_count; i++)
     {
@@ -247,17 +251,10 @@ void spie_graph::multithread_scheduler_2()
 
     while (welt_c_fifo_population(vector_out) != num_images)
     {
-        welt_c_fifo_write(enable_fifo, &enable);
-
-        /* fire detectors sequentially */
-        if (actors[1]->enable())
-            actors[1]->invoke();
-
-        if (actors[2]->enable())
-            actors[2]->invoke();
-    
-        if (actors[3]->enable())
-            actors[3]->invoke();
+        struct timespec begin, end;
+        double wall_time;
+        int frame_time_ms;
+        clock_gettime(CLOCK_MONOTONIC, &begin);
 
         /* execute all other processing in parallel */
         pthread_create(
@@ -276,11 +273,35 @@ void spie_graph::multithread_scheduler_2()
 
         pthread_join(thr[0], NULL);
         pthread_join(thr[4], NULL);
+        
+        /* fire detectors sequentially */
+        if (actors[1]->enable())
+            actors[1]->invoke();
 
+        if (actors[2]->enable())
+            actors[2]->invoke();
+    
+        if (actors[3]->enable())
+            actors[3]->invoke();
+
+        /* Benchmarks */
         iter++;
         if (iter % 100 == 0)
         {
-            std::cout << iter << std::endl;
+            std::cout << "frame index " << iter << std::endl;
+        }
+        
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        wall_time = end.tv_sec - begin.tv_sec;
+        wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
+        frame_time_ms = (int)(wall_time * 1000);
+
+        std::cout << "frame time " << frame_time_ms << std::endl;
+
+        if (graph_settings.min_frame_time_ms != 0 && frame_time_ms < graph_settings.min_frame_time_ms)
+        {
+            int sleep_ms = graph_settings.min_frame_time_ms - frame_time_ms;
+            usleep(sleep_ms * 1000);
         }
     }
 }
