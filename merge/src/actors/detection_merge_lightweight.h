@@ -105,6 +105,7 @@ private:
     float eps;
     detection_merge_mode merge_mode;
     float iou_threshold;
+    float weight_threshold;
     vector<float> iou_weights;
 };
 

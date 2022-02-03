@@ -22,6 +22,7 @@ detection_merge_lightweight::detection_merge_lightweight(
     this->merge_mode = settings.merge_mode;
     this->iou_threshold = settings.iou_threshold;
     this->iou_weights = settings.iou_weights;
+    this->weight_threshold = settings.weight_threshold;
 
     this->mode = DETECTION_MERGE_LIGHTWEIGHT_MODE_COMPUTE;
 
@@ -103,7 +104,7 @@ void detection_merge_lightweight::invoke()
                 }
             }
 
-            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_weights, iou_threshold);
+            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_weights, iou_threshold, weight_threshold);
 
             frames.push_back(output);
             vector<cv::Rect> *to_send = &frames.back();
@@ -130,7 +131,7 @@ void detection_merge_lightweight::invoke()
                 detections[i] = iou_merge(detections[i], iou_threshold, 2);
             }
 
-            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_weights, iou_threshold, 0.5F);
+            std::vector<cv::Rect> output = iou_merge_weighted(detections, iou_weights, iou_threshold, weight_threshold);
 
             frames.push_back(output);
             vector<cv::Rect> *to_send = &frames.back();

@@ -285,11 +285,18 @@ void spie_graph::multithread_scheduler_2()
             actors[3]->invoke();
 
         /* Benchmarks */
-        iter++;
         if (iter % 100 == 0)
         {
             std::cout << "frame index " << iter << std::endl;
         }
+
+        /* Artificial Delay (Count this in the frame time) */
+        if (iter > 0 && graph_settings.frame_delays->at(iter - 1) != 0)
+        {
+            usleep(graph_settings.frame_delays->at(iter - 1) * 1000);
+        }
+
+        iter++;
         
         clock_gettime(CLOCK_MONOTONIC, &end);
         wall_time = end.tv_sec - begin.tv_sec;
@@ -298,7 +305,7 @@ void spie_graph::multithread_scheduler_2()
 
         std::cout << "frame time " << frame_time_ms << std::endl;
 
-        if (graph_settings.min_frame_time_ms != 0 && frame_time_ms < graph_settings.min_frame_time_ms)
+        if ((graph_settings.min_frame_time_ms != 0) && (frame_time_ms < graph_settings.min_frame_time_ms))
         {
             int sleep_ms = graph_settings.min_frame_time_ms - frame_time_ms;
             usleep(sleep_ms * 1000);

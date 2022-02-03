@@ -30,27 +30,31 @@ int main(int argc, char **argv)
     /* default settings */
     graph_settings_t graph_settings;
     graph_settings.eps = EPS;
-    graph_settings.merge_mode = detection_merge_mode::merge_iou_individual;
-    graph_settings.iou_threshold = 0.01F;
+    graph_settings.merge_mode = detection_merge_mode::merge_iou_weighted;
+    graph_settings.iou_threshold = 0.25F; // 0.25
     graph_settings.iou_weights.clear();
-    graph_settings.iou_weights.push_back(0.6F); // yolov3
-    graph_settings.iou_weights.push_back(0.2F); // yolov3-tiny
-    graph_settings.iou_weights.push_back(1.4F); // faster-rcnn
-    graph_settings.min_frame_time_ms = 50; // 20 fps 
+    graph_settings.iou_weights.push_back(0.7F); // yolov3-tiny-uav 0.7
+    graph_settings.iou_weights.push_back(1.0F); // yolov3-uav 1.0
+    graph_settings.iou_weights.push_back(0.5F); // faster-rcnn 0.5
+    graph_settings.min_frame_time_ms = 0; 
+    graph_settings.frame_delays = new std::vector<int>();
+    graph_settings.weight_threshold = 0.25F; // 0.8
     
     char *image_root_directory;
     int num_images = 50;
     bool show_images = false;
     int scheduler = SPIE_SCHEDULER_MULTITHREAD;
-    bool write_to_file;
+    bool write_to_file = false;
     char * file_name;
+    bool write_im_to_file = false;
+    char * file_im_name;
     int dataset_type = 0;
     int repeat = 1;
 
     /* parse command line arguments */
     int opt;
 
-    while ((opt = getopt(argc, argv, "d:n:s:if:m:t:c:")) != -1)
+    while ((opt = getopt(argc, argv, "d:n:s:if:m:t:r:e:")) != -1)
     {
         switch (opt)
         {
@@ -71,15 +75,20 @@ int main(int argc, char **argv)
                 std::cout << "using scheduler " << scheduler << std::endl;
                 break;
             case 'f':
-                write_to_file = false;
+                write_to_file = true;
                 file_name = optarg;
                 std::cout << "writing results to root folder " << file_name << std::endl;
+                break;
+            case 'e':
+                write_im_to_file = true;
+                file_im_name = optarg;
+                std::cout << "exporting images to root folder " << file_im_name << std::endl;
                 break;
             case 't':
                 dataset_type = atoi(optarg);
                 std::cout << "using dataset " << dataset_type << std::endl;
                 break;
-            case 'c':
+            case 'r':
                 repeat = atoi(optarg);
                 std::cout << "repeating dataset images " << repeat << " times" << std::endl;
                 break;
@@ -128,15 +137,21 @@ int main(int argc, char **argv)
     for (int i = 0; i < num_images; i++)
     {
         pattern.push_back({1,1,1});
+        graph_settings.frame_delays->push_back(0);
     }
 
     std::stringstream pattern_fname;
     pattern_fname << image_root_directory << "pattern.txt";
     ifstream f_pattern(pattern_fname.str());
 
-    vector<string> lines;
+    std::stringstream delay_fname;
+    delay_fname << image_root_directory << "delays.txt";
+    ifstream f_delay(delay_fname.str());
+
+    
     if (f_pattern)
     {
+        vector<string> lines;
         std::cout << "found pattern file in image root directory" << std::endl;
         string line;
 
@@ -149,6 +164,24 @@ int main(int argc, char **argv)
         {
             line = lines[i];
             sscanf(line.c_str(), "%d %d %d", &pattern[i][0], &pattern[i][1], &pattern[i][2]);
+        }
+    }
+
+    if (f_delay)
+    {
+        vector<string> lines;
+        std::cout << "found delay file in image root directory" << std::endl;
+        string line;
+
+        while (getline(f_delay, line))
+        {
+            lines.push_back(line);
+        }
+
+        for (int i = 0; i < num_images; i++)
+        {
+            line = lines[i];
+            sscanf(line.c_str(), "%d", &graph_settings.frame_delays->at(i));
         }
     }
 
@@ -166,39 +199,54 @@ int main(int argc, char **argv)
             
             welt_c_fifo_write(enable_fifo, &pattern[i]);
         }
+    }
 
-        std::cout << "Running scheduler" << std::endl;
+    std::cout << "Running scheduler" << std::endl;
 
-        /* run scheduler */
-        clock_gettime(CLOCK_MONOTONIC, &begin);
+    /* run scheduler */
+    clock_gettime(CLOCK_MONOTONIC, &begin);
 
-        graph.set_scheduler_type(scheduler);
-        graph.set_num_images(num_images);
-        graph.scheduler();
+    graph.set_scheduler_type(scheduler);
+    graph.set_num_images(num_images * repeat);
+    graph.scheduler();
 
-        clock_gettime(CLOCK_MONOTONIC, &end);
-        wall_time = end.tv_sec - begin.tv_sec;
-        wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
-        frame_time_ms = (int)(wall_time * 1000 / num_images);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    wall_time = end.tv_sec - begin.tv_sec;
+    wall_time += (end.tv_nsec - begin.tv_nsec) / 1000000000.00;
+    frame_time_ms = (int)(wall_time * 1000 / (num_images * repeat));
 
-        /* write results to stdout */
-        while (welt_c_fifo_population(vector_out_fifo) > 0)
-        {
-            std::vector<cv::Rect> *dataptr;
-            welt_c_fifo_read(vector_out_fifo, &dataptr);
-            
+    /* write results to stdout */
+    int img = 0;
+    while (welt_c_fifo_population(vector_out_fifo) > 0)
+    {
+        std::vector<cv::Rect> *dataptr;
+        welt_c_fifo_read(vector_out_fifo, &dataptr);
+        
+        if (img < num_images)
             boxes.push_back(std::vector<cv::Rect>(*dataptr));
-        }
-    }    
 
+        img++;
+    }
+    
     annotate_image_no_ids(&input_images, boxes);
 
-    std::cout << "frame time of " << frame_time_ms << " ms (" << num_images / wall_time << "fps)" << std::endl;
+    std::cout << "frame time of " << frame_time_ms << " ms (" << (num_images * repeat) / wall_time << "fps)" << std::endl;
     
     /* write to file */
     if (write_to_file)
     {
         export_boxes_to_map_folder(boxes, file_name);
+    }
+
+    if (write_im_to_file)
+    {
+        for (int i = 0; i < num_images; i++)
+        {
+            std::stringstream s;
+            s << file_im_name << std::setfill('0') << std::setw(6) << i+1 << ".jpg";
+
+            cv::imwrite(s.str(), input_images[i]);
+        }
     }
 
     /* display images */
@@ -207,8 +255,11 @@ int main(int argc, char **argv)
         cv::namedWindow("output");
         for (int i = 0; i < num_images; i++)
         {
+            char key = 0;
             cv::imshow("output", input_images[i]);
-            while (cv::waitKey(-1) != 'n') {}
+            while (key != 'n' && key != 'm') { key = cv::waitKey(-1); }
+            
+            if (key == 'm') {i = i - 2;}
         }
     }
 

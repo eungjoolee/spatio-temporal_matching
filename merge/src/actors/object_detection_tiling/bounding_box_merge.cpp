@@ -93,7 +93,7 @@ std::vector<cv::Rect> iou_merge_weighted(
             bool found = false;
             while (k < results.size() && found == false)
             {
-                if (intersection_over_union(rects[i][j], results[j]) >= iou_threshold)
+                if (intersection_over_union(rects[i][j], results[k]) >= iou_threshold)
                 {
                     // there is a match; update result by weighted average
                     float count = counts[k];
@@ -106,6 +106,7 @@ std::vector<cv::Rect> iou_merge_weighted(
                     results[k].height = height;
                     results[k].x = x;
                     results[k].y = y;
+                    counts[k] = count + weights[i];
 
                     found = true;
                     if (contributions[k][i] == false)

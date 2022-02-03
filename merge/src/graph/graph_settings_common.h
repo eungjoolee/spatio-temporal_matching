@@ -37,6 +37,9 @@ typedef struct _graph_settings_t
     int tile_y_size;           // partitioning mode only; size of tiles
     int stride;                // partioning mode only; stride of tiles
     int min_frame_time_ms;     // minimum frame time (caps FPS); used in spie experiment
+    float weight_threshold;    // minimum weight for merging
+    float nms_iou_value;       // intersection to apply non-max suppression
+    std::vector<int> *frame_delays; // frame_delays for spie experiment
 } graph_settings_t;
 
 #endif

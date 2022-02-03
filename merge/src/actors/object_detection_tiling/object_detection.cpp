@@ -17,6 +17,24 @@ using namespace cv;
 using namespace std;
 using namespace dnn;
 
+float iou(cv::Rect r1, cv::Rect r2)
+{
+    int x1 = std::max(r1.x, r2.x);
+    int x2 = std::min(r1.x + r1.width, r2.x + r2.width);
+    int y1 = std::max(r1.y, r2.y);
+    int y2 = std::min(r1.y + r1.height, r2.y + r2.height);
+
+    if ((x1 > x2) || (y1 > y2))
+    {
+        return 0;
+    } 
+
+    int intersection = (x2 - x1) * (y2 - y1);
+    int unin = (r1.width * r1.height) + (r2.width * r1.height) - intersection;
+
+    return ((float) intersection) / ((float) unin);
+}
+
 void analyze_video(std::string model, std::string config, VideoCapture cap)
 {
     Net network = readNet(model, config, "Darknet");
@@ -70,7 +88,7 @@ void analyze_video(std::string model, std::string config, VideoCapture cap)
             // the last is position of the maximum value.. This is the class!!
             minMaxLoc(scores, 0, &confidence, 0, &PositionOfMax);
         
-            if (confidence > 0.0001)
+            if (confidence > 0.01)
             {
                 // thease four lines are
                 // [x ; y ; w; h;
@@ -131,9 +149,13 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
     cv::Mat output = network.forward();
     cv::Mat detection_mat(output.size[2], output.size[3], CV_32F, output.ptr<float>());
 
-    float conf_threshold = 0.01F;
+    float conf_threshold = 0.005F;
+    float nms = 0.25F;
+    int box_size_limit = 10000;
 
-    std::stack<cv::Rect> res;
+    std::vector<cv::Rect> res;
+    std::vector<float> confs;
+
 
     for (int i = 0; i < detection_mat.rows; i++) 
     {
@@ -150,11 +172,45 @@ stack<Rect> analyze_image_faster_rcnn(Net network, Mat img)
 			int y_right_top = static_cast<int>(detection_mat.at<float>(i, 6) * img.rows + height_inc / 2);
 
             cv::Rect rectangle(x_left_bottom, y_left_bottom, x_right_top - x_left_bottom, y_right_top - y_left_bottom);
-            res.push(rectangle);
+            bool add_this = true;
+
+            // remove too large
+            if (rectangle.area() > box_size_limit)
+            {
+                add_this = false;
+            }
+
+            // non-max suppression
+            for (int j = res.size() - 1; j >= 0; j--)
+            {
+                float io = iou(res[j], rectangle);
+                if ((io > nms))
+                {
+                    if (confs[j] > confidence)
+                    {
+                        // std::cout << "suppressed " << confs[j] << " < " << confidence << " (iou = " << io << ")" << std::endl;
+                        res.erase(res.begin() + j);
+                        confs.erase(confs.begin() + j);
+                    }
+                    else
+                    {
+                        add_this = false;
+                    }
+                }
+            }
+
+            if (add_this)
+            {
+                // std::cout << "added " << rectangle.x << " " << rectangle.y << " " << rectangle.width << " " << rectangle.height << " conf " << confidence << std::endl;
+                res.push_back(rectangle);
+                confs.push_back(confidence);
+            }
         }
     }
 
-    return res;
+    std::stack<cv::Rect> ret(std::deque<cv::Rect>(res.begin(), res.end()));
+
+    return ret;
 }
 
 stack<Rect> analyze_image_retinanet(Net network, Mat img) {
@@ -198,7 +254,7 @@ stack<Rect> analyze_image_retinanet(Net network, Mat img) {
         // the last is position of the maximum value.. This is the class!!
         minMaxLoc(scores, 0, &confidence, 0, &PositionOfMax);
     
-        if (confidence > 0.0001)
+        if (confidence > 0.1)
         {
             int width_inc = 10;
             int height_inc = 10;
@@ -256,7 +312,10 @@ stack<Rect> analyze_image(Net network, Mat img) {
     //
     int colsCoordinatesPlusClassScore = outMat.cols;
     //stack to store result
-    stack<Rect> res;
+    vector<Rect> res;
+    vector<float> confs;
+    float nms = 0.3F;
+
     // Loop over number of detected object.
     for (int j = 0; j < rowsNoOfDetection; ++j)
     {
@@ -276,7 +335,7 @@ stack<Rect> analyze_image(Net network, Mat img) {
         // the last is position of the maximum value.. This is the class!!
         minMaxLoc(scores, 0, &confidence, 0, &PositionOfMax);
     
-        if (confidence > 0.0001)
+        if (confidence > 0.1)
         {
             int width_inc = 10;
             int height_inc = 10;
@@ -299,18 +358,45 @@ stack<Rect> analyze_image(Net network, Mat img) {
             //stringstream ss2;
             //ss << confidence;
             //string conf = ss.str();
+            Rect rectangle(left, top, width, height);
 
-            res.push(Rect(left, top, width, height));
+            bool add_this = true;
+
+            for (int j = res.size() - 1; j >= 0; j--)
+            {
+                float io = iou(res[j], rectangle);
+                if ((io > nms))
+                {
+                    if (confs[j] > confidence)
+                    {
+                        // std::cout << "suppressed " << confs[j] << " < " << confidence << " (iou = " << io << ")" << std::endl;
+                        res.erase(res.begin() + j);
+                        confs.erase(confs.begin() + j);
+                    }
+                    else
+                    {
+                        add_this = false;
+                    }
+                }
+            }
+
+            if (add_this)
+            {
+                // std::cout << "added " << rectangle.x << " " << rectangle.y << " " << rectangle.width << " " << rectangle.height << " conf " << confidence << std::endl;
+                res.push_back(rectangle);
+                confs.push_back(confidence);
+            }
             //rectangle(img, Rect(left, top, width, height), Scalar(color, 0, 0), 2, 8, 0);
-            //cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << endl;
-            
+            //cout << "Result " << j << ": top left = (" << left << "," << top << "), (w,h) = (" << width << "," << height << ")" << end;
         }
     }
     
     //namedWindow("Display window", WINDOW_AUTOSIZE);// Create a window for display.
     //imshow("Display window", img);
     //waitKey(250);
-    return res;
+    std::stack<cv::Rect> ret(std::deque<cv::Rect>(res.begin(), res.end()));
+
+    return ret;
 }
 
 stack<Rect> analyze_image(std::string model, std::string config, Mat img)
