@@ -127,7 +127,7 @@ void image_tile_det_lightweight::invoke()
 
             if (at_origin)
             {
-                frame = analysis_callback(network, tile);
+                frame = analysis_callback(network, cv::Mat(tile));
             }
             else
             {

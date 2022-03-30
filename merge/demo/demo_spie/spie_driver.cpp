@@ -31,14 +31,14 @@ int main(int argc, char **argv)
     graph_settings_t graph_settings;
     graph_settings.eps = EPS;
     graph_settings.merge_mode = detection_merge_mode::merge_iou_weighted;
-    graph_settings.iou_threshold = 0.25F; // 0.25
+    graph_settings.iou_threshold = 0.25;
     graph_settings.iou_weights.clear();
-    graph_settings.iou_weights.push_back(0.7F); // yolov3-tiny-uav 0.7
+    graph_settings.iou_weights.push_back(2.0F); // yolov3-tiny-uav 0.7
     graph_settings.iou_weights.push_back(1.0F); // yolov3-uav 1.0
     graph_settings.iou_weights.push_back(0.5F); // faster-rcnn 0.5
     graph_settings.min_frame_time_ms = 0; 
     graph_settings.frame_delays = new std::vector<int>();
-    graph_settings.weight_threshold = 0.25F; // 0.8
+    graph_settings.weight_threshold = 0.8;
     
     char *image_root_directory;
     int num_images = 50;

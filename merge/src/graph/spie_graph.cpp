@@ -78,8 +78,8 @@ spie_graph::spie_graph(
     cv::dnn::Net networks[3];
     analysis_callback_t callbacks[3];
 
-    networks[0] = cv::dnn::readNet("../../cfg/yolov3-tiny-uav.cfg", "../../cfg/yolov3-tiny-uav.weights", "Darknet");
-    networks[1] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav2.weights", "Darknet");
+    networks[0] = cv::dnn::readNet("../../cfg/yolov3.cfg", "../../cfg/yolov3.weights", "Darknet");
+    networks[1] = cv::dnn::readNet("../../cfg/yolov3-tiny.cfg", "../../cfg/yolov3-tiny.weights", "Darknet");
     //networks[2] = cv::dnn::readNetFromONNX("../../cfg/signatrix_efficientdet_coco.onnx");
     //networks[2] = cv::dnn::readNet("../../cfg/yolov3-uav.cfg", "../../cfg/yolov3-uav.weights", "Darknet");
     networks[2] = cv::dnn::readNet("../../cfg/faster_rcnn_resnet50_coco_2018_01_28/frozen_inference_graph.pb",
