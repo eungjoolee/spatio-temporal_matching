@@ -45,11 +45,11 @@ void annotate_image(std::vector<cv::Mat> *input_images, std::vector<std::vector<
     for (int frame_id = 0; frame_id < boxes.size(); frame_id++)
     {
         std::vector<objData> data = boxes.at(frame_id);
-        std::cout << "frameid: " << frame_id << " found " << data.size() << std::endl;
+        // std::cout << "frameid: " << frame_id << " found " << data.size() << std::endl;
 
         for (int i = 0; i < data.size(); i++)
         {
-            data[i].output();
+            // data[i].output();
 
             cv::Rect newRect = cv::Rect(
                 data[i].getX(),

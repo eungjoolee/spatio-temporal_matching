@@ -28,7 +28,7 @@ tracking_nature::tracking_nature(
 
     /* clear internal frame storage */
     this->frames.clear();
-    std::deque<objData> empty_frame;
+    std::vector<objData> empty_frame;
     this->frames.push_back(empty_frame);    
     this->frames.push_back(empty_frame);    
     this->frame_index = 1;
@@ -60,12 +60,12 @@ void tracking_nature::invoke() {
              *************************************************************************/
             
             /* Push previous frame data down one */
-            std::deque<objData> empty_frame;
+            std::vector<objData> empty_frame;
             frames.push_back(empty_frame);
 
-            std::deque<objData> * next_frame = &frames[frame_index + 1];
-            std::deque<objData> * current_frame = &frames[frame_index];
-            std::deque<objData> * last_frame = &frames[frame_index - 1];
+            std::vector<objData> * next_frame = &frames[frame_index + 1];
+            std::vector<objData> * current_frame = &frames[frame_index];
+            std::vector<objData> * last_frame = &frames[frame_index - 1];
             
             /* Read in data to frame */
             vector<cv::Rect> *data;
@@ -89,11 +89,11 @@ void tracking_nature::invoke() {
              * 
              *************************************************************************/
 
-            match_bounding_boxes_multithread(current_frame, last_frame);
-            match_bounding_boxes_multithread(next_frame, current_frame);
-            match_bounding_boxes_multithread(next_frame, last_frame);
+            match_bounding_boxes(current_frame, last_frame);
+            match_bounding_boxes(next_frame, current_frame);
+            match_bounding_boxes(next_frame, last_frame);
 
-            match_bounding_boxes_multithread(last_frame, current_frame);
+            match_bounding_boxes(last_frame, current_frame);
 
             /*************************************************************************
              * Write frame to output fifo

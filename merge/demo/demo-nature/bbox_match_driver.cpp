@@ -40,11 +40,11 @@ int main(int argc, char **argv)
 
     if (argc > 3)
     {
-        capacity = atoi(argv[3]) + 1;
+        capacity = atoi(argv[3]);
     }
 
     int input_token_size = sizeof(std::vector<cv::Rect> *);
-    int output_token_size = sizeof(std::deque<objData> *);
+    int output_token_size = sizeof(std::vector<objData> *);
 
     /* Initialize input and output fifo to graph */
     welt_c_fifo_pointer data_in_fifo = (welt_c_fifo_pointer)welt_c_fifo_new(capacity, input_token_size, 0);
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     fp.close();
 
     /* Add bounding box vectors to fifo */
-    for (int i = 0; i < data.size(); i++)
+    for (int i = 0; i < capacity; i++)
     {
         std::vector<cv::Rect> *ptr = &(data.at(i));
         welt_c_fifo_write(data_in_fifo, &ptr);
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 
     while (welt_c_fifo_population(data_out_fifo) > 0)
     {
-        std::deque<objData> *data;
+        std::vector<objData> *data;
 
         cout << "frameid: " << ++frame_id << endl;
 
@@ -139,13 +139,18 @@ int main(int argc, char **argv)
         annotate_image(&images, boxes);
         
         cv::namedWindow("output");
+        int paused = 0;
         for (int i = 0; i < images.size(); i++)
         {
             char key = 0;
             cv::imshow("output", images[i]);
-            while (key != 'n' && key != 'm') { key = cv::waitKey(-1); }
-            
+            if (paused == 1)
+                while (key != 'n' && key != 'm' && key != 'p') { key = cv::waitKey(-1); }
+            else
+                key = cv::waitKey(33);
+
             if (key == 'm') {i = i - 2;}
+            if (key == 'p') {paused = (paused ? 0 : 1);}
         }
     }
 

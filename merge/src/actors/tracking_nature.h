@@ -65,7 +65,7 @@ class tracking_nature : public welt_cpp_actor
 
     private:
         /* storage for actual results */
-        deque<deque<objData>> frames;
+        deque<vector<objData>> frames;
         int frame_index;
         int bbox_max_index;
         
